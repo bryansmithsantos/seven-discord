@@ -1,7 +1,14 @@
 {
     "name": "seven-discord",
-    "version": "2.1.0",
-    "description": "A simplified Discord library running on Bun.",
+    "version": "3.0.0",
+    "description": "A simplified, zero-dependency Discord library for Bun with interactive UI and economy system.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bryansmithsantos/seven-discord.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
     "main": "src/index.ts",
     "bin": {
         "seven": "./bin/seven.ts"

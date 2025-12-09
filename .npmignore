@@ -1,0 +1,14 @@
+# Secrets
+.env
+seven_token.enc
+seven_db.json
+
+# Build/Test
+test_bot.ts
+tsconfig.json
+bun.lockb
+node_modules
+.gitignore
+
+# Source (if we were building to dist, but for Bun-native libs we might ship TS)
+# For now, let's include src to allow TS usage.
