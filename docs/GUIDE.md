@@ -1,7 +1,10 @@
-
-# 📘 Seven-Discord Learning Guide (v2.1)
+# 📘 Seven-Discord Learning Guide (v2.2)
 
 Welcome to the future of bot coding.
+
+> **New to Seven?**
+> The easiest way to start is using our CLI tool:
+> `bunx seven-discord --init --name minimal-bot`
 
 ## 1. The Bracket Syntax `[]`
 

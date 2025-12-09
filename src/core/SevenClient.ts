@@ -99,7 +99,7 @@ export class SevenClient {
    ╚════██║██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║
    ███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║
    ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝
-   v${require("../../package.json").version || "2.1.0"} | Engine: Bun | Database: Active
+   v${require("../../package.json").version || "2.2.0"} | Engine: Bun | Database: Active
         `);
 
         Logger.info(`Loaded ${this.commands.size} commands.`);

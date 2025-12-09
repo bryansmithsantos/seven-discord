@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="docs/logo.jpeg" alt="Logo" width="200" />
-  <h1>v2.1.0 Major Release</h1>
+  <h1>v2.2.0 Major Release</h1>
   <p>The simplest, zero-dependency Discord library for Bun. Now with <b>Interactive UI</b>, <b>Slash Commands</b> & <b>Economy</b>.</p>
   <p>
     <a href="https://discord.gg/qpRjsjrXcx">
@@ -12,6 +12,11 @@
     <img src="https://img.shields.io/npm/v/seven-discord?color=red" alt="NPM Version" />
   </p>
 </div>
+
+---
+
+## 📚 Official Documentation
+👉 [**Read the Docs (Wiki)**](https://bryansmithsantos.github.io/seven-discord/index.html)
 
 ---
 
@@ -28,10 +33,52 @@ Most libraries (Discord.js, Eris) force you to write thousands of lines of JavaS
 | **Logic** | `if (x === y) { ... }` | `s.eq[x; y; True; False]` |
 | **Dependencies** | **Heavy (Node_modules hell)** | **Ultralight (0 Deps)** |
 
-## 📦 Installation
+## 📦 Installation & CLI (Recommended)
+
+The best way to start is using our **CLI** via Bun. It creates a project with `SecureToken` pre-configured.
+
+### 1. Create a Project
+Open your terminal (outside your project folder) and run:
 
 ```bash
+bunx seven-discord --init --name my-bot
+```
+*(Use `--slash` for a specific template)*
+
+### 2. Enter and Run
+```bash
+cd my-bot
+bun install
+bun run dev
+```
+
+The CLI automatically sets up:
+- `package.json`
+- `tsconfig.json` (Optimized for Bun)
+- `.env` template
+- `index.ts` with `SecureToken.get()` (prompts you securely if token is missing!)
+
+### Manual Install
+If you already have a project:
+```bash
 bun add seven-discord
+```
+
+## 🔐 SecureToken System
+
+In v2.2.0, we introduced `SecureToken`.
+- It automatically checks `process.env`.
+- Checks `.env`.
+- If neither is found, **it prompts you securely** in the terminal and saves an **encrypted** `seven_token.enc` file.
+- It automatically adds `.gitignore` to prevent leaks.
+
+```typescript
+import { SevenClient, SecureToken } from "seven-discord";
+
+const bot = new SevenClient({
+    token: await SecureToken.get(),
+    prefix: "!"
+});
 ```
 
 ## ⚡ Quick Start
@@ -40,7 +87,7 @@ bun add seven-discord
 import { SevenClient, SecureToken } from "seven-discord";
 
 const bot = new SevenClient({
-    token: await SecureToken.get(), // Securely prompts or reads .env
+    token: await SecureToken.get(), 
     prefix: "!"
 });
 
@@ -82,14 +129,6 @@ bot.cmd({
 bot.start();
 ```
 
-## 🛠️ CLI Tool
-
-Initialize a new project instantly:
-
-```bash
-bun seven --init
-```
-
 ## 📚 Features
 
 - **Core**: `s.reply`, `s.log`, `s.setVar`, `s.getVar`
@@ -99,11 +138,6 @@ bun seven --init
 - **UI**: `s.embed`, `s.button`, `s.selectMenu`, `s.row`, `s.modal` (beta)
 - **System**: `s.ping`, `s.uptime`, `s.botInfo`, `s.eval`
 - **Secure**: Built-in Token Encryption & `.env` support.
-
-## 📚 Documentation
-
-We have a beautiful "Wiki-Style" documentation website included in `docs/index.html`. 
-Open it in your browser to explore all Macros and Events!
 
 ## 🤝 Contributing
 
