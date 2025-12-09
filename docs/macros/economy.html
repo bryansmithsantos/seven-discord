@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economy Macros | Seven-Discord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #040B16;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+    <aside class="w-64 border-r border-white/10 fixed h-full p-6 bg-navy-900 overflow-y-auto">
+        <a href="./index.html" class="flex items-center gap-2 mb-8 text-slate-400 hover:text-white">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Macros
+        </a>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Categories</h3>
+        <ul class="space-y-1">
+            <li><a href="./core.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">Core</a></li>
+            <li><a href="#"
+                    class="block p-2 rounded bg-seven-500/10 text-seven-400 font-bold border-l-2 border-seven-500">Economy</a>
+            </li>
+            <li><a href="./moderation.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">Moderation</a></li>
+            <li><a href="./ui.html" class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">UI &
+                    Interactive</a></li>
+            <li><a href="./system.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">System</a></li>
+        </ul>
+    </aside>
+
+    <main class="ml-64 p-12 w-full max-w-5xl">
+        <div class="flex items-center gap-4 mb-6">
+            <h1 class="text-4xl font-bold text-white">Economy Macros</h1>
+            <span
+                class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-bold border border-yellow-500/20">Module</span>
+        </div>
+
+        <p class="text-lg text-slate-400 mb-8 border-l-4 border-yellow-500 pl-4">
+            Manage user balances, bank accounts, and transactions.
+        </p>
+
+        <div class="space-y-12">
+            <!-- s.cash -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="cash">s.cash</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.cash[User?]</span>
+                </div>
+                <p class="text-slate-400 mb-4">Returns the cash balance of a user. Defaults to command author if no ID
+                    provided.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.reply[You have: s.cash]</code>
+                </div>
+            </section>
+
+            <!-- s.bank -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="bank">s.bank</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.bank[User?]</span>
+                </div>
+                <p class="text-slate-400 mb-4">Returns the bank balance of a user.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.reply[Bank Balance: s.bank]</code>
+                </div>
+            </section>
+
+            <!-- s.addCash -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="addCash">s.addCash</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.addCash[Amount; User?]</span>
+                </div>
+                <p class="text-slate-400 mb-4">Adds cash to a user. Supports negative values.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.addCash[100; s.authorId]</code>
+                </div>
+            </section>
+
+            <!-- s.pay -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="pay">s.pay</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.pay[Amount; UserID]</span>
+                </div>
+                <p class="text-slate-400 mb-4">Transfer money from your wallet to another user.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.pay[50; s.arg[1]]</code>
+                </div>
+            </section>
+
+            <!-- s.deposit -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="deposit">s.deposit</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.deposit[Amount or 'all']</span>
+                </div>
+                <p class="text-slate-400 mb-4">Move money from Cash to Bank.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.deposit[all]</code>
+                </div>
+            </section>
+
+            <!-- s.withdraw -->
+            <section>
+                <div class="flex items-baseline gap-4 mb-2">
+                    <h2 class="text-2xl font-bold text-white" id="withdraw">s.withdraw</h2>
+                    <span class="text-sm text-slate-500 font-mono">s.withdraw[Amount or 'all']</span>
+                </div>
+                <p class="text-slate-400 mb-4">Move money from Bank to Cash.</p>
+                <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10">
+                    <code class="font-mono text-seven-400">s.withdraw[500]</code>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

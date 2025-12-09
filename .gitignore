@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+.bun/
+
+# Build
+dist/
+out/
+
+# Environment
+.env
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+bun.lockb

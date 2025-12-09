@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | Seven-Discord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #040B16;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+    <aside class="w-64 border-r border-white/10 fixed h-full p-6 bg-navy-900">
+        <a href="../index.html" class="flex items-center gap-2 mb-8 text-seven-400 font-bold hover:text-white">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+        </a>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Client Events</h3>
+        <ul class="space-y-2 text-sm">
+            <li><a href="./ready.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white transition-colors">ready</a>
+            </li>
+        </ul>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-8 mb-4">Guild Events</h3>
+        <ul class="space-y-2 text-sm">
+            <li><a href="./message-create.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white transition-colors">messageCreate</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="ml-64 p-12 w-full">
+        <h1 class="text-4xl font-bold mb-6 text-white">Events</h1>
+        <p class="text-slate-400 mb-12 text-lg">Listen to the heartbeat of your server.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="./ready.html"
+                class="block p-6 rounded-xl bg-navy-800 border border-white/5 hover:border-seven-500 transition-all group">
+                <code class="text-seven-400 text-lg font-bold">ready</code>
+                <p class="text-slate-400 text-sm mt-2 group-hover:text-white">Fired when the bot connects.</p>
+            </a>
+            <a href="./message-create.html"
+                class="block p-6 rounded-xl bg-navy-800 border border-white/5 hover:border-seven-500 transition-all group">
+                <code class="text-seven-400 text-lg font-bold">messageCreate</code>
+                <p class="text-slate-400 text-sm mt-2 group-hover:text-white">Fired when a message is sent.</p>
+            </a>
+        </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

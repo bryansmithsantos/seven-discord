@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macros | Seven-Discord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #040B16;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-white/10 fixed h-full p-6 bg-navy-900 overflow-y-auto">
+        <a href="../index.html"
+            class="flex items-center gap-2 mb-8 text-seven-400 font-bold hover:text-white transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+        </a>
+    </aside>
+
+    <!-- Main -->
+    <main class="ml-64 p-12 w-full">
+        <h1 class="text-4xl font-bold mb-6 text-white">Macro Modules</h1>
+        <p class="text-slate-400 mb-12 text-lg">Select a category to view available macros.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Core -->
+            <a href="./core.html"
+                class="block p-8 rounded-xl bg-navy-800 border border-white/5 hover:border-seven-500 transition-all group">
+                <i data-lucide="zap" class="w-8 h-8 text-seven-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Core</h3>
+                <p class="text-slate-400 text-sm group-hover:text-white">Basic message handling, logging, and variables.
+                </p>
+            </a>
+
+            <!-- Economy -->
+            <a href="./economy.html"
+                class="block p-8 rounded-xl bg-navy-800 border border-white/5 hover:border-yellow-500 transition-all group">
+                <i data-lucide="coins" class="w-8 h-8 text-yellow-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Economy</h3>
+                <p class="text-slate-400 text-sm group-hover:text-white">Cash, Bank, Transfers, and Shop system.</p>
+            </a>
+
+            <!-- Moderation -->
+            <a href="./moderation.html"
+                class="block p-8 rounded-xl bg-navy-800 border border-white/5 hover:border-red-500 transition-all group">
+                <i data-lucide="shield" class="w-8 h-8 text-red-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Moderation</h3>
+                <p class="text-slate-400 text-sm group-hover:text-white">Ban, Kick, Mute, Warn, and Lock interactions.
+                </p>
+            </a>
+
+            <!-- UI -->
+            <a href="./ui.html"
+                class="block p-8 rounded-xl bg-navy-800 border border-white/5 hover:border-pink-500 transition-all group">
+                <i data-lucide="layout" class="w-8 h-8 text-pink-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">UI & Interactive</h3>
+                <p class="text-slate-400 text-sm group-hover:text-white">Embeds, Buttons, Menus, and persistent logic.
+                </p>
+            </a>
+
+            <!-- System -->
+            <a href="./system.html"
+                class="block p-8 rounded-xl bg-navy-800 border border-white/5 hover:border-slate-500 transition-all group">
+                <i data-lucide="cpu" class="w-8 h-8 text-slate-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">System</h3>
+                <p class="text-slate-400 text-sm group-hover:text-white">Bot stats, Server info, and Eval.</p>
+            </a>
+        </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

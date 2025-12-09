@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>s.eq | Seven-Discord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #040B16;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+    <aside class="w-64 border-r border-white/10 fixed h-full p-6 bg-navy-900">
+        <a href="./index.html" class="flex items-center gap-2 mb-8 text-slate-400 hover:text-white">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Macros
+        </a>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Core</h3>
+        <ul class="space-y-1">
+            <li><a href="./s-reply.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">s.reply</a></li>
+            <li><a href="./s-log.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">s.log</a></li>
+        </ul>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-8 mb-4">Logic</h3>
+        <ul class="space-y-1">
+            <li><a href="#"
+                    class="block p-2 rounded bg-seven-500/10 text-seven-400 font-bold border-l-2 border-seven-500">s.eq</a>
+            </li>
+        </ul>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-8 mb-4">Moderation</h3>
+        <ul class="space-y-1">
+            <li><a href="./s-ban.html"
+                    class="block p-2 rounded hover:bg-white/5 text-slate-400 hover:text-white">s.ban</a></li>
+        </ul>
+    </aside>
+
+    <main class="ml-64 p-12 w-full max-w-4xl">
+        <div class="flex items-center gap-4 mb-6">
+            <h1 class="text-4xl font-bold text-white">s.eq</h1>
+            <span
+                class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-bold border border-purple-500/20">Logic</span>
+        </div>
+
+        <p class="text-lg text-slate-400 mb-8 border-l-4 border-purple-500 pl-4">
+            Checks if two values are equal. Returns the 3rd arg if true, 4th arg if false.
+        </p>
+
+        <h2 class="text-2xl font-bold text-white mb-4">Usage</h2>
+        <div class="bg-[#0b1221] p-4 rounded-lg border border-white/10 mb-8">
+            <code class="font-mono text-seven-400">s.eq[Val1; Val2; IfTrue; IfFalse]</code>
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mb-4">Example</h2>
+        <div class="bg-[#0b1221] p-6 rounded-lg border border-white/10">
+            <pre class="font-mono text-sm text-slate-300">
+bot.command({
+    name: "check",
+    code: <span class="text-green-400">`
+    s.reply[Is 10 equal to 10? s.eq[10; 10; Yes!; No!]]
+    `</span>
+})
+            </pre>
+        </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

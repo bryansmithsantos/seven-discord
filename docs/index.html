@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seven-Discord | The Simplest Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #040B16;
+            color: #e2e8f0;
+        }
+
+        .glass-card {
+            background: rgba(10, 26, 51, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-card border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <img src="./logo-semfundo.png" class="h-10 w-auto" alt="Logo">
+                <span class="font-bold text-xl tracking-wide">Seven-Discord <span
+                        class="text-seven-400 text-xs uppercase px-2 py-0.5 rounded bg-seven-500/10">v2.1</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="./macros/index.html" class="hover:text-seven-400 transition-colors flex items-center gap-2"><i
+                        data-lucide="zap" class="w-4 h-4"></i> Macros</a>
+                <a href="./events/index.html" class="hover:text-seven-400 transition-colors flex items-center gap-2"><i
+                        data-lucide="activity" class="w-4 h-4"></i> Events</a>
+                <a href="https://github.com/seven-discord"
+                    class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-all flex items-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="pt-48 pb-32 px-6 relative overflow-hidden">
+        <div
+            class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-seven-500/5 to-transparent pointer-events-none">
+        </div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="text-6xl md:text-7xl font-bold mb-8 leading-tight">
+                Discord Bots made <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400">Ridiculously
+                    Simple.</span>
+            </h1>
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Now with <b>Interactive UI</b>, <b>Economy</b>, and <b>Moderation</b> built-in.
+                <br>No boilerplate. Just raw logic in brackets.
+            </p>
+
+            <!-- Install Command -->
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <div
+                    class="bg-[#0b1221] border border-white/10 rounded-full pl-6 pr-2 py-2 flex items-center gap-4 group hover:border-seven-500/50 transition-colors">
+                    <code class="font-mono text-seven-400 text-lg">bun add seven-discord</code>
+                    <button onclick="navigator.clipboard.writeText('bun add seven-discord')"
+                        class="p-2 hover:bg-white/10 rounded-full transition-colors" title="Copy">
+                        <i data-lucide="copy" class="w-5 h-5 text-slate-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-500">
+                <span class="text-green-400">●</span> v2.1 Stable Release
+            </p>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <section class="max-w-7xl mx-auto px-6 py-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Feature 1 -->
+            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-seven-500/10 rounded-full blur-2xl group-hover:bg-seven-500/20 transition-all">
+                </div>
+                <i data-lucide="box" class="w-10 h-10 text-seven-400 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Zero Deps</h3>
+                <p class="text-slate-400 leading-relaxed">Built from scratch on native APIs. No bloat, no Discord.js
+                    wrapper.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all">
+                </div>
+                <i data-lucide="brackets" class="w-10 h-10 text-purple-400 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Macro Syntax</h3>
+                <p class="text-slate-400 leading-relaxed"><code
+                        class="bg-white/5 px-1 rounded text-white">s.reply[Hello]</code>. No complex async/await
+                    chaining.</p>
+            </div>
+
+            <!-- Feature 3 (New) -->
+            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-all">
+                </div>
+                <i data-lucide="layout" class="w-10 h-10 text-pink-400 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Interactive UI</h3>
+                <p class="text-slate-400 leading-relaxed">Build Embeds, Buttons, and Select Menus purely with JSON and
+                    Macros.</p>
+            </div>
+
+            <!-- Feature 4 (New) -->
+            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all">
+                </div>
+                <i data-lucide="coins" class="w-10 h-10 text-yellow-400 mb-6"></i>
+                <h3 class="text-2xl font-bold mb-4">Economy</h3>
+                <p class="text-slate-400 leading-relaxed">Built-in Banking, Cash system, and Shop/Inventory management.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 py-12 text-center text-slate-600">
+        <p>Seven-Discord &copy; 2025. The Simplest Library.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
