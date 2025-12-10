@@ -36,7 +36,7 @@ export class ReplyMacro extends Macro {
         while ((hm = hoistedRegex.exec(processedContent)) !== null) {
             try {
                 const list = JSON.parse(hm[1]);
-                if (Array.isArray(list)) {
+                if (Array.isArray(list) && list.length > 0) {
                     const row = { type: 1, components: list };
                     components.push(row);
                 }
