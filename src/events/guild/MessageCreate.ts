@@ -34,6 +34,27 @@ export class MessageCreateEvent extends Event {
         if (cmd) {
             Logger.info(`Executing command: ${cmd.name}`);
 
+            // 0. Cooldown Check
+            if (cmd.cooldown > 0) {
+                const now = Date.now();
+                const key = `${data.author.id}-${cmd.name}`;
+                const expiration = client.cooldowns.get(key);
+
+                if (expiration && now < expiration) {
+                    const timeLeft = ((expiration - now) / 1000).toFixed(1);
+                    Logger.debug(`Command blocked by cooldown: ${timeLeft}s remaining`);
+                    // Optional: Reply with cooldown message
+                    await client.rest.post(`/channels/${data.channel_id}/messages`, {
+                        content: `⏳ Please wait **${timeLeft}s** before using this command again.`,
+                        message_reference: { message_id: data.id }
+                    });
+                    return;
+                }
+
+                // Set new cooldown
+                client.cooldowns.set(key, now + (cmd.cooldown * 1000));
+            }
+
             // 1. Run Middleware (only)
             if (cmd.only && cmd.only.length > 0) {
                 for (const mw of cmd.only) {

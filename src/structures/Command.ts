@@ -33,6 +33,11 @@ export interface CommandConfig {
      * Example: "Pong! s.pingms"
      */
     code: string;
+
+    /**
+     * Cooldown in seconds.
+     */
+    cooldown?: number;
 }
 
 export class Command {
@@ -40,12 +45,14 @@ export class Command {
     public code: string;
     public aliases: string[] = [];
     public description: string = "";
+    public cooldown: number = 0;
 
     constructor(config: CommandConfig) {
         this.name = config.name;
         this.code = config.code;
         this.aliases = config.aliases || [];
         this.description = config.description || "";
+        this.cooldown = config.cooldown || 0;
     }
 }
 

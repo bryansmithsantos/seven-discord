@@ -92,6 +92,13 @@ export class Interpreter {
         this.register(new (require("../macros/ui/SelectMenu").SelectMenuMacro)());
         this.register(new (require("../macros/ui/SelectOption").SelectOptionMacro)());
         this.register(new (require("../macros/ui/OnInteraction").OnInteractionMacro)());
+        this.register(new (require("../macros/ui/Modal").ModalMacro)());
+        this.register(new (require("../macros/ui/Input").InputMacro)());
+
+        // Core / New
+        this.register(new (require("../macros/core/Send").SendMacro)());
+        this.register(new (require("../macros/system/Time").TimeMacro)());
+        this.register(new (require("../macros/system/Cooldown").CooldownMacro)());
 
         Logger.info("Interpreter System initialized.");
     }
@@ -188,7 +195,8 @@ export class Interpreter {
 
         // 2. Hardcoded Properties
         switch (name) {
-            case "authorId": return ctx.message?.author?.id || ctx.interaction?.member?.user?.id;
+            case "authorId":
+            case "authorID": return ctx.message?.author?.id || ctx.interaction?.member?.user?.id;
             case "username": return ctx.message?.author?.username || ctx.interaction?.member?.user?.username;
             case "content": return ctx.message?.content;
             case "serverName": return ctx.message?.guild_id || ctx.interaction?.guild_id;

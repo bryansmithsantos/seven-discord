@@ -495,18 +495,24 @@
             { name: "s.upper", cat: "String", desc: "Converts to uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]" },
             { name: "s.lower", cat: "String", desc: "Converts to lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]" },
 
+            { name: "s.send", cat: "Core", desc: "Sends a message to a specific channel.", usage: "s.send[ChannelID; Content]", example: "s.send[123456789; Hello there!]" },
+
             // SYSTEM
             { name: "s.ping", cat: "System", desc: "Returns bot API latency.", usage: "s.ping", example: "s.ping" },
             { name: "s.uptime", cat: "System", desc: "Returns formatted uptime.", usage: "s.uptime", example: "s.uptime" },
+            { name: "s.time", cat: "System", desc: "Returns current time (Real Hours).", usage: "s.time[Zone?]", example: "s.time[America/Sao_Paulo]" },
+            { name: "s.cooldown", cat: "System", desc: "Applies a cooldown to the user.", usage: "s.cooldown[Seconds; Msg?]", example: "s.cooldown[10; wait!]" },
             { name: "s.botInfo", cat: "System", desc: "Shows RAM/CPU usage.", usage: "s.botInfo", example: "s.botInfo" },
             { name: "s.serverInfo", cat: "System", desc: "Displays server stats.", usage: "s.serverInfo", example: "s.serverInfo" },
             { name: "s.userInfo", cat: "System", desc: "Displays user stats.", usage: "s.userInfo[UserID?]", example: "s.userInfo" },
-            { name: "s.avatar", cat: "System", desc: "Returns user avatar URL.", usage: "s.avatar[UserID?]", example: "s.avatar[s.authorID]" },
+            { name: "s.avatar", cat: "System", desc: "Returns user avatar. Supports KV, ID, or Link.", usage: "s.avatar[user:ID]", example: "s.avatar[user:123] or s.avatar[link]" },
             { name: "s.eval", cat: "System", desc: "Evaluates JavaScript code (Dangerous).", usage: "s.eval[Code]", example: "s.eval[2+2]" },
             { name: "s.setStatus", cat: "System", desc: "Sets the bot's status activity.", usage: "s.setStatus[type:playing; status:online; name:Seven-Discord]", example: "s.setStatus[type:watching; name:You]" },
             { name: "s.shutdown", cat: "System", desc: "Shuts down the bot.", usage: "s.shutdown", example: "s.shutdown" },
 
             // SPECIAL TUTORIALS
+            { name: "Aliases & Cooldowns", cat: "Tutorials", desc: "Commands now support 'aliases: [...]' and 'cooldown: 5' in config.", usage: "Config Only", example: "module.exports = { name: 'test', aliases: ['t'], cooldown: 10, ... }" },
+            { name: "Modals (Easy)", cat: "Tutorials", desc: "Create Modals easily.", usage: "s.modal[id; title; s.input[...]]", example: "s.modal[id:form; title:Apply; s.input[id:name; label:Name]]" },
             { name: "Affiliates System", cat: "Tutorials", desc: "How to create an Affiliates/Partnership system using Buttons and Logic.", usage: "See Example", example: "s.embed[title:Partnership; desc:Click below to partner!] s.button[label:Apply; style:primary; id:apply_partner]\n\ns.onInteraction[apply_partner; \n  s.reply[Thank you for applying! We will review your server.]\n  s.log[New Partner App from s.authorID]\n]" },
         ];
 

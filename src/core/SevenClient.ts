@@ -32,6 +32,7 @@ export class SevenClient {
 
     // Core Managers
     public commands: Map<string, Command> = new Map();
+    public cooldowns: Map<string, number> = new Map(); // Key: userID-cmdName, Value: Expiration Timestamp
     public db: Database;
     public variables: VariableManager;
     public economy: EconomyManager;
@@ -41,6 +42,7 @@ export class SevenClient {
 
     public user: any = null; // Store bot user info
     public sessionId: string | null = null;
+
 
     constructor(options: SevenClientOptions) {
         this.token = options.token;
@@ -126,8 +128,20 @@ export class SevenClient {
      * Register a command using the Object-Config flow.
      */
     public cmd(config: CommandConfig): SevenClient {
+        const cmdIndex = new Command(config);
+
+        // Register Main Name
+        this.commands.set(config.name.toLowerCase(), cmdIndex);
         Logger.debug(`Registered command: ${config.name}`);
-        this.commands.set(config.name.toLowerCase(), new Command(config));
+
+        // Register Aliases
+        if (config.aliases && config.aliases.length > 0) {
+            for (const alias of config.aliases) {
+                this.commands.set(alias.toLowerCase(), cmdIndex);
+                Logger.debug(`Registered alias: ${alias} -> ${config.name}`);
+            }
+        }
+
         return this;
     }
 
