@@ -9,6 +9,12 @@ const color = {
     // Foreground
     white: "\x1b[37m",
     gray: "\x1b[90m",
+    blue: "\x1b[34m",
+    green: "\x1b[32m",
+    cyan: "\x1b[36m",
+    red: "\x1b[31m",
+    yellow: "\x1b[33m",
+    magenta: "\x1b[35m",
 
     // Backgrounds (Badges)
     bgCyan: "\x1b[46m",
@@ -37,45 +43,56 @@ export class Logger {
 
     private static print(badge: string, badgeColor: string, message: string, messageColor: string = color.white) {
         const time = `${color.gray}[${this.getTime()}]${color.reset}`;
-        // Badge format: [ TIME ] [ BADGE ] Message
-        // We use spaces padded to make badges align if needed, but for now simple block
-
         console.log(`${time} ${badgeColor}${color.bold} ${badge} ${color.reset} ${messageColor}${message}${color.reset}`);
     }
 
     static info(message: string) {
-        this.print("INFO", color.bgCyan, message);
+        this.print(" INFO ", color.bgBlue, message, color.blue);
     }
 
     static success(message: string) {
-        this.print("SUCCESS", color.bgGreen, message);
+        this.print("  OK  ", color.bgGreen, message, color.green);
     }
 
     static warn(message: string) {
-        this.print("WARN", color.bgYellow, message);
+        this.print(" WARN ", color.bgYellow, message, color.yellow);
     }
 
     static error(message: string, error?: any) {
-        this.print("ERROR", color.bgRed, message);
+        this.print(" ERROR ", color.bgRed, message, color.red);
         if (error) {
             console.error(error);
         }
     }
 
     static debug(message: string) {
-        this.print("DEBUG", color.bgMagenta, message, color.gray);
+        // Only if debug enabled? For now always.
+        this.print(" DEBUG ", color.bgMagenta, message, color.gray);
     }
 
     static table(title: string) {
-        console.log(`\n${color.gray}-------------------------------- ${color.bold}${color.white}${title}${color.reset}${color.gray} --------------------------------${color.reset}`);
+        console.log(`\n${color.gray}◈ ━━━━━━━━━━━━━━━━━━━━ ${color.bold}${color.white}${title}${color.reset}${color.gray} ━━━━━━━━━━━━━━━━━━━━ ◈${color.reset}`);
     }
 
-    // Special formatted log for loading items (as seen in image)
+    // Special formatted log for loading items
     static load(type: "command" | "event" | "macro", name: string, status: "success" | "fail" = "success") {
-        const badge = status === "success" ? color.bgGreen : color.bgRed;
-        const icon = status === "success" ? "SUCCESS" : "FAIL";
         const time = `${color.gray}[${this.getTime()}]${color.reset}`;
+        const symbol = status === "success" ? `${color.green}✔${color.reset}` : `${color.red}✖${color.reset}`;
+        const typeFmt = type.padEnd(8);
 
-        console.log(`${time} ${badge}${color.bold} ${icon} ${color.reset} Loaded ${type} ${color.gray}→${color.reset} ${color.bold}${name}${color.reset}`);
+        console.log(`${time} ${symbol} ${color.cyan}${typeFmt}${color.reset} :: ${color.bold}${name}${color.reset}`);
+    }
+
+    static banner() {
+        console.clear();
+        const banner = `
+    ${color.cyan}███████╗███████╗██╗   ██╗███████╗███╗   ██╗${color.reset}
+    ${color.cyan}██╔════╝██╔════╝██║   ██║██╔════╝████╗  ██║${color.reset}
+    ${color.blue}███████╗█████╗  ██║   ██║█████╗  ██╔██╗ ██║${color.reset}
+    ${color.blue}╚════██║██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║${color.reset}
+    ${color.magenta}███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║${color.reset}
+    ${color.magenta}╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝${color.reset}
+        `;
+        console.log(banner);
     }
 }

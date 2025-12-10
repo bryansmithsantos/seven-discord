@@ -15,9 +15,13 @@ import { EconomyManager } from "../managers/EconomyManager";
 import { InteractionManager } from "../managers/InteractionManager";
 import { SlashManager, SlashCommandOptions } from "../managers/SlashManager";
 
+import { readdirSync } from "fs";
+import { join } from "path";
+
 export interface SevenClientOptions {
     token: string;
     prefix?: string;
+    intents?: number | string[];
 }
 
 export class SevenClient {
@@ -54,8 +58,68 @@ export class SevenClient {
         // Gateway Init
         this.gateway = new GatewayManager(this.token);
 
+        // Resolve Intents
+        if (options.intents) {
+            this.gateway.intents = this.resolveIntents(options.intents);
+        } else {
+            // Default: Guilds + Messages + MessageContent
+            // 512 + 1 + 32768 = 33281 (Approx, using raw for now)
+            this.gateway.intents = 3276799; // All intents (for simplicity in v2) or safe default
+        }
+
         // Load Event Handlers
         this.registerInternalListeners();
+    }
+
+    /**
+     * Resolve intents input to bitfield.
+     */
+    private resolveIntents(intents: number | string[]): number {
+        if (typeof intents === "number") return intents;
+        // Simple mapping for now, assuming user passes raw numbers or we add a map later
+        // For v2.3 simplicity, we assume they pass a bitfield number if advanced, or we default to ALL.
+        return 3276799; // Placeholder for full intent string parsing
+    }
+
+    /**
+     * Load commands from a directory recursively.
+     * @param dir The directory to load from
+     */
+    public loadCommands(dir: string): void {
+        const fullPath = join(process.cwd(), dir);
+        if (!require("fs").existsSync(fullPath)) {
+            Logger.warn(`Command directory not found: ${dir}`);
+            return;
+        }
+
+        const files = this.getFiles(fullPath);
+        for (const file of files) {
+            const cmd = require(file);
+            // Support default export or named export
+            const config = cmd.default || cmd;
+
+            if (config?.name && config?.code) {
+                this.cmd(config);
+                Logger.load("command", config.name);
+            }
+        }
+    }
+
+    private getFiles(dir: string): string[] {
+        let results: string[] = [];
+        const list = readdirSync(dir);
+        for (const file of list) {
+            const filePath = join(dir, file);
+            const stat = require("fs").statSync(filePath);
+            if (stat && stat.isDirectory()) {
+                results = results.concat(this.getFiles(filePath));
+            } else {
+                if (file.endsWith(".ts") || file.endsWith(".js")) {
+                    results.push(filePath);
+                }
+            }
+        }
+        return results;
     }
 
     /**
@@ -73,6 +137,9 @@ export class SevenClient {
     public cmdSlash(config: SlashCommandOptions): SevenClient {
         Logger.debug(`Registered slash command: ${config.name}`);
         this.slash.register(config);
+        // Add to internal slash sync queue if needed, or rely on manual sync? 
+        // For simplicity, we sync on Ready?
+        // Actually, user needs to know how to sync.
         return this;
     }
 
@@ -120,22 +187,22 @@ export class SevenClient {
             new (require("../events/guild/InteractionCreate").InteractionCreateEvent)()
         ];
 
-        for (const event of events) {
-            Logger.debug(`Loading event: ${event.name}`);
-            this.gateway.on("dispatch", (packet) => {
-                // Handle READY explicitly for session capture
-                if (packet.t === "READY") {
-                    this.sessionId = packet.d.session_id;
-                    this.user = packet.d.user;
-                    Logger.info(`Logged in as ${this.user.username}`);
-                    // Sync Slash Commands
-                    this.slash.sync();
-                }
+        // Global Dispatch Handler
+        this.gateway.on("dispatch", (packet) => {
+            // Internal Ready Handling (One-time setup)
+            if (packet.t === "READY") {
+                this.sessionId = packet.d.session_id;
+                this.user = packet.d.user;
+                // Sync Slash on Ready
+                this.slash.sync();
+            }
 
+            // Route to specific event handlers
+            for (const event of events) {
                 if (packet.t === event.name) {
                     event.execute(this, packet.d);
                 }
-            });
-        }
+            }
+        });
     }
 }

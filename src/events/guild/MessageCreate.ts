@@ -16,9 +16,7 @@ export class MessageCreateEvent extends Event {
         if (data.author.bot) return;
 
         const content: string = data.content;
-        // Access options via client (assuming public or getter, otherwise cast to any)
-        const options = (client as any).options;
-        const prefix = options.prefix || "!";
+        const prefix = client.prefix;
 
         if (!content.startsWith(prefix)) return;
 
