@@ -4,17 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord | Guide</title>
+    <title>Seven-Discord | Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { seven: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e', 950: '#082f49' } },
+                    colors: {
+                        seven: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e', 950: '#082f49' },
+                        dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    },
                     fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
                 }
             }
@@ -23,27 +27,52 @@
     <style>
         body {
             background-color: #020617;
-            color: #e2e8f0;
-            overflow-x: hidden;
+            color: #f8fafc;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
         }
 
         .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(56, 189, 248, 0.1);
+            transition: all 0.2s;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.2);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(56, 189, 248, 0.1);
+            border-left-color: #0ea5e9;
+            color: #38bdf8;
         }
 
         .code-block {
-            background: #0f172a;
-            border-left: 4px solid #0ea5e9;
-            padding: 1rem;
             font-family: 'JetBrains Mono';
+            background: #0f172a;
+            padding: 1rem;
             border-radius: 0.5rem;
             overflow-x: auto;
+            border: 1px solid #1e293b;
         }
 
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -51,262 +80,339 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #0ea5e9;
-            border-radius: 4px;
+            background: #334155;
+            border-radius: 3px;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .slide-up {
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
     </style>
 </head>
 
-<body class="antialiased selection:bg-seven-500/30 font-sans">
+<body class="antialiased h-screen flex overflow-hidden">
 
-    <!-- NAVBAR -->
-    <nav class="fixed w-full z-50 glass-card border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl font-bold tracking-tight text-white">Seven</span>
-                <span
-                    class="text-xs bg-seven-900/50 text-seven-400 px-2 py-0.5 rounded-full border border-seven-500/20">v2.5.5
-                    stable</span>
-            </div>
-            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-                <button onclick="showPage('home')" class="hover:text-white transition-colors">Home</button>
-                <button onclick="showPage('guide')" class="hover:text-white transition-colors">Guide</button>
-                <button onclick="showPage('macros')"
-                    class="text-seven-400 hover:text-seven-300 transition-colors">Macros</button>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-dark-900 border-r border-slate-800 flex-shrink-0 flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+            <span
+                class="text-xl font-bold bg-gradient-to-r from-seven-400 to-indigo-400 bg-clip-text text-transparent">Seven-Discord</span>
+            <span
+                class="ml-2 text-[10px] bg-seven-900/50 text-seven-300 px-1.5 py-0.5 rounded border border-seven-500/20">v2.5.11</span>
+        </div>
+
+        <div class="p-4">
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+                <input type="text" id="sidebar-search" placeholder="Search..."
+                    class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-3 text-sm text-slate-300 focus:border-seven-500 focus:outline-none placeholder:text-slate-600">
             </div>
         </div>
-    </nav>
 
-    <main id="page-home" class="pt-32 pb-20 fade-in">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h1 class="text-6xl md:text-8xl font-black text-white leading-tight mb-8 slide-up">
-                Reference <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400">Hub</span>.
-            </h1>
-            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed slide-up">
-                New v2.5.5: Organized Categories, Native Status Method, and CLI Integration.
-            </p>
-            <button onclick="showPage('macros')"
-                class="bg-seven-500 hover:bg-seven-400 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-seven-500/40">
-                Browse Macros
-            </button>
+        <nav class="flex-1 overflow-y-auto px-2 space-y-1 pb-4" id="sidebar-nav">
+            <!-- Populated via JS -->
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+            <a href="https://discord.gg/qpRjsjrXcx" target="_blank"
+                class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition-colors">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Support Server
+            </a>
         </div>
-    </main>
+    </aside>
 
-    <main id="page-macros" class="hidden pt-32 pb-20 min-h-screen">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 slide-up">
-                <h2 class="text-4xl font-bold text-white mb-4">Macro Reference</h2>
-                <div class="mt-8 relative max-w-md mx-auto">
-                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5"></i>
-                    <input type="text" id="macro-search" placeholder="Search macros..."
-                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-seven-500 transition-colors">
+    <!-- CONTENT -->
+    <main class="flex-1 flex flex-col min-w-0">
+        <!-- HEADER -->
+        <header class="h-16 glass z-20 flex items-center justify-between px-6 md:px-8">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-400 hover:text-white"
+                    onclick="document.querySelector('aside').classList.toggle('hidden')">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="flex gap-1 text-sm text-slate-400">
+                    <span class="opacity-50">Docs</span>
+                    <span>/</span>
+                    <span class="text-seven-400 font-medium" id="page-title">Welcome</span>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <a href="https://www.npmjs.com/package/seven-discord" target="_blank"
+                    class="text-slate-400 hover:text-white transition-colors"><i data-lucide="package"
+                        class="w-5 h-5"></i></a>
+                <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
+                    class="text-slate-400 hover:text-white transition-colors"><i data-lucide="github"
+                        class="w-5 h-5"></i></a>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE AREA -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth" id="content-area">
+
+            <div id="view-intro" class="max-w-4xl mx-auto space-y-12">
+                <div class="text-center py-20">
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
+                        Build <span class="text-seven-500">Faster</span>.<br>Code <span
+                            class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Less</span>.
+                    </h1>
+                    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">The most advanced macro-based framework
+                        for Discord Bots. Zero dependencies, maximum performance.</p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="filterCategory('Core')"
+                            class="bg-seven-600 hover:bg-seven-500 text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105">Get
+                            Started</button>
+                        <button onclick="document.getElementById('sidebar-search').focus()"
+                            class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium border border-slate-700 transition-all">Search
+                            Macros</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 rounded-xl">
+                        <div
+                            class="w-10 h-10 bg-seven-500/10 text-seven-400 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="zap"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">Lightning Fast</h3>
+                        <p class="text-slate-400 text-sm">Built on native JSON builders. No heavy class overhead.
+                            Optimized for Bun.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl">
+                        <div
+                            class="w-10 h-10 bg-purple-500/10 text-purple-400 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="box"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">Macro Framework</h3>
+                        <p class="text-slate-400 text-sm">Write complex logic in single lines.
+                            <code>s.if[s.eq[a;b];...]</code>.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl">
+                        <div
+                            class="w-10 h-10 bg-green-500/10 text-green-400 rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="check-circle"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-2">Verified Ready</h3>
+                        <p class="text-slate-400 text-sm">Full support for Slash Commands, Buttons, and Modals required
+                            for verification.</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Macro Grid Injector -->
-            <div id="macro-container" class="space-y-12"></div>
-        </div>
-    </main>
-
-    <main id="page-guide" class="hidden pt-32 pb-20">
-        <div class="max-w-4xl mx-auto px-6 slide-up space-y-12">
-            <h1 class="text-4xl font-bold text-white mb-10">Developer Schemas</h1>
-
-            <section>
-                <h2 class="text-2xl font-bold text-seven-400 mb-4">Command Structure</h2>
-                <div class="code-block text-slate-300">
-                    <span class="text-purple-400">export default</span> {
-                    <span class="text-blue-400">name</span>: <span class="text-green-400">"avatar"</span>,
-                    <span class="text-blue-400">code</span>: <span class="text-green-400">`
-                        <span class="text-slate-500">// 1. Define Embed</span>
-                        s.embed[
-                        s.title[User Avatar]
-                        s.image[s.avatar[s.authorID]]
-                        ]
-                        <span class="text-slate-500">// 2. Define Components (Outside Embed!)</span>
-                        s.button[View; primary; view_av; 🖼️]
-                        `</span>
-                    };
+            <div id="view-macros" class="max-w-5xl mx-auto hidden">
+                <h2 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+                    <i data-lucide="book" class="text-seven-500"></i>
+                    <span id="category-title">All Macros</span>
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="macro-grid">
+                    <!-- Javascript Injected -->
                 </div>
-            </section>
+            </div>
 
-            <section>
-                <h2 class="text-2xl font-bold text-seven-400 mb-4">Slash Commands</h2>
-                <div class="code-block text-slate-300">
-                    bot.<span class="text-yellow-400">cmdSlash</span>({
-                    <span class="text-blue-400">name</span>: <span class="text-green-400">"ping"</span>,
-                    <span class="text-blue-400">description</span>: <span class="text-green-400">"Check latency"</span>,
-                    <span class="text-blue-400">code</span>: <span class="text-green-400">"s.reply[Pong! 🏓]"</span>
-                    });
-                </div>
-            </section>
         </div>
     </main>
 
     <!-- MODAL -->
-    <div id="macro-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="relative w-full max-w-2xl bg-[#0f172a] border border-seven-500/30 rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300"
-            id="modal-content">
-            <div
-                class="bg-gradient-to-r from-seven-900/50 to-slate-900 p-6 border-b border-white/5 flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <code id="modal-title" class="text-2xl font-bold font-mono text-seven-400">Title</code>
-                    <span id="modal-cat"
-                        class="text-xs uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded border border-white/10 text-slate-400">CAT</span>
+    <div id="modal"
+        class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-all opacity-0">
+        <div class="bg-[#0f172a] border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl transform scale-95 transition-all"
+            id="modal-panel">
+            <div class="flex justify-between items-center p-6 border-b border-slate-800 bg-slate-900/50">
+                <div>
+                    <h3 class="text-2xl font-bold font-mono text-seven-400" id="m-name">s.name</h3>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mt-1" id="m-cat">Category</p>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 p-2"><i data-lucide="x"></i></button>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
             </div>
-            <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
-                <p id="modal-desc" class="text-slate-300 text-base leading-relaxed">Desc</p>
-                <div class="code-block text-sm text-slate-300 border border-slate-700/50 bg-black/30"><code
-                        id="modal-usage">Usage</code></div>
-                <div class="code-block text-sm text-green-300 border-l-4 border-green-500 bg-green-500/5"><code
-                        id="modal-example">Example</code></div>
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Description</label>
+                    <p class="text-slate-300" id="m-desc">Description here.</p>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Usage</label>
+                    <div class="code-block text-seven-300 text-sm" id="m-usage">s.macro[...]</div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Example</label>
+                    <div class="code-block text-green-300 text-sm bg-green-900/10 border-green-900/30" id="m-example">
+                        s.macro[...]</div>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-900/50 border-t border-slate-800 text-right">
+                <button onclick="closeModal()"
+                    class="text-slate-400 hover:text-white text-sm font-medium">Close</button>
             </div>
         </div>
     </div>
 
     <script>
         const macros = [
-            // Core
-            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", example: "s.reply[Hello User!]", category: "Core Basics" },
-            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", example: "s.log[Debug Info]", category: "Core Basics" },
-            { name: "s.setVar", desc: "Set variable.", usage: "s.setVar[Key; Value]", example: "s.setVar[xp; 10]", category: "Core Storage" },
-            { name: "s.getVar", desc: "Get variable.", usage: "s.getVar[Key]", example: "s.getVar[xp]", category: "Core Storage" },
+            // CORE
+            { name: "s.reply", cat: "Core", desc: "Replies to the current message or interaction.", usage: "s.reply[Content]", example: "s.reply[Hello World!]" },
+            { name: "s.log", cat: "Core", desc: "Logs a message to the console.", usage: "s.log[Message]", example: "s.log[Debug: Command ran]" },
+            { name: "s.setVar", cat: "Core", desc: "Sets a variable globally, per guild, or per user.", usage: "s.setVar[Name; Value; Type?; ID?]", example: "s.setVar[xp; 0; user; s.authorID]" },
+            { name: "s.getVar", cat: "Core", desc: "Retrieves a variable value.", usage: "s.getVar[Name; Type?; ID?]", example: "s.getVar[xp; user; s.authorID]" },
 
             // UI
-            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...props]", example: "s.embed[s.title[Hi]]", category: "UI Embeds" },
-            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", example: "s.title[Welcome]", category: "UI Embeds" },
-            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", example: "s.desc[Main content]", category: "UI Embeds" },
-            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", example: "s.color[#FF0000]", category: "UI Embeds" },
-            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", example: "s.image[https://img.com/a.png]", category: "UI Embeds" },
-            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", example: "s.thumb[https://img.com/a.png]", category: "UI Embeds" },
-            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon?]", example: "s.footer[Credits]", category: "UI Embeds" },
+            { name: "s.embed", cat: "UI", desc: "Creates a rich embed container.", usage: "s.embed[...props]", example: "s.embed[ s.title[Hi] s.desc[Hello] ]" },
+            { name: "s.title", cat: "UI", desc: "Sets the title of the parent embed.", usage: "s.title[Text]", example: "s.title[Welcome]" },
+            { name: "s.desc", cat: "UI", desc: "Sets the description of the parent embed.", usage: "s.desc[Text]", example: "s.desc[Main content area]" },
+            { name: "s.color", cat: "UI", desc: "Sets the color of the parent embed.", usage: "s.color[HexCode]", example: "s.color[#5865F2]" },
+            { name: "s.image", cat: "UI", desc: "Sets the main image of the embed.", usage: "s.image[URL]", example: "s.image[https://example.com/img.png]" },
+            { name: "s.thumb", cat: "UI", desc: "Sets the thumbnail image of the embed.", usage: "s.thumb[URL]", example: "s.thumb[https://example.com/icon.png]" },
+            { name: "s.footer", cat: "UI", desc: "Sets the footer text and icon.", usage: "s.footer[Text; IconUrl?]", example: "s.footer[Page 1/2]" },
 
-            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", example: "s.button[Click; primary; id; 🖱️]", category: "UI Components" },
-            { name: "s.row", desc: "Action Row.", usage: "s.row[...buttons]", example: "s.row[s.button[A; primary; a]]", category: "UI Components" },
-            { name: "s.selectMenu", desc: "Dropdown.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Pick; 1; 1; s.selectOption[A; a]]", category: "UI Components" },
-            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", example: "s.selectOption[Opt 1; 1]", category: "UI Components" },
-            { name: "s.onInteraction", desc: "Handle Interaction.", usage: "s.onInteraction[ID] ...", example: "s.onInteraction[btn_1] s.reply[Clicked!]", category: "UI Components" },
+            { name: "s.button", cat: "UI", desc: "Creates an interactive button.", usage: "s.button[Label; Style; CustomID; Emoji?]", example: "s.button[Click Me; primary; btn_id; 🖱️]" },
+            { name: "s.row", cat: "UI", desc: "Groups components into a horizontal row.", usage: "s.row[...components]", example: "s.row[ s.button[Yes] s.button[No] ]" },
+            { name: "s.selectMenu", cat: "UI", desc: "Creates a dropdown selection menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Choose; 1; 1; s.option[A;a]]" },
+            { name: "s.option", cat: "UI", desc: "Adds an option to a Select Menu.", usage: "s.option[Label; Value; Desc?; Emoji?; Default?]", example: "s.option[Red; red; Color Red; 🔴]" },
+            { name: "s.onInteraction", cat: "UI", desc: "Registers code to run when an interaction ID is triggered.", usage: "s.onInteraction[ID; Code]", example: "s.onInteraction[btn_id; s.reply[Clicked!]]" },
 
-            // System
-            { name: "s.setStatus", desc: "Set Presence.", usage: "s.setStatus[Type; Status; Name]", example: "s.setStatus[playing; online; Game]", category: "System" },
-            { name: "s.ping", desc: "Latency.", usage: "s.ping", example: "s.ping", category: "System" },
-            { name: "s.uptime", desc: "Uptime.", usage: "s.uptime", example: "s.uptime", category: "System" },
-            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", example: "s.eval[2+2]", category: "System" },
+            // ECONOMY
+            { name: "s.cash", cat: "Economy", desc: "Gets the user's cash balance.", usage: "s.cash[UserID?]", example: "s.cash[s.authorID]" },
+            { name: "s.bank", cat: "Economy", desc: "Gets the user's bank balance.", usage: "s.bank[UserID?]", example: "s.bank[s.authorID]" },
+            { name: "s.addCash", cat: "Economy", desc: "Adds cash to a user's wallet.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]" },
+            { name: "s.removeCash", cat: "Economy", desc: "Removes cash from a user.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]" },
+            { name: "s.setCash", cat: "Economy", desc: "Sets a user's cash balance directly.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]" },
+            { name: "s.pay", cat: "Economy", desc: "Transfers cash from author to another user.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; @user]" },
+            { name: "s.deposit", cat: "Economy", desc: "Deposits cash into the bank.", usage: "s.deposit[Amount|all]", example: "s.deposit[all]" },
+            { name: "s.withdraw", cat: "Economy", desc: "Withdraws cash from the bank.", usage: "s.withdraw[Amount|all]", example: "s.withdraw[100]" },
+            { name: "s.setCurrency", cat: "Economy", desc: "Sets the currency symbol.", usage: "s.setCurrency[Symbol]", example: "s.setCurrency[$]" },
 
-            // Math & Logic
-            { name: "s.math", desc: "Math expression.", usage: "s.math[Expr]", example: "s.math[10+2]", category: "Logic & Math" },
-            { name: "s.random", desc: "Random number.", usage: "s.random[Min; Max]", example: "s.random[1; 10]", category: "Logic & Math" },
-            { name: "s.if", desc: "Condition.", usage: "s.if[Cond; True; False]", example: "s.if[s.eq[1;1]; Yes; No]", category: "Logic & Math" },
-            { name: "s.eq", desc: "Equality.", usage: "s.eq[A; B]", example: "s.eq[1;1]", category: "Logic & Math" },
+            // MODERATION
+            { name: "s.ban", cat: "Moderation", desc: "Bans a member from the server.", usage: "s.ban[UserID; Reason?]", example: "s.ban[123456789; Spamming]" },
+            { name: "s.kick", cat: "Moderation", desc: "Kicks a member.", usage: "s.kick[UserID; Reason?]", example: "s.kick[123456789; Warning]" },
+            { name: "s.mute", cat: "Moderation", desc: "Timeouts a member (Isolation).", usage: "s.mute[UserID; Duration; Reason?]", example: "s.mute[123456789; 1h; Bad behavior]" },
+            { name: "s.unmute", cat: "Moderation", desc: "Removes timeout.", usage: "s.unmute[UserID]", example: "s.unmute[123456789]" },
+            { name: "s.warn", cat: "Moderation", desc: "Adds a warning to a user.", usage: "s.warn[UserID; Reason]", example: "s.warn[123; Rule 1]" },
+            { name: "s.unwarn", cat: "Moderation", desc: "Removes a specific warning ID.", usage: "s.unwarn[UserID; WarnID]", example: "s.unwarn[123; 1]" },
+            { name: "s.warnings", cat: "Moderation", desc: "Lists user warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123]" },
+            { name: "s.purge", cat: "Moderation", desc: "Bulk deletes messages.", usage: "s.purge[Amount]", example: "s.purge[50]" },
+            { name: "s.lock", cat: "Moderation", desc: "Locks the current channel.", usage: "s.lock[Reason?]", example: "s.lock[Raid in progress]" },
+            { name: "s.unlock", cat: "Moderation", desc: "Unlocks the current channel.", usage: "s.unlock", example: "s.unlock" },
+            { name: "s.slowmode", cat: "Moderation", desc: "Sets channel slowmode.", usage: "s.slowmode[Seconds]", example: "s.slowmode[10]" },
 
-            // Economy
-            { name: "s.addCash", desc: "Add cash.", usage: "s.addCash[Amt; ID]", example: "s.addCash[100; s.authorID]", category: "Economy" },
-            { name: "s.removeCash", desc: "Remove cash.", usage: "s.removeCash[Amt; ID]", example: "s.removeCash[100; s.authorID]", category: "Economy" },
-            { name: "s.setCash", desc: "Set cash.", usage: "s.setCash[Amt; ID]", example: "s.setCash[100; s.authorID]", category: "Economy" },
-            { name: "s.cash", desc: "Get cash.", usage: "s.cash[ID]", example: "s.cash[s.authorID]", category: "Economy" },
-            { name: "s.pay", desc: "Pay user.", usage: "s.pay[Amt; ID]", example: "s.pay[50; @user]", category: "Economy" },
+            // LOGIC & MATH
+            { name: "s.if", cat: "Logic", desc: "Conditional execution.", usage: "s.if[Condition; TrueCode; FalseCode]", example: "s.if[s.eq[1;1]; Equal; Not Equal]" },
+            { name: "s.eq", cat: "Logic", desc: "Equality check (Returns 'true' or 'false').", usage: "s.eq[A; B]", example: "s.eq[s.channelId; 12345]" },
+            { name: "s.math", cat: "Math", desc: "Evaluates a mathematical expression.", usage: "s.math[Expression]", example: "s.math[100 * 2]" },
+            { name: "s.random", cat: "Math", desc: "Returns a random integer between min and max.", usage: "s.random[Min; Max]", example: "s.random[1; 100]" },
 
-            // Moderation
-            { name: "s.ban", desc: "Ban user.", usage: "s.ban[ID; Reason]", example: "s.ban[123; Bye]", category: "Moderation" },
-            { name: "s.kick", desc: "Kick user.", usage: "s.kick[ID; Reason]", example: "s.kick[123; Bye]", category: "Moderation" },
-            { name: "s.mute", desc: "Mute user.", usage: "s.mute[ID; Time; Reason]", example: "s.mute[123; 1h; Spam]", category: "Moderation" },
-            { name: "s.unmute", desc: "Unmute user.", usage: "s.unmute[ID]", example: "s.unmute[123]", category: "Moderation" }
+            // STRING
+            { name: "s.len", cat: "String", desc: "Returns length of string.", usage: "s.len[Text]", example: "s.len[Hello]" },
+            { name: "s.upper", cat: "String", desc: "Converts to uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]" },
+            { name: "s.lower", cat: "String", desc: "Converts to lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]" },
+
+            // SYSTEM
+            { name: "s.ping", cat: "System", desc: "Returns bot API latency.", usage: "s.ping", example: "s.ping" },
+            { name: "s.uptime", cat: "System", desc: "Returns formatted uptime.", usage: "s.uptime", example: "s.uptime" },
+            { name: "s.botInfo", cat: "System", desc: "Shows RAM/CPU usage.", usage: "s.botInfo", example: "s.botInfo" },
+            { name: "s.serverInfo", cat: "System", desc: "Displays server stats.", usage: "s.serverInfo", example: "s.serverInfo" },
+            { name: "s.userInfo", cat: "System", desc: "Displays user stats.", usage: "s.userInfo[UserID?]", example: "s.userInfo" },
+            { name: "s.avatar", cat: "System", desc: "Returns user avatar URL.", usage: "s.avatar[UserID?]", example: "s.avatar[s.authorID]" },
+            { name: "s.eval", cat: "System", desc: "Evaluates JavaScript code (Dangerous).", usage: "s.eval[Code]", example: "s.eval[2+2]" },
+            { name: "s.setStatus", cat: "System", desc: "Sets the bot's status activity.", usage: "s.setStatus[Type; Status; Name]", example: "s.setStatus[playing; online; Seven-Discord]" },
+            { name: "s.shutdown", cat: "System", desc: "Shuts down the bot.", usage: "s.shutdown", example: "s.shutdown" },
         ];
 
-        function showPage(pageId) {
-            document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
+        // LOGIC
+        const categories = [...new Set(macros.map(m => m.cat))].sort();
+        const nav = document.getElementById('sidebar-nav');
+        const grid = document.getElementById('macro-grid');
+        const searchInput = document.getElementById('sidebar-search');
+
+        // Render Sidebar
+        function renderSidebar() {
+            nav.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${cat}')" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
+                    ${cat}
+                </button>
+            `).join('');
+
+            nav.innerHTML += `
+                <div class="mt-4 pt-4 border-t border-slate-800 px-4 mb-2 text-xs font-bold text-slate-600 uppercase">Resources</div>
+                <button onclick="showIntro()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
+                    Introduction
+                </button>
+            `;
         }
 
+        function showIntro() {
+            document.getElementById('view-intro').classList.remove('hidden');
+            document.getElementById('view-macros').classList.add('hidden');
+            document.getElementById('page-title').innerText = 'Introduction';
+        }
+
+        function filterCategory(cat) {
+            document.getElementById('view-intro').classList.add('hidden');
+            document.getElementById('view-macros').classList.remove('hidden');
+            document.getElementById('page-title').innerText = cat;
+            document.getElementById('category-title').innerText = cat;
+
+            const filtered = macros.filter(m => m.cat === cat);
+            renderGrid(filtered);
+        }
+
+        function renderGrid(list) {
+            grid.innerHTML = list.map(m => `
+                <div onclick="openModal('${m.name}')" class="glass-card p-5 rounded-lg cursor-pointer group">
+                    <div class="flex items-center justify-between mb-2">
+                        <code class="text-seven-400 font-bold bg-seven-900/20 px-2 py-1 rounded text-sm group-hover:text-seven-300">${m.name}</code>
+                        <span class="text-xs text-slate-600 border border-slate-800 px-1.5 py-0.5 rounded">${m.cat}</span>
+                    </div>
+                    <p class="text-slate-400 text-sm line-clamp-2">${m.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // Modal Logic
         function openModal(name) {
             const m = macros.find(x => x.name === name);
             if (!m) return;
-            document.getElementById('modal-title').innerText = m.name;
-            document.getElementById('modal-cat').innerText = m.category;
-            document.getElementById('modal-desc').innerText = m.desc;
-            document.getElementById('modal-usage').innerText = m.usage;
-            document.getElementById('modal-example').innerText = m.example;
-            const modal = document.getElementById('macro-modal');
-            const content = document.getElementById('modal-content');
+            document.getElementById('m-name').innerText = m.name;
+            document.getElementById('m-cat').innerText = m.cat;
+            document.getElementById('m-desc').innerText = m.desc;
+            document.getElementById('m-usage').innerText = m.usage;
+            document.getElementById('m-example').innerText = m.example;
+
+            const modal = document.getElementById('modal');
             modal.classList.remove('hidden');
-            setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+            modal.classList.add('flex');
+            // Timeout for animation
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('modal-panel').classList.remove('scale-95');
+                document.getElementById('modal-panel').classList.add('scale-100');
+            }, 10);
         }
 
         function closeModal() {
-            const modal = document.getElementById('macro-modal');
-            const content = document.getElementById('modal-content');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            const modal = document.getElementById('modal');
+            modal.classList.add('opacity-0');
+            document.getElementById('modal-panel').classList.add('scale-95');
+            document.getElementById('modal-panel').classList.remove('scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
         }
 
-        function renderMacros() {
-            const container = document.getElementById('macro-container');
-            const term = document.getElementById('macro-search').value.toLowerCase();
+        // Search Logic
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if (term.length > 0) {
+                document.getElementById('view-intro').classList.add('hidden');
+                document.getElementById('view-macros').classList.remove('hidden');
+                document.getElementById('page-title').innerText = 'Search Results';
+                document.getElementById('category-title').innerText = `Results for "${term}"`;
 
-            // Group by Category
-            const groups = {};
-            macros.forEach(m => {
-                if (m.name.toLowerCase().includes(term)) {
-                    if (!groups[m.category]) groups[m.category] = [];
-                    groups[m.category].push(m);
-                }
-            });
-
-            container.innerHTML = "";
-            for (const [cat, list] of Object.entries(groups)) {
-                const section = document.createElement('div');
-                section.innerHTML = `
-                    <h3 class="text-2xl font-bold text-seven-400 mb-6 border-b border-seven-500/20 pb-2">${cat}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        ${list.map(m => `
-                           <div onclick="openModal('${m.name}')" class="glass-card p-6 rounded-xl border border-slate-700 hover:border-seven-500 transition-all cursor-pointer group">
-                                <code class="text-white font-bold text-lg">${m.name}</code>
-                                <p class="text-slate-400 text-sm mt-2">${m.desc}</p>
-                           </div>
-                        `).join('')}
-                    </div>
-                 `;
-                container.appendChild(section);
+                const filtered = macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term));
+                renderGrid(filtered);
+            } else {
+                showIntro();
             }
-        }
+        });
 
-        document.getElementById('macro-search').addEventListener('input', renderMacros);
+        // Initialize
+        renderSidebar();
         lucide.createIcons();
-        renderMacros();
     </script>
 </body>
 
