@@ -398,63 +398,174 @@ bot.start();</pre>
         </div>
     </footer>
 
+    <!-- MODAL -->
+    <div id="macro-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-[#0f172a] border border-seven-500/30 rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300"
+            id="modal-content">
+            <!-- Header -->
+            <div
+                class="bg-gradient-to-r from-seven-900/50 to-slate-900 p-6 border-b border-white/5 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <code id="modal-title" class="text-2xl font-bold font-mono text-seven-400">s.reply</code>
+                    <span id="modal-cat"
+                        class="text-xs uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded border border-white/10 text-slate-400">CORE</span>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="info"
+                            class="w-4 h-4 text-seven-400"></i> Description</h3>
+                    <p id="modal-desc" class="text-slate-300">Reply to a message or interaction.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="code"
+                            class="w-4 h-4 text-seven-400"></i> Usage</h3>
+                    <div class="code-block text-sm text-slate-300">
+                        <code id="modal-usage">s.reply[Content]</code>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="terminal"
+                            class="w-4 h-4 text-seven-400"></i> Example</h3>
+                    <div class="code-block text-sm text-green-400">
+                        <code id="modal-example">s.reply[Hello World!]</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- MODAL LOGIC ---
+        function openModal(macro) {
+            const m = macros.find(x => x.name === macro);
+            if (!m) return;
+
+            document.getElementById('modal-title').innerText = m.name;
+            document.getElementById('modal-cat').innerText = m.category.toUpperCase();
+            document.getElementById('modal-desc').innerText = m.desc;
+            document.getElementById('modal-usage').innerText = m.usage;
+            document.getElementById('modal-example').innerText = m.example;
+
+            const modal = document.getElementById('macro-modal');
+            const content = document.getElementById('modal-content');
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('macro-modal');
+            const content = document.getElementById('modal-content');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function renderMacros(filter = "") {
+            const grid = document.getElementById('macro-grid');
+            grid.innerHTML = "";
+            const filtered = macros.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
+
+            filtered.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-6 rounded-xl border border-slate-700 hover:border-seven-500 transition-all cursor-pointer group fade-in";
+                card.onclick = () => openModal(m.name);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <code class="text-seven-400 font-bold text-lg bg-seven-900/30 px-2 py-1 rounded group-hover:text-seven-300 transition-colors">${m.name}</code>
+                        <span class="text-xs text-slate-500 uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded">${m.category}</span>
+                    </div>
+                    <p class="text-slate-300 text-sm h-10 line-clamp-2">${m.desc}</p>
+                    <div class="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                        <i data-lucide="maximize-2" class="w-3 h-3"></i> Click to view examples
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
         // --- DATA ---
         const macros = [
             // Core
-            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", category: "Core" },
-            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", category: "Core" },
-            { name: "s.setVar", desc: "Set a variable.", usage: "s.setVar[Key; Value]", category: "Core" },
-            { name: "s.getVar", desc: "Get a variable.", usage: "s.getVar[Key]", category: "Core" },
-            { name: "s.eq", desc: "Check equality.", usage: "s.eq[A; B]", category: "Logic" },
+            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", example: "s.reply[Hello User!]", category: "Core" },
+            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", example: "s.log[Debug: Button Clicked]", category: "Core" },
+            { name: "s.setVar", desc: "Set a variable.", usage: "s.setVar[Key; Value]", example: "s.setVar[money; 0]", category: "Core" },
+            { name: "s.getVar", desc: "Get a variable.", usage: "s.getVar[Key]", example: "s.getVar[money]", category: "Core" },
+            { name: "s.eq", desc: "Check equality.", usage: "s.eq[A; B]", example: "s.eq[s.getVar[money]; 100]", category: "Logic" },
+            { name: "s.if", desc: "Condition.", usage: "s.if[Condition; True; False]", example: "s.if[s.eq[1;1]; Yes; No]", category: "Logic" },
+
+            // Math
+            { name: "s.math", desc: "Calculate.", usage: "s.math[Expr]", example: "s.math[10 + 5 * 2]", category: "Math" },
+            { name: "s.random", desc: "Random number.", usage: "s.random[Min; Max]", example: "s.random[1; 100]", category: "Math" },
+
+            // String
+            { name: "s.len", desc: "Text length.", usage: "s.len[Text]", example: "s.len[Hello]", category: "String" },
+            { name: "s.upper", desc: "Uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]", category: "String" },
+            { name: "s.lower", desc: "Lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]", category: "String" },
 
             // Economy
-            { name: "s.addCash", desc: "Add money to user.", usage: "s.addCash[Amount; UserID]", category: "Economy" },
-            { name: "s.removeCash", desc: "Remove money.", usage: "s.removeCash[Amount; UserID]", category: "Economy" },
-            { name: "s.setCash", desc: "Set user balance.", usage: "s.setCash[Amount; UserID]", category: "Economy" },
-            { name: "s.cash", desc: "Get balance.", usage: "s.cash[UserID]", category: "Economy" },
-            { name: "s.pay", desc: "Transfer money.", usage: "s.pay[Amount; UserID]", category: "Economy" },
-            { name: "s.bank", desc: "Get bank balance.", usage: "s.bank[UserID]", category: "Economy" },
-            { name: "s.deposit", desc: "Deposit to bank.", usage: "s.deposit[Amount]", category: "Economy" },
-            { name: "s.withdraw", desc: "Withdraw from bank.", usage: "s.withdraw[Amount]", category: "Economy" },
-            { name: "s.setCurrency", desc: "Set currency symbol.", usage: "s.setCurrency[Sym]", category: "Economy" },
+            { name: "s.addCash", desc: "Add money to user.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]", category: "Economy" },
+            { name: "s.removeCash", desc: "Remove money.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]", category: "Economy" },
+            { name: "s.setCash", desc: "Set user balance.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]", category: "Economy" },
+            { name: "s.cash", desc: "Get balance.", usage: "s.cash[UserID]", example: "s.cash[s.authorID]", category: "Economy" },
+            { name: "s.pay", desc: "Transfer money.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; 123456789]", category: "Economy" },
+            { name: "s.bank", desc: "Get bank balance.", usage: "s.bank[UserID]", example: "s.bank[s.authorID]", category: "Economy" },
+            { name: "s.deposit", desc: "Deposit to bank.", usage: "s.deposit[Amount]", example: "s.deposit[100]", category: "Economy" },
+            { name: "s.withdraw", desc: "Withdraw from bank.", usage: "s.withdraw[Amount]", example: "s.withdraw[50]", category: "Economy" },
+            { name: "s.setCurrency", desc: "Set currency symbol.", usage: "s.setCurrency[Sym]", example: "s.setCurrency[€]", category: "Economy" },
 
             // Moderation
-            { name: "s.ban", desc: "Ban user.", usage: "s.ban[UserID; Reason]", category: "Moderation" },
-            { name: "s.kick", desc: "Kick user.", usage: "s.kick[UserID; Reason]", category: "Moderation" },
-            { name: "s.mute", desc: "Timeout user.", usage: "s.mute[UserID; Duration; Reason]", category: "Moderation" },
-            { name: "s.unmute", desc: "Remove timeout.", usage: "s.unmute[UserID; Reason]", category: "Moderation" },
-            { name: "s.purge", desc: "Delete messages.", usage: "s.purge[Amount]", category: "Moderation" },
-            { name: "s.lock", desc: "Lock channel.", usage: "s.lock", category: "Moderation" },
-            { name: "s.unlock", desc: "Unlock channel.", usage: "s.unlock", category: "Moderation" },
-            { name: "s.slowmode", desc: "Set slowmode.", usage: "s.slowmode[Seconds]", category: "Moderation" },
-            { name: "s.warn", desc: "Warn user.", usage: "s.warn[UserID; Reason]", category: "Moderation" },
-            { name: "s.unwarn", desc: "Remove warn.", usage: "s.unwarn[UserID; CaseID]", category: "Moderation" },
-            { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", category: "Moderation" },
+            { name: "s.ban", desc: "Ban user.", usage: "s.ban[UserID; Reason]", example: "s.ban[123456789; Spam]", category: "Moderation" },
+            { name: "s.kick", desc: "Kick user.", usage: "s.kick[UserID; Reason]", example: "s.kick[123456789; Bad]", category: "Moderation" },
+            { name: "s.mute", desc: "Timeout user.", usage: "s.mute[UserID; Duration; Reason]", example: "s.mute[123456789; 60s; Rude]", category: "Moderation" },
+            { name: "s.unmute", desc: "Remove timeout.", usage: "s.unmute[UserID; Reason]", example: "s.unmute[123456789; Appeal]", category: "Moderation" },
+            { name: "s.purge", desc: "Delete messages.", usage: "s.purge[Amount]", example: "s.purge[10]", category: "Moderation" },
+            { name: "s.lock", desc: "Lock channel.", usage: "s.lock", example: "s.lock", category: "Moderation" },
+            { name: "s.unlock", desc: "Unlock channel.", usage: "s.unlock", example: "s.unlock", category: "Moderation" },
+            { name: "s.slowmode", desc: "Set slowmode.", usage: "s.slowmode[Seconds]", example: "s.slowmode[5]", category: "Moderation" },
+            { name: "s.warn", desc: "Warn user.", usage: "s.warn[UserID; Reason]", example: "s.warn[123456789; Caps]", category: "Moderation" },
+            { name: "s.unwarn", desc: "Remove warn.", usage: "s.unwarn[UserID; CaseID]", example: "s.unwarn[123456789; 1]", category: "Moderation" },
+            { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123456789]", category: "Moderation" },
 
             // System
-            { name: "s.ping", desc: "Get latency.", usage: "s.ping", category: "System" },
-            { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", category: "System" },
-            { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", category: "System" },
-            { name: "s.serverInfo", desc: "Get guild stats.", usage: "s.serverInfo", category: "System" },
-            { name: "s.userInfo", desc: "Get user stats.", usage: "s.userInfo[UserID]", category: "System" },
-            { name: "s.avatar", desc: "Get avatar URL.", usage: "s.avatar[UserID]", category: "System" },
-            { name: "s.shutdown", desc: "Stop bot.", usage: "s.shutdown", category: "System" },
-            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", category: "System" },
+            { name: "s.ping", desc: "Get latency.", usage: "s.ping", category: "System", example: "LATENCY: s.ping ms" },
+            { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", category: "System", example: "UPTIME: s.uptime" },
+            { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", category: "System", example: "s.botInfo" },
+            { name: "s.serverInfo", desc: "Get guild stats.", usage: "s.serverInfo", category: "System", example: "s.serverInfo" },
+            { name: "s.userInfo", desc: "Get user stats.", usage: "s.userInfo[UserID]", category: "System", example: "s.userInfo[s.authorID]" },
+            { name: "s.avatar", desc: "Get avatar URL.", usage: "s.avatar[UserID]", category: "System", example: "s.avatar[s.authorID]" },
+            { name: "s.shutdown", desc: "Stop bot.", usage: "s.shutdown", category: "System", example: "s.shutdown" },
+            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", category: "System", example: "s.eval[2+2]" },
 
             // UI
-            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...]", category: "UI" },
-            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", category: "UI" },
-            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", category: "UI" },
-            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", category: "UI" },
-            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", category: "UI" },
-            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", category: "UI" },
-            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon]", category: "UI" },
-            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", category: "UI" },
-            { name: "s.row", desc: "Action Row.", usage: "s.row[...]", category: "UI" },
-            { name: "s.selectMenu", desc: "Dropdown Menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", category: "UI" },
-            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", category: "UI" },
-            { name: "s.onInteraction", desc: "Handle Buttons.", usage: "s.onInteraction[ID] ...", category: "UI" }
+            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...]", example: "s.embed[s.title[Hi] s.desc[Hello]]", category: "UI" },
+            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", example: "s.title[Welcome]", category: "UI" },
+            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", example: "s.desc[This is a description]", category: "UI" },
+            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", example: "s.color[#FF0000]", category: "UI" },
+            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", example: "s.image[https://example.com/img.png]", category: "UI" },
+            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", example: "s.thumb[https://example.com/img.png]", category: "UI" },
+            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon]", example: "s.footer[By Seven; URL]", category: "UI" },
+            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", example: "s.button[Click Me; primary; btn_click; 🖱️]", category: "UI" },
+            { name: "s.row", desc: "Action Row.", usage: "s.row[...]", example: "s.row[s.button[Yes; success; yes] s.button[No; danger; no]]", category: "UI" },
+            { name: "s.selectMenu", desc: "Dropdown Menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Select...; 1; 1; s.selectOption[A; a] s.selectOption[B; b]]", category: "UI" },
+            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", example: "s.selectOption[Option 1; opt1; Description; 1️⃣; false]", category: "UI" },
+            { name: "s.onInteraction", desc: "Handle Buttons.", usage: "s.onInteraction[ID] ...", example: "s.onInteraction[btn_click] s.reply[You clicked!]", category: "UI" }
         ];
 
         // --- LANG DATA ---

@@ -32,12 +32,21 @@ export class Interpreter {
         this.register(new ReplyMacro());
         this.register(new LogMacro());
         this.register(new BanMacro());
+        // Logic
         this.register(new EqMacro());
-        this.register(new (require("../macros/core/SetVar").SetVarMacro)());
-        this.register(new (require("../macros/core/GetVar").GetVarMacro)());
+        this.register(new (require("../macros/logic/If").IfMacro)());
 
-        // Economy
-        this.register(new (require("../macros/economy/AddCash").AddCashMacro)());
+        // Math
+        this.register(new (require("../macros/math/Math").MathMacro)());
+        this.register(new (require("../macros/math/Random").RandomMacro)());
+
+        // String
+        this.register(new (require("../macros/string/Len").LenMacro)());
+        this.register(new (require("../macros/string/Upper").UpperMacro)());
+        this.register(new (require("../macros/string/Lower").LowerMacro)());
+
+        // UI
+        this.register(new (require("../macros/ui/Embed").EmbedMacro)());
         this.register(new (require("../macros/economy/RemoveCash").RemoveCashMacro)());
         this.register(new (require("../macros/economy/SetCash").SetCashMacro)());
         this.register(new (require("../macros/economy/Cash").CashMacro)());
