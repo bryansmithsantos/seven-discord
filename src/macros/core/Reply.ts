@@ -11,42 +11,21 @@ export class ReplyMacro extends Macro {
         });
     }
 
-    execute(ctx: any, ...args: string[]) {
-        // args might be split, join them back first?
-        // But if we support complex structures, we should treat the whole input as one block usually.
-        // Or re-join with space.
-        const content = args.join(" ");
-        if (!content) return;
-
-        const payload: any = {
-            content: ""
-        };
-
+    static parsePayload(content: string) {
+        const payload: any = { content: "" };
         let processedContent = content;
 
         // 1. Extract Embeds
-        // Syntax: <<EMBED>>JSON
-        const embedMatch = processedContent.match(/<<EMBED>>(.*?)(?:$|(?=COMPONENT_|<<EMBED>>))/s);
-        // Simple regex might strict. Let's assume one embed for now or loop?
-        // Let's loop for multiple embeds? Discord allows 10.
-
         const embeds = [];
         const embedRegex = /<<EMBED>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
         let em;
         while ((em = embedRegex.exec(processedContent)) !== null) {
             try {
-                const jsonStr = em[1].trim();
-                embeds.push(JSON.parse(jsonStr));
-            } catch (e: any) {
-                Logger.error(`Failed to parse embed JSON: ${e.message}`);
-                Logger.error(`Problematic String: "${em[1]}"`);
-            }
+                embeds.push(JSON.parse(em[1].trim()));
+            } catch (e) { }
         }
         if (embeds.length > 0) payload.embeds = embeds;
-
-        // Remove embed strings from content for the final text message
         processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|COMPONENT_|$))/gs, "");
-
 
         // 2. Extract Hoisted Components (from Embeds)
         const components: any[] = [];
@@ -56,34 +35,35 @@ export class ReplyMacro extends Macro {
             try {
                 const list = JSON.parse(hm[1]);
                 if (Array.isArray(list)) {
-                    // Wrap in Action Row if needed (Discord requires Type 1 at top level)
-                    // If we have a list of Buttons (Type 2), wrap them in Type 1.
                     const row = { type: 1, components: list };
                     components.push(row);
                 }
-            } catch (e) { Logger.error("Failed to parse hoisted components"); }
+            } catch (e) { }
         }
         processedContent = processedContent.replace(/<<COMPONENTS>>.*?(?=(?:<<EMBED>>|COMPONENT_|$))/gs, "");
 
         // 3. Extract Components (Manual Rows)
-        // Syntax: COMPONENT_ROW::JSON::END
         const compRegex = /COMPONENT_ROW::(.*?)::END/gs;
         let cm;
         while ((cm = compRegex.exec(processedContent)) !== null) {
             try {
                 components.push(JSON.parse(cm[1]));
-            } catch (e) { Logger.error("Failed to parse component JSON"); }
+            } catch (e) { }
         }
         if (components.length > 0) payload.components = components;
-
-        // Remove component strings
         processedContent = processedContent.replace(/COMPONENT_ROW::.*?::END/gs, "");
 
-
-        // 3. Remaining content is the text message
+        // 4. Remaining content
         payload.content = processedContent.trim();
+        return payload;
+    }
 
-        if (!payload.content && !payload.embeds && !payload.components) return; // Nothing to send?
+    execute(ctx: any, ...args: string[]) {
+        const content = args.join(" ");
+        if (!content) return;
+
+        const payload = ReplyMacro.parsePayload(content);
+        if (!payload.content && !payload.embeds && !payload.components) return;
 
         // Send Logic
         if (ctx.interaction) {
