@@ -3,6 +3,7 @@ import { Event } from "../../structures/Event";
 import { Logger } from "../../util/Logger";
 import { SevenClient } from "../../core/SevenClient";
 import { Interpreter } from "../../parser/Interpreter";
+import { ReplyMacro } from "../../macros/core/Reply";
 
 export class MessageCreateEvent extends Event {
     constructor() {
@@ -63,19 +64,16 @@ export class MessageCreateEvent extends Event {
             // Implicit Reply Logic:
             // If the code returns content (because s.reply wasn't used to consume it), we send it.
             if (output && output.trim().length > 0) {
-                // Import ReplyMacro to clean/parse it?
-                // We need to access ReplyMacro.parsePayload. 
-                // Since we can't easily import classes inside this method without importing at top, let's assume valid import.
-                // Actually, let's just duplicate the send logic lightly or import ReplyMacro at top.
-
-                // Dynamic import or usage of static method if imported.
-                // I will add the import to the file first in a separate step or just use `require`.
-                const { ReplyMacro } = require("../../macros/core/Reply");
+                // Use static parsePayload from ReplyMacro (already imported at top in previous step)
                 const payload = ReplyMacro.parsePayload(output);
 
-                if (payload.content || payload.embeds || payload.components) {
+                if (payload && (payload.content || (payload.embeds && payload.embeds.length > 0) || (payload.components && payload.components.length > 0))) {
                     payload.message_reference = { message_id: data.id };
-                    await client.rest.post(`/channels/${data.channel_id}/messages`, payload);
+                    try {
+                        await client.rest.post(`/channels/${data.channel_id}/messages`, payload);
+                    } catch (e: any) {
+                        Logger.error(`Implicit Reply Failed: ${e.message}`);
+                    }
                 }
             }
         }
