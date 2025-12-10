@@ -181,6 +181,21 @@ export class GatewayManager extends EventEmitter {
         }, jitter);
     }
 
+    public setPresence(status: string, activityName: string, activityType: number = 0): void {
+        this.send({
+            op: 3,
+            d: {
+                since: null,
+                activities: [{
+                    name: activityName,
+                    type: activityType
+                }],
+                status: status, // online, dnd, idle, invisible
+                afk: false
+            }
+        });
+    }
+
     private send(payload: any): void {
         if (this.ws?.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(payload));

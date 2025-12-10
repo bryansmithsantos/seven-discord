@@ -76,6 +76,7 @@ export class Interpreter {
         this.register(new (require("../macros/system/Avatar").AvatarMacro)());
         this.register(new (require("../macros/system/Shutdown").ShutdownMacro)());
         this.register(new (require("../macros/system/Eval").EvalMacro)());
+        this.register(new (require("../macros/system/SetStatus").SetStatusMacro)());
 
         // UI
         this.register(new (require("../macros/ui/Embed").EmbedMacro)());

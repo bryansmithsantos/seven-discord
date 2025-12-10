@@ -59,6 +59,7 @@ const macros = [
     { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123456789]", category: "Moderation" },
 
     // System
+    { name: "s.setStatus", desc: "Set bot status.", usage: "s.setStatus[Type; Status; Name]", example: "s.setStatus[playing; online; Seven-Discord]", category: "System" },
     { name: "s.ping", desc: "Get latency.", usage: "s.ping", category: "System", example: "LATENCY: s.ping ms" },
     { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", category: "System", example: "UPTIME: s.uptime" },
     { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", category: "System", example: "s.botInfo" },
