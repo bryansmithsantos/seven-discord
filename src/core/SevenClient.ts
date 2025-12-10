@@ -183,10 +183,25 @@ export class SevenClient {
     private loadEvents(): void {
         const events = [
             new (require("../events/client/Ready").ReadyEvent)(),
+            new (require("../events/client/UserUpdate").UserUpdateEvent)(),
             new (require("../events/guild/MessageCreate").MessageCreateEvent)(),
+            new (require("../events/guild/MessageDelete").MessageDeleteEvent)(),
+            new (require("../events/guild/MessageUpdate").MessageUpdateEvent)(),
             new (require("../events/guild/InteractionCreate").InteractionCreateEvent)(),
             new (require("../events/guild/GuildMemberAdd").GuildMemberAddEvent)(),
-            new (require("../events/guild/GuildMemberRemove").GuildMemberRemoveEvent)()
+            new (require("../events/guild/GuildMemberRemove").GuildMemberRemoveEvent)(),
+            new (require("../events/guild/GuildCreate").GuildCreateEvent)(),
+            new (require("../events/guild/GuildDelete").GuildDeleteEvent)(),
+            new (require("../events/guild/GuildUpdate").GuildUpdateEvent)(),
+            new (require("../events/guild/GuildBanAdd").GuildBanAddEvent)(),
+            new (require("../events/guild/GuildBanRemove").GuildBanRemoveEvent)(),
+            new (require("../events/guild/RoleCreate").RoleCreateEvent)(),
+            new (require("../events/guild/RoleDelete").RoleDeleteEvent)(),
+            new (require("../events/guild/RoleUpdate").RoleUpdateEvent)(),
+            new (require("../events/guild/ChannelCreate").ChannelCreateEvent)(),
+            new (require("../events/guild/ChannelDelete").ChannelDeleteEvent)(),
+            new (require("../events/guild/ChannelUpdate").ChannelUpdateEvent)(),
+            new (require("../events/guild/VoiceStateUpdate").VoiceStateUpdateEvent)()
         ];
 
         // Global Dispatch Handler
