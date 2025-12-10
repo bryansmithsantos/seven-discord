@@ -43,7 +43,14 @@ export class RESTManager {
             if (response.status === 429) {
                 const data = await response.json();
                 const retryAfter = (data as any).retry_after || 1;
-                Logger.warn(`Rate Limited! Waiting ${retryAfter}s...`);
+
+                // If it's the Slash Command PUT (global rate limit often hit on restarts)
+                // Just wait silently or log debug, don't scare user.
+                if (endpoint.includes("/commands")) {
+                    Logger.debug(`Slash Sync Rate Limited (${retryAfter}s). Waiting quietly...`);
+                } else {
+                    Logger.warn(`Rate Limited! Waiting ${retryAfter}s...`);
+                }
 
                 // Wait and retry
                 await new Promise(r => setTimeout(r, retryAfter * 1000));

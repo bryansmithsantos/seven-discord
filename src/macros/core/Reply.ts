@@ -48,9 +48,24 @@ export class ReplyMacro extends Macro {
         processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|COMPONENT_|$))/gs, "");
 
 
-        // 2. Extract Components (Rows)
+        // 2. Extract Hoisted Components (from Embeds)
+        const hoistedRegex = /<<COMPONENTS>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
+        let hm;
+        while ((hm = hoistedRegex.exec(processedContent)) !== null) {
+            try {
+                const list = JSON.parse(hm[1]);
+                if (Array.isArray(list)) {
+                    // Wrap in Action Row if needed (Discord requires Type 1 at top level)
+                    // If we have a list of Buttons (Type 2), wrap them in Type 1.
+                    const row = { type: 1, components: list };
+                    components.push(row);
+                }
+            } catch (e) { Logger.error("Failed to parse hoisted components"); }
+        }
+        processedContent = processedContent.replace(/<<COMPONENTS>>.*?(?=(?:<<EMBED>>|COMPONENT_|$))/gs, "");
+
+        // 3. Extract Components (Manual Rows)
         // Syntax: COMPONENT_ROW::JSON::END
-        const components = [];
         const compRegex = /COMPONENT_ROW::(.*?)::END/gs;
         let cm;
         while ((cm = compRegex.exec(processedContent)) !== null) {

@@ -33,34 +33,42 @@ export class EmbedMacro extends Macro {
         // So `s.embed[ TITLE::Hi DESC::Bye ]`.
         // We can just regex this content.
 
-        const content = args.join(" "); // Rejoin in case split by newline/space
+        // Hoist Components (Buttons, SelectMenus) that were nested
+        const components: any[] = [];
+
+        // Regex to find components: COMPONENT_BUTTON::{...}::END
+        // We need to capture them and REMOVE them from the content so they don't mess up embed parsing
+        const componentRegex = /COMPONENT_[A-Z]+::(.*?)::END/gs;
+        let match;
+        while ((match = componentRegex.exec(content)) !== null) {
+            try {
+                components.push(JSON.parse(match[1]));
+            } catch (e) { }
+        }
+
+        // Clean content for Embed parsing (remove components)
+        const cleanContent = content.replace(componentRegex, "");
 
         // Simple Parser for our custom embed syntax
-        const titleMatch = content.match(/EMBED_TITLE::(.*?)::END/s);
+        const titleMatch = cleanContent.match(/EMBED_TITLE::(.*?)::END/s);
         if (titleMatch) embed.title = titleMatch[1];
 
-        const descMatch = content.match(/EMBED_DESC::(.*?)::END/s);
+        const descMatch = cleanContent.match(/EMBED_DESC::(.*?)::END/s);
         if (descMatch) embed.description = descMatch[1];
 
-        const colorMatch = content.match(/EMBED_COLOR::(.*?)::END/s);
+        const colorMatch = cleanContent.match(/EMBED_COLOR::(.*?)::END/s);
         if (colorMatch) embed.color = parseInt(colorMatch[1].replace("#", ""), 16);
 
-        const imgMatch = content.match(/EMBED_IMAGE::(.*?)::END/s);
+        const imgMatch = cleanContent.match(/EMBED_IMAGE::(.*?)::END/s);
         if (imgMatch) embed.image = { url: imgMatch[1] };
 
-        const thumbMatch = content.match(/EMBED_THUMB::(.*?)::END/s);
+        const thumbMatch = cleanContent.match(/EMBED_THUMB::(.*?)::END/s);
         if (thumbMatch) embed.thumbnail = { url: thumbMatch[1] };
 
-        const footerMatch = content.match(/EMBED_FOOTER::(.*?)::END/s);
+        const footerMatch = cleanContent.match(/EMBED_FOOTER::(.*?)::END/s);
         if (footerMatch) embed.footer = { text: footerMatch[1] };
 
-        // Handle Fields later if needed.
-
-        // We return the Stringified JSON of the embed. 
-        // usage in s.reply needs to know it's an embed.
-        // s.reply checks if input starts with { "embed": ... }?
-        // Or we use a special marker for s.reply to parse.
-
-        return `<<EMBED>>${JSON.stringify(embed)}`;
+        // Return safely with components separated
+        return `<<EMBED>>${JSON.stringify(embed)}<<COMPONENTS>>${JSON.stringify(components)}`;
     }
 }

@@ -1,0 +1,40 @@
+{
+    "Seven Embed": {
+        "prefix": "s.embed",
+        "body": [
+            "s.embed[",
+            "\ts.title[${1:Title}]",
+            "\ts.desc[${2:Description}]",
+            "\ts.color[#3b82f6]",
+            "\ts.footer[${3:Footer}]",
+            "]"
+        ],
+        "description": "Create a Seven-Discord Embed"
+    },
+    "Seven Button": {
+        "prefix": "s.button",
+        "body": [
+            "s.button[${1:Label}; ${2:style}; ${3:id}; ${4:emoji}]"
+        ],
+        "description": "Create a Button"
+    },
+    "Seven Reply": {
+        "prefix": "s.reply",
+        "body": [
+            "s.reply[${1:Content}]"
+        ],
+        "description": "Reply macro"
+    },
+    "Seven Command": {
+        "prefix": "seven-cmd",
+        "body": [
+            "export default {",
+            "    name: \"${1:name}\",",
+            "    code: `",
+            "    s.reply[${2:Content}]",
+            "    `",
+            "};"
+        ],
+        "description": "Create a new Command"
+    }
+}
