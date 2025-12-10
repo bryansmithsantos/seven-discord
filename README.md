@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="docs/logo.jpeg" alt="Logo" width="200" />
-  <h1>v2.2.0 Major Release</h1>
+  <h1>v2.2.1 Major Release</h1>
   <p>The simplest, zero-dependency Discord library for Bun. Now with <b>Interactive UI</b>, <b>Slash Commands</b> & <b>Economy</b>.</p>
   <p>
     <a href="https://discord.gg/qpRjsjrXcx">
@@ -66,17 +66,15 @@ bun add seven-discord
 
 ## 🔐 SecureToken System
 
-In v2.2.0, we introduced `SecureToken`.
-- It automatically checks `process.env`.
-- Checks `.env`.
-- If neither is found, **it prompts you securely** in the terminal and saves an **encrypted** `seven_token.enc` file.
-- It automatically adds `.gitignore` to prevent leaks.
+In v2.2, we introduced `s.envtoken` (alias for `SecureToken`).
+- It automatically checks the environment variable you pass (e.g., `DISCORD_TOKEN`).
+- If missing, **it prompts you securely** and saves to `seven_token.enc`.
 
 ```typescript
-import { SevenClient, SecureToken } from "seven-discord";
+import { SevenClient, s } from "seven-discord";
 
 const bot = new SevenClient({
-    token: await SecureToken.get(),
+    token: await s.envtoken("DISCORD_TOKEN"),
     prefix: "!"
 });
 ```
@@ -84,10 +82,10 @@ const bot = new SevenClient({
 ## ⚡ Quick Start
 
 ```typescript
-import { SevenClient, SecureToken } from "seven-discord";
+import { SevenClient, s } from "seven-discord";
 
 const bot = new SevenClient({
-    token: await SecureToken.get(), 
+    token: await s.envtoken("DISCORD_TOKEN"), 
     prefix: "!"
 });
 

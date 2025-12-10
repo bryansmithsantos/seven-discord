@@ -13,14 +13,14 @@ export class SecureToken {
      * Retrieves the token from memory, file, or prompts the user.
      * Encrypts and saves if newly entered.
      */
-    public static async get(): Promise<string> {
+    public static async get(envVar: string = "DISCORD_TOKEN"): Promise<string> {
         // 1. Check process env (runtime override)
-        if (process.env.DISCORD_TOKEN) return process.env.DISCORD_TOKEN;
+        if (process.env[envVar]) return process.env[envVar]!;
 
         // 2. Check direct .env (legacy/standard)
         if (fs.existsSync(".env")) {
             const content = fs.readFileSync(".env", "utf-8");
-            const match = content.match(/DISCORD_TOKEN=(.*)/);
+            const match = content.match(new RegExp(`${envVar}=(.*)`));
             if (match && match[1]) {
                 const envToken = match[1].trim();
                 if (envToken && envToken.length > 5) return envToken;

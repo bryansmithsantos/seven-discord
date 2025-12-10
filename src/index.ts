@@ -12,6 +12,11 @@ export * from "./managers/SlashManager";
 // Utils
 export * from "./util/Logger";
 export * from "./util/SecureToken"; // Added
+import { SecureToken } from "./util/SecureToken";
+
+export const s = {
+    envtoken: SecureToken.get.bind(SecureToken)
+};
 
 export * from "./macros/Macro";
 // export * from "./gateway/GatewayManager"; // Internal usually, but exposing for advanced users

@@ -49,10 +49,10 @@ if (values.init) {
     fs.writeFileSync(path.join(values.name, ".gitignore"), gitignore);
 
     // Create index.ts
-    const indexContent = `import { SevenClient, SecureToken } from "seven-discord";
+    const indexContent = `import { SevenClient, s } from "seven-discord";
 
 const bot = new SevenClient({
-    token: await SecureToken.get(), 
+    token: await s.envtoken("DISCORD_TOKEN"), 
     prefix: "!"
 });
 
