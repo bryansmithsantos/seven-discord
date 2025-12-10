@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="docs/logo.jpeg" alt="Logo" width="200" />
-  <h1>v2.3.1 Enterprise Release</h1>
+  <h1>v2.4.0 Story Update</h1>
   <p>The simplest, zero-dependency Discord library for Bun. Now with <b>Interactive UI</b>, <b>Slash Commands</b> & <b>Economy</b>.</p>
   <p>
     <a href="https://discord.gg/qpRjsjrXcx">

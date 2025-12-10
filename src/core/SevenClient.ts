@@ -184,7 +184,9 @@ export class SevenClient {
         const events = [
             new (require("../events/client/Ready").ReadyEvent)(),
             new (require("../events/guild/MessageCreate").MessageCreateEvent)(),
-            new (require("../events/guild/InteractionCreate").InteractionCreateEvent)()
+            new (require("../events/guild/InteractionCreate").InteractionCreateEvent)(),
+            new (require("../events/guild/GuildMemberAdd").GuildMemberAddEvent)(),
+            new (require("../events/guild/GuildMemberRemove").GuildMemberRemoveEvent)()
         ];
 
         // Global Dispatch Handler

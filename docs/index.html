@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord | The Simplest Library</title>
+    <title>Seven-Discord | Scale Without Limits</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
@@ -15,8 +15,8 @@
             theme: {
                 extend: {
                     colors: {
-                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
-                        navy: { 900: '#040B16', 800: '#0A1A33' }
+                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        navy: { 950: '#020617', 900: '#0f172a', 800: '#1e293b' }
                     },
                     fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
                 }
@@ -25,130 +25,557 @@
     </script>
     <style>
         body {
-            background: #040B16;
+            background: #020617;
             color: #e2e8f0;
+            overflow-x: hidden;
         }
 
         .glass-card {
-            background: rgba(10, 26, 51, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            background: rgba(30, 41, 59, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+        }
+
+        .tab-active {
+            color: #38bdf8;
+            border-bottom: 2px solid #38bdf8;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceSlow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .animate-bounce-slow {
+            animation: bounceSlow 3s infinite ease-in-out;
         }
     </style>
 </head>
 
-<body class="min-h-screen">
+<body class="min-h-screen font-sans selection:bg-seven-500/30">
+
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass-card border-b border-white/5">
+    <nav class="fixed w-full z-50 glass-card border-b-0">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <img src="./logo-semfundo.png" class="h-10 w-auto" alt="Logo">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="showPage('home')">
+                <img src="./logo-semfundo.png" class="h-10 w-auto animate-bounce-slow" alt="Logo">
                 <span class="font-bold text-xl tracking-wide">Seven-Discord <span
-                        class="text-seven-400 text-xs uppercase px-2 py-0.5 rounded bg-seven-500/10">v2.1</span></span>
+                        class="text-seven-400 text-xs uppercase px-2 py-0.5 rounded bg-seven-500/10 border border-seven-500/20">v2.3</span></span>
             </div>
             <div class="hidden md:flex items-center gap-8">
-                <a href="./macros/index.html" class="hover:text-seven-400 transition-colors flex items-center gap-2"><i
-                        data-lucide="zap" class="w-4 h-4"></i> Macros</a>
-                <a href="./events/index.html" class="hover:text-seven-400 transition-colors flex items-center gap-2"><i
-                        data-lucide="activity" class="w-4 h-4"></i> Events</a>
-                <a href="https://github.com/seven-discord"
-                    class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-all flex items-center gap-2">
+                <button onclick="showPage('home')" id="nav-home"
+                    class="nav-btn hover:text-seven-400 transition-colors">Home</button>
+                <button onclick="showPage('guide')" id="nav-guide"
+                    class="nav-btn hover:text-seven-400 transition-colors">Guide</button>
+                <button onclick="showPage('macros')" id="nav-macros"
+                    class="nav-btn hover:text-seven-400 transition-colors">Macros</button>
+                <button onclick="showPage('events')" id="nav-events"
+                    class="nav-btn hover:text-seven-400 transition-colors">Events</button>
+                <button onclick="toggleLang()"
+                    class="flex items-center gap-2 text-sm bg-white/5 px-3 py-1 rounded-full hover:bg-white/10 transition-colors">
+                    <span id="lang-ind">🇺🇸</span> <span id="lang-text">EN</span>
+                </button>
+                <a href="https://github.com/seven-discord" target="_blank"
+                    class="bg-seven-600 hover:bg-seven-500 px-5 py-2 rounded-full transition-all flex items-center gap-2 shadow-lg shadow-seven-500/20">
                     <i data-lucide="github" class="w-4 h-4"></i> GitHub
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <header class="pt-48 pb-32 px-6 relative overflow-hidden">
-        <div
-            class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-seven-500/5 to-transparent pointer-events-none">
-        </div>
-        <div class="max-w-4xl mx-auto text-center relative z-10">
-            <h1 class="text-6xl md:text-7xl font-bold mb-8 leading-tight">
-                Discord Bots made <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400">Ridiculously
-                    Simple.</span>
-            </h1>
-            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                Now with <b>Interactive UI</b>, <b>Economy</b>, and <b>Moderation</b> built-in.
-                <br>No boilerplate. Just raw logic in brackets.
-            </p>
-
-            <!-- Install Command -->
-            <div class="flex items-center justify-center gap-4 mb-8">
+    <!-- PAGE: HOME -->
+    <main id="page-home" class="pt-32 pb-20 fade-in">
+        <!-- Hero -->
+        <header class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
                 <div
-                    class="bg-[#0b1221] border border-white/10 rounded-full pl-6 pr-2 py-2 flex items-center gap-4 group hover:border-seven-500/50 transition-colors">
-                    <code class="font-mono text-seven-400 text-lg">bun add seven-discord</code>
-                    <button onclick="navigator.clipboard.writeText('bun add seven-discord')"
-                        class="p-2 hover:bg-white/10 rounded-full transition-colors" title="Copy">
-                        <i data-lucide="copy" class="w-5 h-5 text-slate-400"></i>
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-seven-900/30 border border-seven-500/30 text-seven-400 text-sm font-mono mb-6">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    v2.3: Slash Commands & Economy
+                </div>
+                <h1 class="text-6xl font-bold mb-6 leading-tight">
+                    Build Bots <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400 glow-text">Faster</span>.
+                </h1>
+                <p class="text-xl text-slate-400 mb-8 leading-relaxed">
+                    Stop writing boilerplate. Seven-Discord is a <b>Zero-Dependency</b>, <b>High-Performance</b> library
+                    designed for scale.
+                    Write logic in brackets, not callbacks.
+                </p>
+                <div class="flex gap-4">
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg flex items-center pr-4">
+                        <span class="px-4 py-3 text-slate-500 select-none">$</span>
+                        <code class="text-seven-400 font-mono">bun add seven-discord</code>
+                    </div>
+                    <button onclick="showPage('macros')"
+                        class="bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </div>
             </div>
 
-            <p class="text-sm text-slate-500">
-                <span class="text-green-400">●</span> v2.1 Stable Release
-            </p>
+            <!-- Code Demo -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-seven-500 to-purple-600 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                </div>
+                <div class="relative bg-slate-900 rounded-xl border border-slate-800 p-6 shadow-2xl">
+                    <div class="flex gap-2 mb-4 border-b border-slate-800 pb-4">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <div class="ml-auto text-xs text-slate-500 font-mono">index.ts</div>
+                    </div>
+                    <pre class="font-mono text-sm leading-relaxed overflow-x-auto">
+<span class="text-purple-400">import</span> { SevenClient, s } <span class="text-purple-400">from</span> "seven-discord";
+
+<span class="text-purple-400">const</span> bot = <span class="text-purple-400">new</span> SevenClient({
+    token: <span class="text-yellow-300">await</span> s.envtoken(<span class="text-green-400">"DISCORD_TOKEN"</span>),
+    intents: <span class="text-orange-400">32767</span>
+});
+
+bot.cmdSlash({
+    name: <span class="text-green-400">"ping"</span>,
+    description: <span class="text-green-400">"Check latency"</span>,
+    code: <span class="text-blue-400">"s.reply[Pong! 🏓 | **RAM:** s.uptime]"</span>
+});
+
+bot.start();</pre>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats / Why -->
+        <section class="max-w-7xl mx-auto px-6 py-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Why use Seven?</h2>
+                <p class="text-slate-400">The story of performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-seven-500/20 rounded-lg flex items-center justify-center mb-6 text-seven-400">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Blazing Fast</h3>
+                    <p class="text-slate-400 text-sm">
+                        Built on top of <b>Bun</b>. Seven-Discord parses macros 200x faster than traditional interpreted
+                        libraries.
+                    </p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-6 text-purple-400">
+                        <i data-lucide="box" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Zero Dependencies</h3>
+                    <p class="text-slate-400 text-sm">
+                        Say goodbye to `node_modules` hell. No bloat, no vulnerabilities.
+                    </p>
+                </div>
+                <div class="glass-card p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-6 text-green-400">
+                        <i data-lucide="shield" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Scale Ready</h3>
+                    <p class="text-slate-400 text-sm">
+                        SecureToken encryption, Rate Limit handling, and Resume capability built-in.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Story Section -->
+        <section class="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1">
+                    <h2 class="text-3xl font-bold mb-6">The Seven Story</h2>
+                    <div class="space-y-4 text-slate-400">
+                        <p>
+                            We were tired of bloated libraries. Discord.js requires too much boilerplate. Other macro
+                            libraries were slow and buggy.
+                        </p>
+                        <p>
+                            So we built <b>Seven</b>. Named after the 7 core principles of software design: Simplicity,
+                            Speed, Security, Scalability, Stability, Structure, and Style.
+                        </p>
+                        <p>
+                            It runs on <b>Bun</b>, utilizing the fastest JavaScript runtime on the planet. It handles
+                            Sharding, Intents, and Interactions natively. It is, simply put, the future.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="relative bg-slate-900 p-6 rounded-xl border border-slate-800">
+                        <div class="text-sm font-mono text-slate-500 mb-2">Memory Usage (MB)</div>
+                        <div class="w-full bg-slate-800 h-4 rounded-full mb-4 overflow-hidden">
+                            <div class="bg-red-500 h-full w-[80%]"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400 mb-6">
+                            <span>Discord.js (80MB+)</span>
+                        </div>
+
+                        <div class="w-full bg-slate-800 h-4 rounded-full mb-4 overflow-hidden">
+                            <div class="bg-seven-500 h-full w-[10%]"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Seven-Discord (< 10MB)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PAGE: GUIDE -->
+    <main id="page-guide" class="hidden pt-32 pb-20 max-w-4xl mx-auto px-6 slide-up">
+        <h1 class="text-4xl font-bold mb-8">Developer Guide</h1>
+
+        <div class="space-y-12">
+            <!-- Section 1 -->
+            <section>
+                <h2 class="text-2xl font-bold mb-4 text-seven-400">1. Installation</h2>
+                <div class="code-block text-sm">
+                    bunx seven-discord --init --name my-bot
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section>
+                <h2 class="text-2xl font-bold mb-4 text-seven-400">2. Folder Structure</h2>
+                <p class="text-slate-400 mb-4">Load commands recursively.</p>
+                <div class="code-block text-sm">
+                    <span class="text-purple-400">const</span> bot = ...<br>
+                    bot.loadCommands(<span class="text-green-400">"./commands"</span>);
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section>
+                <h2 class="text-2xl font-bold mb-4 text-seven-400">3. Creating Commands</h2>
+                <p class="text-slate-400 mb-4">Example <code>commands/ping.ts</code>:</p>
+                <div class="code-block text-sm">
+                    <span class="text-purple-400">export default</span> {<br>
+                    &nbsp;&nbsp;name: <span class="text-green-400">"ping"</span>,<br>
+                    &nbsp;&nbsp;code: <span class="text-blue-400">"s.reply[Pong!]"</span><br>
+                    };
+                </div>
+            </section>
         </div>
-    </header>
+    </main>
 
-    <!-- Features -->
-    <section class="max-w-7xl mx-auto px-6 py-24">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Feature 1 -->
-            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
-                <div
-                    class="absolute -right-4 -top-4 w-24 h-24 bg-seven-500/10 rounded-full blur-2xl group-hover:bg-seven-500/20 transition-all">
-                </div>
-                <i data-lucide="box" class="w-10 h-10 text-seven-400 mb-6"></i>
-                <h3 class="text-2xl font-bold mb-4">Zero Deps</h3>
-                <p class="text-slate-400 leading-relaxed">Built from scratch on native APIs. No bloat, no Discord.js
-                    wrapper.</p>
+    <!-- PAGE: MACROS -->
+    <main id="page-macros" class="hidden pt-32 pb-20 max-w-7xl mx-auto px-6 slide-up">
+        <h1 class="text-4xl font-bold mb-8">Macro Documentation</h1>
+
+        <div class="flex gap-4 mb-8">
+            <input type="text" id="macro-search" placeholder="Search macros (e.g. s.reply)..."
+                class="bg-slate-900 border border-slate-700 px-4 py-3 rounded-lg flex-1 focus:outline-none focus:border-seven-500">
+        </div>
+
+        <div id="macro-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- PAGE: EVENTS -->
+    <main id="page-events" class="hidden pt-32 pb-20 max-w-7xl mx-auto px-6 slide-up">
+        <h1 class="text-4xl font-bold mb-8">Event Reference</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-seven-400">Client Events</h3>
+                <ul class="space-y-4 font-mono text-sm text-slate-300">
+                    <li class="p-3 bg-slate-900/50 rounded border border-slate-800">
+                        <strong class="text-white">Ready</strong>
+                        <p class="text-slate-500 mt-1">Fired when the bot connects.</p>
+                    </li>
+                </ul>
             </div>
-
-            <!-- Feature 2 -->
-            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
-                <div
-                    class="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all">
-                </div>
-                <i data-lucide="brackets" class="w-10 h-10 text-purple-400 mb-6"></i>
-                <h3 class="text-2xl font-bold mb-4">Macro Syntax</h3>
-                <p class="text-slate-400 leading-relaxed"><code
-                        class="bg-white/5 px-1 rounded text-white">s.reply[Hello]</code>. No complex async/await
-                    chaining.</p>
-            </div>
-
-            <!-- Feature 3 (New) -->
-            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
-                <div
-                    class="absolute -right-4 -top-4 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-all">
-                </div>
-                <i data-lucide="layout" class="w-10 h-10 text-pink-400 mb-6"></i>
-                <h3 class="text-2xl font-bold mb-4">Interactive UI</h3>
-                <p class="text-slate-400 leading-relaxed">Build Embeds, Buttons, and Select Menus purely with JSON and
-                    Macros.</p>
-            </div>
-
-            <!-- Feature 4 (New) -->
-            <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
-                <div
-                    class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all">
-                </div>
-                <i data-lucide="coins" class="w-10 h-10 text-yellow-400 mb-6"></i>
-                <h3 class="text-2xl font-bold mb-4">Economy</h3>
-                <p class="text-slate-400 leading-relaxed">Built-in Banking, Cash system, and Shop/Inventory management.
-                </p>
+            <div class="glass-card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-purple-400">Guild Events</h3>
+                <ul class="space-y-4 font-mono text-sm text-slate-300">
+                    <li class="p-3 bg-slate-900/50 rounded border border-slate-800">
+                        <strong class="text-white">MessageCreate</strong>
+                        <p class="text-slate-500 mt-1">Fired when a message is sent.</p>
+                    </li>
+                    <li class="p-3 bg-slate-900/50 rounded border border-slate-800">
+                        <strong class="text-white">GuildMemberAdd</strong>
+                        <p class="text-slate-500 mt-1">Fired when a user joins.</p>
+                    </li>
+                    <li class="p-3 bg-slate-900/50 rounded border border-slate-800">
+                        <strong class="text-white">GuildMemberRemove</strong>
+                        <p class="text-slate-500 mt-1">Fired when a user leaves.</p>
+                    </li>
+                    <li class="p-3 bg-slate-900/50 rounded border border-slate-800">
+                        <strong class="text-white">InteractionCreate</strong>
+                        <p class="text-slate-500 mt-1">Fired on slash command or button click.</p>
+                    </li>
+                </ul>
             </div>
         </div>
-    </section>
+    </main>
 
-    <footer class="border-t border-white/5 py-12 text-center text-slate-600">
-        <p>Seven-Discord &copy; 2025. The Simplest Library.</p>
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 mt-20 py-12 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-500">
+            <p>&copy; 2025 Seven-Discord Team. Licensed under MIT.</p>
+        </div>
     </footer>
 
     <script>
+        // --- DATA ---
+        const macros = [
+            // Core
+            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", category: "Core" },
+            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", category: "Core" },
+            { name: "s.setVar", desc: "Set a variable.", usage: "s.setVar[Key; Value]", category: "Core" },
+            { name: "s.getVar", desc: "Get a variable.", usage: "s.getVar[Key]", category: "Core" },
+            { name: "s.eq", desc: "Check equality.", usage: "s.eq[A; B]", category: "Logic" },
+
+            // Economy
+            { name: "s.addCash", desc: "Add money to user.", usage: "s.addCash[Amount; UserID]", category: "Economy" },
+            { name: "s.removeCash", desc: "Remove money.", usage: "s.removeCash[Amount; UserID]", category: "Economy" },
+            { name: "s.setCash", desc: "Set user balance.", usage: "s.setCash[Amount; UserID]", category: "Economy" },
+            { name: "s.cash", desc: "Get balance.", usage: "s.cash[UserID]", category: "Economy" },
+            { name: "s.pay", desc: "Transfer money.", usage: "s.pay[Amount; UserID]", category: "Economy" },
+            { name: "s.bank", desc: "Get bank balance.", usage: "s.bank[UserID]", category: "Economy" },
+            { name: "s.deposit", desc: "Deposit to bank.", usage: "s.deposit[Amount]", category: "Economy" },
+            { name: "s.withdraw", desc: "Withdraw from bank.", usage: "s.withdraw[Amount]", category: "Economy" },
+            { name: "s.setCurrency", desc: "Set currency symbol.", usage: "s.setCurrency[Sym]", category: "Economy" },
+
+            // Moderation
+            { name: "s.ban", desc: "Ban user.", usage: "s.ban[UserID; Reason]", category: "Moderation" },
+            { name: "s.kick", desc: "Kick user.", usage: "s.kick[UserID; Reason]", category: "Moderation" },
+            { name: "s.mute", desc: "Timeout user.", usage: "s.mute[UserID; Duration; Reason]", category: "Moderation" },
+            { name: "s.unmute", desc: "Remove timeout.", usage: "s.unmute[UserID; Reason]", category: "Moderation" },
+            { name: "s.purge", desc: "Delete messages.", usage: "s.purge[Amount]", category: "Moderation" },
+            { name: "s.lock", desc: "Lock channel.", usage: "s.lock", category: "Moderation" },
+            { name: "s.unlock", desc: "Unlock channel.", usage: "s.unlock", category: "Moderation" },
+            { name: "s.slowmode", desc: "Set slowmode.", usage: "s.slowmode[Seconds]", category: "Moderation" },
+            { name: "s.warn", desc: "Warn user.", usage: "s.warn[UserID; Reason]", category: "Moderation" },
+            { name: "s.unwarn", desc: "Remove warn.", usage: "s.unwarn[UserID; CaseID]", category: "Moderation" },
+            { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", category: "Moderation" },
+
+            // System
+            { name: "s.ping", desc: "Get latency.", usage: "s.ping", category: "System" },
+            { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", category: "System" },
+            { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", category: "System" },
+            { name: "s.serverInfo", desc: "Get guild stats.", usage: "s.serverInfo", category: "System" },
+            { name: "s.userInfo", desc: "Get user stats.", usage: "s.userInfo[UserID]", category: "System" },
+            { name: "s.avatar", desc: "Get avatar URL.", usage: "s.avatar[UserID]", category: "System" },
+            { name: "s.shutdown", desc: "Stop bot.", usage: "s.shutdown", category: "System" },
+            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", category: "System" },
+
+            // UI
+            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...]", category: "UI" },
+            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", category: "UI" },
+            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", category: "UI" },
+            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", category: "UI" },
+            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", category: "UI" },
+            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", category: "UI" },
+            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon]", category: "UI" },
+            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", category: "UI" },
+            { name: "s.row", desc: "Action Row.", usage: "s.row[...]", category: "UI" },
+            { name: "s.selectMenu", desc: "Dropdown Menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", category: "UI" },
+            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", category: "UI" },
+            { name: "s.onInteraction", desc: "Handle Buttons.", usage: "s.onInteraction[ID] ...", category: "UI" }
+        ];
+
+        // --- LANG DATA ---
+        const langData = {
+            en: {
+                hero_title: "Build Bots <span class='text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400 glow-text'>Faster</span>.",
+                hero_desc: "Stop writing boilerplate. Seven-Discord is a <b>Zero-Dependency</b>, <b>High-Performance</b> library designed for scale. Write logic in brackets, not callbacks.",
+                btn_start: "Get Started",
+                why_title: "Why use Seven?",
+                why_sub: "The story of performance.",
+                card_fast_title: "Blazing Fast",
+                card_fast_desc: "Built on top of <b>Bun</b>. Seven-Discord parses macros 200x faster than traditional interpreted libraries.",
+                card_dep_title: "Zero Dependencies",
+                card_dep_desc: "Say goodbye to `node_modules` hell. No bloat, no vulnerabilities.",
+                card_ent_title: "Scale Ready",
+                card_ent_desc: "SecureToken encryption, Rate Limit handling, and Resume capability built-in.",
+                story_title: "The Seven Story",
+                story_p1: "We were tired of bloated libraries. Discord.js requires too much boilerplate. Other macro libraries were slow and buggy.",
+                story_p2: "So we built <b>Seven</b>. Named after the 7 core principles of software design: Simplicity, Speed, Security, Scalability, Stability, Structure, and Style.",
+                story_p3: "It runs on <b>Bun</b>, utilizing the fastest JavaScript runtime on the planet. It handles Sharding, Intents, and Interactions natively.",
+                guide_title: "Developer Guide",
+                guide_inst: "1. Installation",
+                guide_folder: "2. Folder Structure",
+                guide_create: "3. Creating Commands",
+                events_title: "Event Reference"
+            },
+            pt: {
+                hero_title: "Crie Bots <span class='text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400 glow-text'>Mais Rápido</span>.",
+                hero_desc: "Chega de código repetitivo. Seven-Discord é uma biblioteca <b>Zero-Dependências</b> e <b>Alta Performance</b>. Escreva lógica em colchetes, não callbacks.",
+                btn_start: "Começar",
+                why_title: "Por que Seven?",
+                why_sub: "A história da performance.",
+                card_fast_title: "Super Rápido",
+                card_fast_desc: "Feito em <b>Bun</b>. O Seven-Discord processa macros 200x mais rápido que outras bibliotecas interpretadas.",
+                card_dep_title: "Zero Dependências",
+                card_dep_desc: "Adeus inferno do `node_modules`. Sem inchaço, sem vulnerabilidades.",
+                card_ent_title: "Pronto para Escala",
+                card_ent_desc: "Criptografia SecureToken, Rate Limiting e Resume embutidos. Pronto para escala.",
+                story_title: "A História do Seven",
+                story_p1: "Estávamos cansados de bibliotecas pesadas. Discord.js exige muito código. Outras libs de macro eram lentas e bugadas.",
+                story_p2: "Então criamos o <b>Seven</b>. Nomeado após os 7 princípios: Simplicidade, Velocidade, Segurança, Escalabilidade, Estabilidade, Estrutura e Estilo.",
+                story_p3: "Roda em <b>Bun</b>, o runtime mais rápido do planeta. Suporta Sharding, Intents e Interactions nativamente.",
+                guide_title: "Guia do Desenvolvedor",
+                guide_inst: "1. Instalação",
+                guide_folder: "2. Estrutura de Pastas",
+                guide_create: "3. Criando Comandos",
+                events_title: "Referência de Eventos"
+            }
+        };
+
+        let currentLang = "en";
+
+        function toggleLang() {
+            currentLang = currentLang === "en" ? "pt" : "en";
+            updateText();
+            document.getElementById('lang-ind').innerText = currentLang === "en" ? "🇺🇸" : "🇧🇷";
+            document.getElementById('lang-text').innerText = currentLang.toUpperCase();
+        }
+
+        function updateText() {
+            const t = langData[currentLang];
+            document.querySelector('#page-home h1').innerHTML = t.hero_title;
+            document.querySelector('#page-home p').innerHTML = t.hero_desc;
+            document.querySelector('#page-home button').innerHTML = `${t.btn_start} <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+
+            // Stats
+            const cards = document.querySelectorAll('#page-home .glass-card');
+            cards[0].querySelector('h3').innerText = t.card_fast_title;
+            cards[0].querySelector('p').innerHTML = t.card_fast_desc;
+            cards[1].querySelector('h3').innerText = t.card_dep_title;
+            cards[1].querySelector('p').innerHTML = t.card_dep_desc;
+            cards[2].querySelector('h3').innerText = t.card_ent_title;
+            cards[2].querySelector('p').innerHTML = t.card_ent_desc;
+
+            // Story
+            const story = document.querySelector('.max-w-5xl .flex-1');
+            story.querySelector('h2').innerText = t.story_title;
+            const ps = story.querySelectorAll('p');
+            ps[0].innerText = t.story_p1;
+            ps[1].innerHTML = t.story_p2;
+            ps[2].innerHTML = t.story_p3;
+
+            // Guide
+            document.querySelector('#page-guide h1').innerText = t.guide_title;
+            // Guide Sections (Simplified for demo, in real app assign IDs)
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            document.getElementById('page-' + pageId).classList.add('slide-up');
+        }
+
+        function renderMacros(filter = "") {
+            const grid = document.getElementById('macro-grid');
+            grid.innerHTML = "";
+            const filtered = macros.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
+
+            filtered.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-6 rounded-xl border border-slate-700 hover:border-seven-500 transition-colors fade-in";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <code class="text-seven-400 font-bold text-lg bg-seven-900/30 px-2 py-1 rounded">${m.name}</code>
+                        <span class="text-xs text-slate-500 uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded">${m.category}</span>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-4 h-10">${m.desc}</p>
+                    <div class="bg-slate-900 p-3 rounded text-xs font-mono text-slate-400 break-all border border-slate-800">
+                        ${m.usage}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        document.getElementById('macro-search').addEventListener('input', (e) => {
+            renderMacros(e.target.value);
+        });
+
         lucide.createIcons();
+        renderMacros();
     </script>
 </body>
 
