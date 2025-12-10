@@ -12,10 +12,11 @@ export class ButtonMacro extends Macro {
 
     async execute(ctx: any, ...args: string[]) {
         let label, styleStr, customId, emoji;
+        let disabled = false;
 
         // Check for Named Arguments (KV)
         // e.g. s.button[label:Click Me; style:primary; id:btn_1]
-        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http")); // Simple check, http check to avoid urls being mistaken
+        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http"));
 
         if (hasKV) {
             const map: any = {};
@@ -29,6 +30,7 @@ export class ButtonMacro extends Macro {
             }
             label = map.label || map.l || map.name;
             styleStr = map.style || map.s;
+
             // Explicit URL vs CustomID logic
             if (map.url || map.link) {
                 styleStr = "link";
@@ -36,10 +38,11 @@ export class ButtonMacro extends Macro {
             } else {
                 customId = map.id || map.custom_id || map.customId;
             }
+
             emoji = map.emoji || map.e || map.icon;
 
             // Disabled State
-            var disabled = map.disabled === "true" || map.disabled === "yes";
+            disabled = map.disabled === "true" || map.disabled === "yes";
         } else {
             // Fallback to positional
             [label, styleStr, customId, emoji] = args;
@@ -59,7 +62,7 @@ export class ButtonMacro extends Macro {
             type: 2, // Button
             label: label || "Button",
             style: style,
-            disabled: disabled || false
+            disabled: disabled
         };
 
         if (style === 5) {

@@ -187,12 +187,21 @@ export class SevenClient {
         // Check for updates
         let updateMsg = "";
         try {
-            const res = await fetch("https://registry.npmjs.org/seven-discord/latest");
-            const data = await res.json();
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s Timeout
+            
+            const res = await fetch("https://registry.npmjs.org/seven-discord/latest", { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            const data = await res.json() as any;
             if (data.version && data.version !== currentVersion) {
-                updateMsg = `\x1b[33m\n[!] Update Available: v${data.version} (Current: v${currentVersion})\nRun 'npm update seven-discord' to upgrade.\x1b[0m`;
+                updateMsg = `
+   \x1b[33m[!] UPDATE AVAILABLE: v${data.version}\x1b[0m
+   \x1b[90mRun 'npm update seven-discord' to upgrade.\x1b[0m`;
             }
-        } catch (e) { }
+        } catch (e) { 
+            // Silent Fail
+        }
 
         // Premium Banner
         console.log(`\x1b[36m
@@ -203,10 +212,10 @@ export class SevenClient {
    ███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║
    ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝ \x1b[0m
    \x1b[90m----------------------------------------\x1b[0m
-   \x1b[32mTarget    \x1b[0m:: bun-native
-   \x1b[32mVersion   \x1b[0m:: v${currentVersion}
-   \x1b[32mCommands  \x1b[0m:: ${this.commands.size}
-   \x1b[32mParams    \x1b[0m:: [Prefix: ${this.prefix}]
+   \x1b[37mTarget    \x1b[0m:: \x1b[32mBun Native\x1b[0m
+   \x1b[37mVersion   \x1b[0m:: \x1b[35mv${currentVersion}\x1b[0m
+   \x1b[37mCommands  \x1b[0m:: \x1b[34m${this.commands.size}\x1b[0m
+   \x1b[37mParams    \x1b[0m:: [Prefix: '${this.prefix}']
    \x1b[90m----------------------------------------\x1b[0m${updateMsg}
         `);
 

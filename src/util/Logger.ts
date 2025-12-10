@@ -70,6 +70,14 @@ export class Logger {
         this.print(" DEBUG ", color.bgMagenta, message, color.gray);
     }
 
+    static legacyWarning(macro: string, oldSyntax: string, newSyntax: string) {
+        console.log(`${color.gray}[${this.getTime()}]${color.reset} ${color.bgYellow}${color.bold} LEGACY ${color.reset} ${color.yellow}Deprecated syntax detected in ${color.bold}${macro}${color.reset}`);
+        console.log(`      ${color.gray}Old: ${oldSyntax}`);
+        console.log(`      ${color.green}New: ${newSyntax}${color.reset}\n`);
+    }
+
+
+
     static table(title: string) {
         console.log(`\n${color.gray}◈ ━━━━━━━━━━━━━━━━━━━━ ${color.bold}${color.white}${title}${color.reset}${color.gray} ━━━━━━━━━━━━━━━━━━━━ ◈${color.reset}`);
     }
