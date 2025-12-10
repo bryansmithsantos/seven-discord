@@ -27,10 +27,19 @@ export class ButtonMacro extends Macro {
                     map[key] = val;
                 }
             }
-            label = map.label || map.l;
+            label = map.label || map.l || map.name;
             styleStr = map.style || map.s;
-            customId = map.id || map.custom_id || map.customId;
+            // Explicit URL vs CustomID logic
+            if (map.url || map.link) {
+                styleStr = "link";
+                customId = map.url || map.link;
+            } else {
+                customId = map.id || map.custom_id || map.customId;
+            }
             emoji = map.emoji || map.e || map.icon;
+
+            // Disabled State
+            var disabled = map.disabled === "true" || map.disabled === "yes";
         } else {
             // Fallback to positional
             [label, styleStr, customId, emoji] = args;
@@ -49,7 +58,8 @@ export class ButtonMacro extends Macro {
         const btn: any = {
             type: 2, // Button
             label: label || "Button",
-            style: style
+            style: style,
+            disabled: disabled || false
         };
 
         if (style === 5) {

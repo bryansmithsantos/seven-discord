@@ -180,24 +180,37 @@ export class SevenClient {
         this.gateway.setPresence(status, name, type);
     }
 
-    public start(): void {
+    public async start(): Promise<void> {
         console.clear();
-        Logger.info("Booting Seven-Discord...");
+        const currentVersion = require("../../package.json").version || "Dev";
 
-        console.log(`
+        // Check for updates
+        let updateMsg = "";
+        try {
+            const res = await fetch("https://registry.npmjs.org/seven-discord/latest");
+            const data = await res.json();
+            if (data.version && data.version !== currentVersion) {
+                updateMsg = `\x1b[33m\n[!] Update Available: v${data.version} (Current: v${currentVersion})\nRun 'npm update seven-discord' to upgrade.\x1b[0m`;
+            }
+        } catch (e) { }
+
+        // Premium Banner
+        console.log(`\x1b[36m
    ███████╗███████╗██╗   ██╗███████╗███╗   ██╗
    ██╔════╝██╔════╝██║   ██║██╔════╝████╗  ██║
    ███████╗█████╗  ██║   ██║█████╗  ██╔██╗ ██║
    ╚════██║██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║
    ███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║
-   ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝
-   v${require("../../package.json").version || "2.5.3"} | Engine: Bun | Database: Active
+   ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝ \x1b[0m
+   \x1b[90m----------------------------------------\x1b[0m
+   \x1b[32mTarget    \x1b[0m:: bun-native
+   \x1b[32mVersion   \x1b[0m:: v${currentVersion}
+   \x1b[32mCommands  \x1b[0m:: ${this.commands.size}
+   \x1b[32mParams    \x1b[0m:: [Prefix: ${this.prefix}]
+   \x1b[90m----------------------------------------\x1b[0m${updateMsg}
         `);
 
-        Logger.info(`Loaded ${this.commands.size} commands.`);
-        const ram = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-        Logger.debug(`Initial Memory Usage: ${ram} MB`);
-
+        Logger.info("Initializing Gateway Connection...");
         this.gateway.connect();
     }
 

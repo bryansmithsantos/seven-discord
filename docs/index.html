@@ -454,7 +454,7 @@
 
             // UI
             { name: "s.embed", cat: "UI", desc: "Creates a rich embed container. Supports named arguments.", usage: "s.embed[title:Hi; desc:Hello; color:red]", example: "s.embed[title:Welcome; desc:This is a cool embed; color:#5865F2]" },
-            { name: "s.button", cat: "UI", desc: "Creates an interactive button.", usage: "s.button[label:Text; style:primary; id:btn_1]", example: "s.button[label:Click Me; style:success; emoji:😊; id:my_btn]" },
+            { name: "s.button", cat: "UI", desc: "Creates an interactive button.", usage: "s.button[label:Text; style:primary; id:btn_1; disabled:false]", example: "s.button[label:Google; url:https://google.com] s.button[label:Locked; style:danger; id:no; disabled:true]" },
             { name: "s.row", cat: "UI", desc: "Groups components. Not strictly needed for single buttons anymore (Auto-Row).", usage: "s.row[...components]", example: "s.row[ s.button[Yes] s.button[No] ]" },
             { name: "s.selectMenu", cat: "UI", desc: "Creates a dropdown selection menu.", usage: "s.selectMenu[id:menu; place:Choose; min:1; max:1; ...options]", example: "s.selectMenu[id:menu; place:Select Color; s.option[Red;red] s.option[Blue;blue]]" },
             { name: "s.option", cat: "UI", desc: "Adds an option to a Select Menu.", usage: "s.option[label:Name; value:val; desc:Description; emoji:🔥]", example: "s.option[label:Fire; value:fire; emoji:🔥]" },
