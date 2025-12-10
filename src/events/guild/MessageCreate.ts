@@ -60,6 +60,7 @@ export class MessageCreateEvent extends Event {
             };
 
             const output = await client.interpreter.parse(cmd.code, context);
+            Logger.debug(`Interpreter Output for ${cmd.name}: [${output?.replace(/\n/g, "\\n")}]`);
 
             // Implicit Reply Logic:
             // If the code returns content (because s.reply wasn't used to consume it), we send it.

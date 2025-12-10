@@ -5,6 +5,7 @@ export * from "./core/Database";
 // Structures
 export * from "./structures/Command";
 export * from "./structures/Event";
+export * from "./structures/Middleware";
 
 // Managers
 export * from "./managers/SlashManager";

@@ -17,7 +17,8 @@ export class ReplyMacro extends Macro {
 
         // 1. Extract Embeds
         const embeds = [];
-        const embedRegex = /<<EMBED>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
+        // Fixed Regex: Lookahead must include <<COMPONENTS>>
+        const embedRegex = /<<EMBED>>(.*?)(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs;
         let em;
         while ((em = embedRegex.exec(processedContent)) !== null) {
             try {
@@ -25,10 +26,11 @@ export class ReplyMacro extends Macro {
             } catch (e) { }
         }
         if (embeds.length > 0) payload.embeds = embeds;
-        processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|COMPONENT_|$))/gs, "");
+        processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs, "");
 
         // 2. Extract Hoisted Components (from Embeds)
         const components: any[] = [];
+        // Fixed Regex: Lookahead for clarity (though usually at end)
         const hoistedRegex = /<<COMPONENTS>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
         let hm;
         while ((hm = hoistedRegex.exec(processedContent)) !== null) {
