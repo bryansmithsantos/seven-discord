@@ -9,13 +9,99 @@ const { values } = parseArgs({
         init: { type: 'boolean' },
         name: { type: 'string', default: 'my-bot' },
         slash: { type: 'boolean', default: false },
-        token: { type: 'string' }
+        token: { type: 'string' },
+        doc: { type: 'string' }
     },
     strict: true,
     allowPositionals: true
 });
 
-if (values.init) {
+const macros = [
+    // Core
+    { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", example: "s.reply[Hello User!]", category: "Core" },
+    { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", example: "s.log[Debug: Button Clicked]", category: "Core" },
+    { name: "s.setVar", desc: "Set a variable.", usage: "s.setVar[Key; Value]", example: "s.setVar[money; 0]", category: "Core" },
+    { name: "s.getVar", desc: "Get a variable.", usage: "s.getVar[Key]", example: "s.getVar[money]", category: "Core" },
+    { name: "s.eq", desc: "Check equality.", usage: "s.eq[A; B]", example: "s.eq[s.getVar[money]; 100]", category: "Logic" },
+    { name: "s.if", desc: "Condition.", usage: "s.if[Condition; True; False]", example: "s.if[s.eq[1;1]; Yes; No]", category: "Logic" },
+
+    // Math
+    { name: "s.math", desc: "Calculate.", usage: "s.math[Expr]", example: "s.math[10 + 5 * 2]", category: "Math" },
+    { name: "s.random", desc: "Random number.", usage: "s.random[Min; Max]", example: "s.random[1; 100]", category: "Math" },
+
+    // String
+    { name: "s.len", desc: "Text length.", usage: "s.len[Text]", example: "s.len[Hello]", category: "String" },
+    { name: "s.upper", desc: "Uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]", category: "String" },
+    { name: "s.lower", desc: "Lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]", category: "String" },
+
+    // Economy
+    { name: "s.addCash", desc: "Add money to user.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]", category: "Economy" },
+    { name: "s.removeCash", desc: "Remove money.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]", category: "Economy" },
+    { name: "s.setCash", desc: "Set user balance.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]", category: "Economy" },
+    { name: "s.cash", desc: "Get balance.", usage: "s.cash[UserID]", example: "s.cash[s.authorID]", category: "Economy" },
+    { name: "s.pay", desc: "Transfer money.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; 123456789]", category: "Economy" },
+    { name: "s.bank", desc: "Get bank balance.", usage: "s.bank[UserID]", example: "s.bank[s.authorID]", category: "Economy" },
+    { name: "s.deposit", desc: "Deposit to bank.", usage: "s.deposit[Amount]", example: "s.deposit[100]", category: "Economy" },
+    { name: "s.withdraw", desc: "Withdraw from bank.", usage: "s.withdraw[Amount]", example: "s.withdraw[50]", category: "Economy" },
+    { name: "s.setCurrency", desc: "Set currency symbol.", usage: "s.setCurrency[Sym]", example: "s.setCurrency[€]", category: "Economy" },
+
+    // Moderation
+    { name: "s.ban", desc: "Ban user.", usage: "s.ban[UserID; Reason]", example: "s.ban[123456789; Spam]", category: "Moderation" },
+    { name: "s.kick", desc: "Kick user.", usage: "s.kick[UserID; Reason]", example: "s.kick[123456789; Bad]", category: "Moderation" },
+    { name: "s.mute", desc: "Timeout user.", usage: "s.mute[UserID; Duration; Reason]", example: "s.mute[123456789; 60s; Rude]", category: "Moderation" },
+    { name: "s.unmute", desc: "Remove timeout.", usage: "s.unmute[UserID; Reason]", example: "s.unmute[123456789; Appeal]", category: "Moderation" },
+    { name: "s.purge", desc: "Delete messages.", usage: "s.purge[Amount]", example: "s.purge[10]", category: "Moderation" },
+    { name: "s.lock", desc: "Lock channel.", usage: "s.lock", example: "s.lock", category: "Moderation" },
+    { name: "s.unlock", desc: "Unlock channel.", usage: "s.unlock", example: "s.unlock", category: "Moderation" },
+    { name: "s.slowmode", desc: "Set slowmode.", usage: "s.slowmode[Seconds]", example: "s.slowmode[5]", category: "Moderation" },
+    { name: "s.warn", desc: "Warn user.", usage: "s.warn[UserID; Reason]", example: "s.warn[123456789; Caps]", category: "Moderation" },
+    { name: "s.unwarn", desc: "Remove warn.", usage: "s.unwarn[UserID; CaseID]", example: "s.unwarn[123456789; 1]", category: "Moderation" },
+    { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123456789]", category: "Moderation" },
+
+    // System
+    { name: "s.ping", desc: "Get latency.", usage: "s.ping", category: "System", example: "LATENCY: s.ping ms" },
+    { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", category: "System", example: "UPTIME: s.uptime" },
+    { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", category: "System", example: "s.botInfo" },
+    { name: "s.serverInfo", desc: "Get guild stats.", usage: "s.serverInfo", category: "System", example: "s.serverInfo" },
+    { name: "s.userInfo", desc: "Get user stats.", usage: "s.userInfo[UserID]", category: "System", example: "s.userInfo[s.authorID]" },
+    { name: "s.avatar", desc: "Get avatar URL.", usage: "s.avatar[UserID]", category: "System", example: "s.avatar[s.authorID]" },
+    { name: "s.shutdown", desc: "Stop bot.", usage: "s.shutdown", category: "System", example: "s.shutdown" },
+    { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", category: "System", example: "s.eval[2+2]" },
+
+    // UI
+    { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...]", example: "s.embed[s.title[Hi] s.desc[Hello]]", category: "UI" },
+    { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", example: "s.title[Welcome]", category: "UI" },
+    { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", example: "s.desc[This is a description]", category: "UI" },
+    { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", example: "s.color[#FF0000]", category: "UI" },
+    { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", example: "s.image[https://example.com/img.png]", category: "UI" },
+    { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", example: "s.thumb[https://example.com/img.png]", category: "UI" },
+    { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon]", example: "s.footer[By Seven; URL]", category: "UI" },
+    { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", example: "s.button[Click Me; primary; btn_click; 🖱️]", category: "UI" },
+    { name: "s.row", desc: "Action Row.", usage: "s.row[...]", example: "s.row[s.button[Yes; success; yes] s.button[No; danger; no]]", category: "UI" },
+    { name: "s.selectMenu", desc: "Dropdown Menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Select...; 1; 1; s.selectOption[A; a] s.selectOption[B; b]]", category: "UI" },
+    { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", example: "s.selectOption[Option 1; opt1; Description; 1️⃣; false]", category: "UI" },
+    { name: "s.onInteraction", desc: "Handle Buttons.", usage: "s.onInteraction[ID] ...", example: "s.onInteraction[btn_click] s.reply[You clicked!]", category: "UI" }
+];
+
+if (values.doc) {
+    const search = values.doc.toLowerCase();
+    const found = macros.find(m => m.name.toLowerCase() === search || m.name.toLowerCase() === "s." + search);
+
+    if (found) {
+        console.log(`\n📘 \x1b[36m${found.name}\x1b[0m \x1b[90m[${found.category}]\x1b[0m`);
+        console.log(`   ${found.desc}\n`);
+        console.log(`   \x1b[33mUsage:\x1b[0m   ${found.usage}`);
+        console.log(`   \x1b[32mExample:\x1b[0m ${found.example}\n`);
+    } else {
+        const similar = macros.filter(m => m.name.toLowerCase().includes(search));
+        if (similar.length > 0) {
+            console.log(`\n❌ Macro not found. Did you mean?`);
+            similar.forEach(m => console.log(`   - \x1b[36m${m.name}\x1b[0m`));
+        } else {
+            console.log(`\n❌ Macro not found.`);
+        }
+    }
+} else if (values.init) {
     console.log(`🚀 Initializing Seven-Discord project: ${values.name}...`);
 
     if (fs.existsSync(values.name)) {
@@ -75,5 +161,15 @@ bot.start();
     console.log("✅ Project created successfully!");
     console.log(`\ncd ${values.name}\nbun install\nbun run dev`);
 } else {
-    console.log("Usage: seven --init --name <project_name> [--slash]");
+    console.log(`
+\x1b[36mSeven-Discord CLI\x1b[0m
+
+Usage:
+  seven --init --name <name>     Initialize new project
+  seven --doc <macro>            Search documentation
+
+Example:
+  seven --doc s.reply
+  seven --doc math
+`);
 }
