@@ -155,6 +155,17 @@ export class SevenClient {
     /**
      * Start the bot.
      */
+
+    /**
+     * Set the bot's status and presence.
+     * @param status "online" | "dnd" | "idle" | "invisible"
+     * @param name Activity Name (e.g. "Playing Minecraft")
+     * @param type Activity Type (0 = Playing, 1 = Streaming, 2 = Listening, 3 = Watching)
+     */
+    public setStatus(status: string = "online", name: string = "Seven-Discord", type: number = 0): void {
+        this.gateway.setPresence(status, name, type);
+    }
+
     public start(): void {
         console.clear();
         Logger.info("Booting Seven-Discord...");
@@ -166,7 +177,7 @@ export class SevenClient {
    ╚════██║██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║
    ███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║
    ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝
-   v${require("../../package.json").version || "2.2.1"} | Engine: Bun | Database: Active
+   v${require("../../package.json").version || "2.5.3"} | Engine: Bun | Database: Active
         `);
 
         Logger.info(`Loaded ${this.commands.size} commands.`);
