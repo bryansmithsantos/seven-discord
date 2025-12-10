@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord | The Performance Library</title>
+    <title>Seven-Discord | Guide</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
@@ -31,10 +31,6 @@
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(56, 189, 248, 0.1);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
         }
 
         .code-block {
@@ -69,11 +65,6 @@
             animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .bounce-hover:hover {
-            transform: translateY(-5px);
-            transition: transform 0.3s ease;
-        }
-
         @keyframes fadeIn {
             to {
                 opacity: 1;
@@ -101,98 +92,33 @@
     <nav class="fixed w-full z-50 glass-card border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="logo-semfundo.png" onerror="this.src='https://via.placeholder.com/40'"
-                    class="h-10 w-10 drop-shadow-lg" alt="Logo">
                 <span class="text-2xl font-bold tracking-tight text-white">Seven</span>
                 <span
-                    class="text-xs bg-seven-900/50 text-seven-400 px-2 py-0.5 rounded-full border border-seven-500/20">v2.5.1
-                    dev</span>
+                    class="text-xs bg-seven-900/50 text-seven-400 px-2 py-0.5 rounded-full border border-seven-500/20">v2.5.5
+                    stable</span>
             </div>
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
                 <button onclick="showPage('home')" class="hover:text-white transition-colors">Home</button>
                 <button onclick="showPage('guide')" class="hover:text-white transition-colors">Guide</button>
                 <button onclick="showPage('macros')"
                     class="text-seven-400 hover:text-seven-300 transition-colors">Macros</button>
-                <button onclick="showPage('events')" class="hover:text-white transition-colors">Events</button>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="toggleLang()" id="lang-ind"
-                    class="text-xl hover:scale-110 transition-transform">🇺🇸</button>
-                <a href="https://github.com" target="_blank"
-                    class="bg-white text-black px-5 py-2 rounded-full font-bold hover:bg-slate-200 transition-all flex items-center gap-2">
-                    <i data-lucide="github" class="w-4 h-4"></i> GitHub
-                </a>
             </div>
         </div>
     </nav>
 
     <main id="page-home" class="pt-32 pb-20 fade-in">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="max-w-4xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-seven-900/30 border border-seven-500/30 text-seven-400 text-sm mb-6 fade-in"
-                    style="animation-delay: 0.1s;">
-                    <span class="relative flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-seven-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-seven-500"></span>
-                    </span>
-                    v2.5.1: Status System & CLI Docs Released!
-                </div>
-                <h1 class="text-6xl md:text-8xl font-black text-white leading-tight mb-8 slide-up"
-                    style="animation-delay: 0.2s;">
-                    Build Bots <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400 glow-text">Faster</span>.
-                </h1>
-                <p class="text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed slide-up"
-                    style="animation-delay: 0.3s;">
-                    Stop writing boilerplate. Seven-Discord is a <b>Zero-Dependency</b>, <b>High-Performance</b> library
-                    designed for scale. Write logic in brackets, not callbacks.
-                    <br><br>
-                    <span class="text-sm opacity-70 italic">
-                        *Created by a Solo Developer passionate about simplifying Discord.js.*
-                    </span>
-                </p>
-                <div class="flex flex-wrap gap-4 slide-up" style="animation-delay: 0.4s;">
-                    <button onclick="showPage('guide')"
-                        class="bg-seven-500 hover:bg-seven-400 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-2 shadow-lg shadow-seven-500/20 hover:shadow-seven-500/40">
-                        Get Started <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </button>
-                    <div
-                        class="flex items-center gap-3 px-6 bg-slate-900/50 rounded-xl border border-slate-800 text-slate-400 font-mono">
-                        <span class="text-seven-500">$</span> bun add seven-discord native
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 mt-32">
-                <div class="glass-card p-8 rounded-2xl bounce-hover fade-in" style="animation-delay: 0.5s;">
-                    <div
-                        class="w-12 h-12 bg-seven-500/10 rounded-lg flex items-center justify-center text-seven-400 mb-6">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Blazing Fast</h3>
-                    <p class="text-slate-400 leading-relaxed">Built on top of <b>Bun</b>. Seven-Discord parses macros
-                        200x faster than traditional interpreted libraries.</p>
-                </div>
-                <div class="glass-card p-8 rounded-2xl bounce-hover fade-in" style="animation-delay: 0.6s;">
-                    <div
-                        class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 mb-6">
-                        <i data-lucide="package" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Zero Dependencies</h3>
-                    <p class="text-slate-400 leading-relaxed">Say goodbye to `node_modules` hell. No bloat, no
-                        vulnerabilities. Just pure, clean code.</p>
-                </div>
-                <div class="glass-card p-8 rounded-2xl bounce-hover fade-in" style="animation-delay: 0.7s;">
-                    <div
-                        class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 mb-6">
-                        <i data-lucide="activity" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Feature Rich</h3>
-                    <p class="text-slate-400 leading-relaxed">Status, Sharding-Ready design, Economy, and Moderation
-                        built-in directly to the core.</p>
-                </div>
-            </div>
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-6xl md:text-8xl font-black text-white leading-tight mb-8 slide-up">
+                Reference <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-seven-400 to-indigo-400">Hub</span>.
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed slide-up">
+                New v2.5.5: Organized Categories, Native Status Method, and CLI Integration.
+            </p>
+            <button onclick="showPage('macros')"
+                class="bg-seven-500 hover:bg-seven-400 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-seven-500/40">
+                Browse Macros
+            </button>
         </div>
     </main>
 
@@ -200,7 +126,6 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 slide-up">
                 <h2 class="text-4xl font-bold text-white mb-4">Macro Reference</h2>
-                <p class="text-slate-400">Click on any macro to view examples and usage.</p>
                 <div class="mt-8 relative max-w-md mx-auto">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5"></i>
                     <input type="text" id="macro-search" placeholder="Search macros..."
@@ -208,288 +133,178 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="macro-grid">
-                <!-- MACROS INJECTED HERE VIA JS -->
-            </div>
+            <!-- Macro Grid Injector -->
+            <div id="macro-container" class="space-y-12"></div>
         </div>
     </main>
 
     <main id="page-guide" class="hidden pt-32 pb-20">
-        <div class="max-w-4xl mx-auto px-6 slide-up">
-            <h1 class="text-4xl font-bold text-white mb-10">Developer Guide</h1>
-            <div class="space-y-12">
-                <section>
-                    <h2 class="text-2xl font-bold text-seven-400 mb-4">1. Installation</h2>
-                    <div class="code-block text-slate-300">
-                        bunx seven-discord --init --name my-bot
-                    </div>
-                </section>
-                <section>
-                    <h2 class="text-2xl font-bold text-seven-400 mb-4">2. First Command</h2>
-                    <p class="text-slate-400 mb-4">Create a file in `commands/ping.ts`:</p>
-                    <div class="code-block text-slate-300">
-                        export default {<br>
-                        &nbsp;&nbsp;name: "ping",<br>
-                        &nbsp;&nbsp;code: "s.reply[Pong! 🏓 Latency: s.ping ms]"<br>
-                        };
-                    </div>
-                </section>
-                <section>
-                    <h2 class="text-2xl font-bold text-seven-400 mb-4">3. Native Docs</h2>
-                    <p class="text-slate-400 mb-4">Use the CLI to check docs instantly:</p>
-                    <div class="code-block text-slate-300">
-                        bunx seven-discord --doc s.setStatus
-                    </div>
-                </section>
-            </div>
+        <div class="max-w-4xl mx-auto px-6 slide-up space-y-12">
+            <h1 class="text-4xl font-bold text-white mb-10">Developer Schemas</h1>
+
+            <section>
+                <h2 class="text-2xl font-bold text-seven-400 mb-4">Command Structure</h2>
+                <div class="code-block text-slate-300">
+                    <span class="text-purple-400">export default</span> {
+                    <span class="text-blue-400">name</span>: <span class="text-green-400">"avatar"</span>,
+                    <span class="text-blue-400">code</span>: <span class="text-green-400">`
+                        <span class="text-slate-500">// 1. Define Embed</span>
+                        s.embed[
+                        s.title[User Avatar]
+                        s.image[s.avatar[s.authorID]]
+                        ]
+                        <span class="text-slate-500">// 2. Define Components (Outside Embed!)</span>
+                        s.button[View; primary; view_av; 🖼️]
+                        `</span>
+                    };
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-seven-400 mb-4">Slash Commands</h2>
+                <div class="code-block text-slate-300">
+                    bot.<span class="text-yellow-400">cmdSlash</span>({
+                    <span class="text-blue-400">name</span>: <span class="text-green-400">"ping"</span>,
+                    <span class="text-blue-400">description</span>: <span class="text-green-400">"Check latency"</span>,
+                    <span class="text-blue-400">code</span>: <span class="text-green-400">"s.reply[Pong! 🏓]"</span>
+                    });
+                </div>
+            </section>
         </div>
     </main>
-
-    <main id="page-events" class="hidden pt-32 pb-20">
-        <div class="max-w-7xl mx-auto px-6 slide-up">
-            <h1 class="text-4xl font-bold text-white mb-10">Event Reference</h1>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Events List -->
-                <div class="glass-card p-6 rounded-xl">
-                    <h3 class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2">Client</h3>
-                    <ul class="space-y-2 text-slate-400 text-sm">
-                        <li>Ready</li>
-                        <li>UserUpdate</li>
-                        <li>Debug</li>
-                    </ul>
-                </div>
-                <div class="glass-card p-6 rounded-xl">
-                    <h3 class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2">Guild</h3>
-                    <ul class="space-y-2 text-slate-400 text-sm">
-                        <li>GuildCreate / Delete / Update</li>
-                        <li>RuleCreate / Delete / Update</li>
-                        <li>ChannelCreate / Delete / Update</li>
-                        <li>GuildBanAdd / Remove</li>
-                    </ul>
-                </div>
-                <div class="glass-card p-6 rounded-xl">
-                    <h3 class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2">Messages</h3>
-                    <ul class="space-y-2 text-slate-400 text-sm">
-                        <li>MessageCreate</li>
-                        <li>MessageDelete</li>
-                        <li>MessageUpdate</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-800 mt-20 py-12 bg-slate-900/50">
-        <div class="max-w-7xl mx-auto px-6 text-center text-slate-500">
-            <p>&copy; 2025 Seven-Discord (Solo Project). Licensed under MIT.</p>
-        </div>
-    </footer>
 
     <!-- MODAL -->
     <div id="macro-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
         <div class="relative w-full max-w-2xl bg-[#0f172a] border border-seven-500/30 rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300"
             id="modal-content">
-            <!-- Header -->
             <div
                 class="bg-gradient-to-r from-seven-900/50 to-slate-900 p-6 border-b border-white/5 flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <code id="modal-title" class="text-2xl font-bold font-mono text-seven-400">s.reply</code>
+                    <code id="modal-title" class="text-2xl font-bold font-mono text-seven-400">Title</code>
                     <span id="modal-cat"
-                        class="text-xs uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded border border-white/10 text-slate-400">CORE</span>
+                        class="text-xs uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded border border-white/10 text-slate-400">CAT</span>
                 </div>
-                <button onclick="closeModal()"
-                    class="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <button onclick="closeModal()" class="text-slate-400 p-2"><i data-lucide="x"></i></button>
             </div>
-
-            <!-- Body -->
             <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
-                <div>
-                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="info"
-                            class="w-4 h-4 text-seven-400"></i> Description</h3>
-                    <p id="modal-desc" class="text-slate-300 text-base leading-relaxed">Reply to a message or
-                        interaction.</p>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="code"
-                            class="w-4 h-4 text-seven-400"></i> Usage</h3>
-                    <div class="code-block text-sm text-slate-300 border border-slate-700/50 bg-black/30">
-                        <code id="modal-usage">s.reply[Content]</code>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-2 text-white flex items-center gap-2"><i data-lucide="terminal"
-                            class="w-4 h-4 text-green-400"></i> Example</h3>
-                    <div class="code-block text-sm text-green-300 border-l-4 border-green-500 bg-green-500/5">
-                        <code id="modal-example">s.reply[Hello World!]</code>
-                    </div>
-                </div>
+                <p id="modal-desc" class="text-slate-300 text-base leading-relaxed">Desc</p>
+                <div class="code-block text-sm text-slate-300 border border-slate-700/50 bg-black/30"><code
+                        id="modal-usage">Usage</code></div>
+                <div class="code-block text-sm text-green-300 border-l-4 border-green-500 bg-green-500/5"><code
+                        id="modal-example">Example</code></div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA ---
         const macros = [
             // Core
-            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", example: "s.reply[Hello User!]", category: "Core" },
-            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", example: "s.log[Debug: Button Clicked]", category: "Core" },
-            { name: "s.setVar", desc: "Set a variable.", usage: "s.setVar[Key; Value]", example: "s.setVar[money; 0]", category: "Core" },
-            { name: "s.getVar", desc: "Get a variable.", usage: "s.getVar[Key]", example: "s.getVar[money]", category: "Core" },
-
-            // System
-            { name: "s.setStatus", desc: "Set bot status.", usage: "s.setStatus[Type; Status; Name]", example: "s.setStatus[playing; online; Seven-Discord]", category: "System" },
-            { name: "s.ping", desc: "Get latency.", usage: "s.ping", example: "LATENCY: s.ping ms", category: "System" },
-            { name: "s.uptime", desc: "Get uptime.", usage: "s.uptime", example: "UPTIME: s.uptime", category: "System" },
-            { name: "s.botInfo", desc: "Get bot stats.", usage: "s.botInfo", example: "s.botInfo", category: "System" },
-            { name: "s.serverInfo", desc: "Get guild stats.", usage: "s.serverInfo", example: "s.serverInfo", category: "System" },
-            { name: "s.userInfo", desc: "Get user stats.", usage: "s.userInfo[UserID]", example: "s.userInfo[s.authorID]", category: "System" },
-            { name: "s.avatar", desc: "Get avatar URL.", usage: "s.avatar[UserID]", example: "s.avatar[s.authorID]", category: "System" },
-            { name: "s.shutdown", desc: "Stop bot.", usage: "s.shutdown", example: "s.shutdown", category: "System" },
-            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", example: "s.eval[2+2]", category: "System" },
-
-            // Logic
-            { name: "s.eq", desc: "Check equality.", usage: "s.eq[A; B]", example: "s.eq[s.getVar[money]; 100]", category: "Logic" },
-            { name: "s.if", desc: "Condition.", usage: "s.if[Condition; True; False]", example: "s.if[s.eq[1;1]; Yes; No]", category: "Logic" },
-
-            // Math
-            { name: "s.math", desc: "Calculate.", usage: "s.math[Expr]", example: "s.math[10 + 5 * 2]", category: "Math" },
-            { name: "s.random", desc: "Random number.", usage: "s.random[Min; Max]", example: "s.random[1; 100]", category: "Math" },
-
-            // String
-            { name: "s.len", desc: "Text length.", usage: "s.len[Text]", example: "s.len[Hello]", category: "String" },
-            { name: "s.upper", desc: "Uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]", category: "String" },
-            { name: "s.lower", desc: "Lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]", category: "String" },
-
-            // Economy
-            { name: "s.addCash", desc: "Add money to user.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]", category: "Economy" },
-            { name: "s.removeCash", desc: "Remove money.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]", category: "Economy" },
-            { name: "s.setCash", desc: "Set user balance.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]", category: "Economy" },
-            { name: "s.cash", desc: "Get balance.", usage: "s.cash[UserID]", example: "s.cash[s.authorID]", category: "Economy" },
-            { name: "s.pay", desc: "Transfer money.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; 123456789]", category: "Economy" },
-            { name: "s.bank", desc: "Get bank balance.", usage: "s.bank[UserID]", example: "s.bank[s.authorID]", category: "Economy" },
-            { name: "s.deposit", desc: "Deposit to bank.", usage: "s.deposit[Amount]", example: "s.deposit[100]", category: "Economy" },
-            { name: "s.withdraw", desc: "Withdraw from bank.", usage: "s.withdraw[Amount]", example: "s.withdraw[50]", category: "Economy" },
-            { name: "s.setCurrency", desc: "Set currency symbol.", usage: "s.setCurrency[Sym]", example: "s.setCurrency[€]", category: "Economy" },
-
-            // Moderation
-            { name: "s.ban", desc: "Ban user.", usage: "s.ban[UserID; Reason]", example: "s.ban[123456789; Spam]", category: "Moderation" },
-            { name: "s.kick", desc: "Kick user.", usage: "s.kick[UserID; Reason]", example: "s.kick[123456789; Bad]", category: "Moderation" },
-            { name: "s.mute", desc: "Timeout user.", usage: "s.mute[UserID; Duration; Reason]", example: "s.mute[123456789; 60s; Rude]", category: "Moderation" },
-            { name: "s.unmute", desc: "Remove timeout.", usage: "s.unmute[UserID; Reason]", example: "s.unmute[123456789; Appeal]", category: "Moderation" },
-            { name: "s.purge", desc: "Delete messages.", usage: "s.purge[Amount]", example: "s.purge[10]", category: "Moderation" },
-            { name: "s.lock", desc: "Lock channel.", usage: "s.lock", example: "s.lock", category: "Moderation" },
-            { name: "s.unlock", desc: "Unlock channel.", usage: "s.unlock", example: "s.unlock", category: "Moderation" },
-            { name: "s.slowmode", desc: "Set slowmode.", usage: "s.slowmode[Seconds]", example: "s.slowmode[5]", category: "Moderation" },
-            { name: "s.warn", desc: "Warn user.", usage: "s.warn[UserID; Reason]", example: "s.warn[123456789; Caps]", category: "Moderation" },
-            { name: "s.unwarn", desc: "Remove warn.", usage: "s.unwarn[UserID; CaseID]", example: "s.unwarn[123456789; 1]", category: "Moderation" },
-            { name: "s.warnings", desc: "List warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123456789]", category: "Moderation" },
+            { name: "s.reply", desc: "Reply to message/interaction.", usage: "s.reply[Content]", example: "s.reply[Hello User!]", category: "Core Basics" },
+            { name: "s.log", desc: "Log to console.", usage: "s.log[Text]", example: "s.log[Debug Info]", category: "Core Basics" },
+            { name: "s.setVar", desc: "Set variable.", usage: "s.setVar[Key; Value]", example: "s.setVar[xp; 10]", category: "Core Storage" },
+            { name: "s.getVar", desc: "Get variable.", usage: "s.getVar[Key]", example: "s.getVar[xp]", category: "Core Storage" },
 
             // UI
-            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...]", example: "s.embed[s.title[Hi] s.desc[Hello]]", category: "UI" },
-            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", example: "s.title[Welcome]", category: "UI" },
-            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", example: "s.desc[This is a description]", category: "UI" },
-            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", example: "s.color[#FF0000]", category: "UI" },
-            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", example: "s.image[https://example.com/img.png]", category: "UI" },
-            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", example: "s.thumb[https://example.com/img.png]", category: "UI" },
-            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon]", example: "s.footer[By Seven; URL]", category: "UI" },
-            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", example: "s.button[Click Me; primary; btn_click; 🖱️]", category: "UI" },
-            { name: "s.row", desc: "Action Row.", usage: "s.row[...]", example: "s.row[s.button[Yes; success; yes] s.button[No; danger; no]]", category: "UI" },
-            { name: "s.selectMenu", desc: "Dropdown Menu.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Select...; 1; 1; s.selectOption[A; a] s.selectOption[B; b]]", category: "UI" },
-            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", example: "s.selectOption[Option 1; opt1; Description; 1️⃣; false]", category: "UI" },
-            { name: "s.onInteraction", desc: "Handle Buttons.", usage: "s.onInteraction[ID] ...", example: "s.onInteraction[btn_click] s.reply[You clicked!]", category: "UI" }
+            { name: "s.embed", desc: "Create Embed.", usage: "s.embed[...props]", example: "s.embed[s.title[Hi]]", category: "UI Embeds" },
+            { name: "s.title", desc: "Embed Title.", usage: "s.title[Text]", example: "s.title[Welcome]", category: "UI Embeds" },
+            { name: "s.desc", desc: "Embed Description.", usage: "s.desc[Text]", example: "s.desc[Main content]", category: "UI Embeds" },
+            { name: "s.color", desc: "Embed Color.", usage: "s.color[Hex]", example: "s.color[#FF0000]", category: "UI Embeds" },
+            { name: "s.image", desc: "Embed Image.", usage: "s.image[URL]", example: "s.image[https://img.com/a.png]", category: "UI Embeds" },
+            { name: "s.thumb", desc: "Embed Thumbnail.", usage: "s.thumb[URL]", example: "s.thumb[https://img.com/a.png]", category: "UI Embeds" },
+            { name: "s.footer", desc: "Embed Footer.", usage: "s.footer[Text; Icon?]", example: "s.footer[Credits]", category: "UI Embeds" },
+
+            { name: "s.button", desc: "Create Button.", usage: "s.button[Label; Style; ID; Emoji]", example: "s.button[Click; primary; id; 🖱️]", category: "UI Components" },
+            { name: "s.row", desc: "Action Row.", usage: "s.row[...buttons]", example: "s.row[s.button[A; primary; a]]", category: "UI Components" },
+            { name: "s.selectMenu", desc: "Dropdown.", usage: "s.selectMenu[ID; Placeholder; Min; Max; ...options]", example: "s.selectMenu[menu; Pick; 1; 1; s.selectOption[A; a]]", category: "UI Components" },
+            { name: "s.selectOption", desc: "Menu Option.", usage: "s.selectOption[Label; Value; Desc; Emoji; Default]", example: "s.selectOption[Opt 1; 1]", category: "UI Components" },
+            { name: "s.onInteraction", desc: "Handle Interaction.", usage: "s.onInteraction[ID] ...", example: "s.onInteraction[btn_1] s.reply[Clicked!]", category: "UI Components" },
+
+            // System
+            { name: "s.setStatus", desc: "Set Presence.", usage: "s.setStatus[Type; Status; Name]", example: "s.setStatus[playing; online; Game]", category: "System" },
+            { name: "s.ping", desc: "Latency.", usage: "s.ping", example: "s.ping", category: "System" },
+            { name: "s.uptime", desc: "Uptime.", usage: "s.uptime", example: "s.uptime", category: "System" },
+            { name: "s.eval", desc: "Eval JS.", usage: "s.eval[Code]", example: "s.eval[2+2]", category: "System" },
+
+            // Math & Logic
+            { name: "s.math", desc: "Math expression.", usage: "s.math[Expr]", example: "s.math[10+2]", category: "Logic & Math" },
+            { name: "s.random", desc: "Random number.", usage: "s.random[Min; Max]", example: "s.random[1; 10]", category: "Logic & Math" },
+            { name: "s.if", desc: "Condition.", usage: "s.if[Cond; True; False]", example: "s.if[s.eq[1;1]; Yes; No]", category: "Logic & Math" },
+            { name: "s.eq", desc: "Equality.", usage: "s.eq[A; B]", example: "s.eq[1;1]", category: "Logic & Math" },
+
+            // Economy
+            { name: "s.addCash", desc: "Add cash.", usage: "s.addCash[Amt; ID]", example: "s.addCash[100; s.authorID]", category: "Economy" },
+            { name: "s.removeCash", desc: "Remove cash.", usage: "s.removeCash[Amt; ID]", example: "s.removeCash[100; s.authorID]", category: "Economy" },
+            { name: "s.setCash", desc: "Set cash.", usage: "s.setCash[Amt; ID]", example: "s.setCash[100; s.authorID]", category: "Economy" },
+            { name: "s.cash", desc: "Get cash.", usage: "s.cash[ID]", example: "s.cash[s.authorID]", category: "Economy" },
+            { name: "s.pay", desc: "Pay user.", usage: "s.pay[Amt; ID]", example: "s.pay[50; @user]", category: "Economy" },
+
+            // Moderation
+            { name: "s.ban", desc: "Ban user.", usage: "s.ban[ID; Reason]", example: "s.ban[123; Bye]", category: "Moderation" },
+            { name: "s.kick", desc: "Kick user.", usage: "s.kick[ID; Reason]", example: "s.kick[123; Bye]", category: "Moderation" },
+            { name: "s.mute", desc: "Mute user.", usage: "s.mute[ID; Time; Reason]", example: "s.mute[123; 1h; Spam]", category: "Moderation" },
+            { name: "s.unmute", desc: "Unmute user.", usage: "s.unmute[ID]", example: "s.unmute[123]", category: "Moderation" }
         ];
 
-        // --- LANG DATA (Unified for simplicity) ---
-        let currentLang = "en";
-        function toggleLang() {
-            // Simplified: Just toggle flag demo
-            currentLang = currentLang === "en" ? "pt" : "en";
-            document.getElementById('lang-ind').innerText = currentLang === "en" ? "🇺🇸" : "🇧🇷";
-        }
-
-        // --- NAVIGATION ---
         function showPage(pageId) {
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
-            const p = document.getElementById('page-' + pageId);
-            p.classList.remove('hidden');
-            p.classList.remove('slide-up');
-            void p.offsetWidth; // trigger reflow
-            p.classList.add('slide-up');
+            document.getElementById('page-' + pageId).classList.remove('hidden');
         }
 
-        // --- MODAL LOGIC (FIXED) ---
-        function openModal(macroName) {
-            const m = macros.find(x => x.name === macroName);
-            if (!m) {
-                console.error("Macro not found:", macroName);
-                return;
-            }
-
+        function openModal(name) {
+            const m = macros.find(x => x.name === name);
+            if (!m) return;
             document.getElementById('modal-title').innerText = m.name;
-            document.getElementById('modal-cat').innerText = m.category.toUpperCase();
+            document.getElementById('modal-cat').innerText = m.category;
             document.getElementById('modal-desc').innerText = m.desc;
             document.getElementById('modal-usage').innerText = m.usage;
-            document.getElementById('modal-example').innerText = m.example || "No example available.";
-
+            document.getElementById('modal-example').innerText = m.example;
             const modal = document.getElementById('macro-modal');
             const content = document.getElementById('modal-content');
-
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
-            }, 10);
+            setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
         }
 
         function closeModal() {
             const modal = document.getElementById('macro-modal');
             const content = document.getElementById('modal-content');
-
             content.classList.remove('scale-100', 'opacity-100');
             content.classList.add('scale-95', 'opacity-0');
-
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        function renderMacros(filter = "") {
-            const grid = document.getElementById('macro-grid');
-            grid.innerHTML = "";
-            const filtered = macros.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()));
+        function renderMacros() {
+            const container = document.getElementById('macro-container');
+            const term = document.getElementById('macro-search').value.toLowerCase();
 
-            filtered.forEach(m => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-6 rounded-xl border border-slate-700 hover:border-seven-500 transition-all cursor-pointer group fade-in";
-
-                // CRITICAL FIX: Ensure click event works by binding correctly
-                card.addEventListener('click', () => openModal(m.name));
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <code class="text-seven-400 font-bold text-lg bg-seven-900/30 px-2 py-1 rounded group-hover:text-seven-300 transition-colors">${m.name}</code>
-                        <span class="text-xs text-slate-500 uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded">${m.category}</span>
-                    </div>
-                    <p class="text-slate-300 text-sm h-10 line-clamp-2 pointer-events-none">${m.desc}</p>
-                    <div class="mt-4 flex items-center gap-2 text-xs text-slate-500 pointer-events-none">
-                        <i data-lucide="maximize-2" class="w-3 h-3"></i> Click to view examples
-                    </div>
-                `;
-                grid.appendChild(card);
+            // Group by Category
+            const groups = {};
+            macros.forEach(m => {
+                if (m.name.toLowerCase().includes(term)) {
+                    if (!groups[m.category]) groups[m.category] = [];
+                    groups[m.category].push(m);
+                }
             });
+
+            container.innerHTML = "";
+            for (const [cat, list] of Object.entries(groups)) {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <h3 class="text-2xl font-bold text-seven-400 mb-6 border-b border-seven-500/20 pb-2">${cat}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${list.map(m => `
+                           <div onclick="openModal('${m.name}')" class="glass-card p-6 rounded-xl border border-slate-700 hover:border-seven-500 transition-all cursor-pointer group">
+                                <code class="text-white font-bold text-lg">${m.name}</code>
+                                <p class="text-slate-400 text-sm mt-2">${m.desc}</p>
+                           </div>
+                        `).join('')}
+                    </div>
+                 `;
+                container.appendChild(section);
+            }
         }
 
-        // Init
-        document.getElementById('macro-search').addEventListener('input', (e) => {
-            renderMacros(e.target.value);
-        });
-
+        document.getElementById('macro-search').addEventListener('input', renderMacros);
         lucide.createIcons();
         renderMacros();
     </script>
