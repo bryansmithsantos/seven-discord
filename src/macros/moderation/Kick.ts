@@ -12,18 +12,37 @@ export class KickMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        let [userId, reason] = args;
+    async execute(ctx: any, ...args: string[]) {
+            let userId, reason;
 
-        if (!userId) return;
-        if (!reason) reason = "Kicked by Seven-Discord";
+            const hasKV = args.some(a => a.includes(":") && !a.match(/^\d+$/));
 
-        Logger.debug(`Attempting to kick ${userId}`);
+            if (hasKV) {
+                const map: any = {};
+                for (const arg of args) {
+                    const split = arg.indexOf(":");
+                    if (split > -1) {
+                        const key = arg.substring(0, split).trim().toLowerCase();
+                        const val = arg.substring(split + 1).trim();
+                        map[key] = val;
+                    }
+                }
+                userId = map.user || map.id || map.userid || map.target;
+                reason = map.reason || map.r;
+            } else {
+                [userId, reason] = args;
+            }
 
-        const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;
+            if (!userId) return;
+            if (!reason) reason = "Kicked by Seven-Discord";
 
-        // Note: DELETE /members/{user.id} is the endpoint for kick
-        await ctx.client.rest.delete(`/guilds/${guildId}/members/${userId}`, {
-            reason: reason
-        });
+            Logger.debug(`Attempting to kick ${userId}`);
+
+            const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;
+
+            // Note: DELETE /members/{user.id} is the endpoint for kick
+            await ctx.client.rest.delete(`/guilds/${guildId}/members/${userId}`, {
+                reason: reason
+            });
+        }
     }
-}
