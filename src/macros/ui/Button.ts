@@ -11,11 +11,34 @@ export class ButtonMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        const [label, styleStr, customId, emoji] = args;
+        let label, styleStr, customId, emoji;
+
+        // Check for Named Arguments (KV)
+        // e.g. s.button[label:Click Me; style:primary; id:btn_1]
+        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http")); // Simple check, http check to avoid urls being mistaken
+
+        if (hasKV) {
+            const map: any = {};
+            for (const arg of args) {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    const key = arg.substring(0, split).trim().toLowerCase();
+                    const val = arg.substring(split + 1).trim();
+                    map[key] = val;
+                }
+            }
+            label = map.label || map.l;
+            styleStr = map.style || map.s;
+            customId = map.id || map.custom_id || map.customId;
+            emoji = map.emoji || map.e || map.icon;
+        } else {
+            // Fallback to positional
+            [label, styleStr, customId, emoji] = args;
+        }
 
         // Map styles
         const styles: any = {
-            "primary": 1, "blue": 1,
+            "primary": 1, "blue": 1, "blurple": 1,
             "secondary": 2, "gray": 2, "grey": 2,
             "success": 3, "green": 3,
             "danger": 4, "red": 4,
@@ -25,7 +48,7 @@ export class ButtonMacro extends Macro {
         const style = styles[styleStr?.toLowerCase()] || 1;
         const btn: any = {
             type: 2, // Button
-            label: label,
+            label: label || "Button",
             style: style
         };
 

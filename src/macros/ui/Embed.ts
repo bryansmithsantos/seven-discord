@@ -56,7 +56,7 @@ export class EmbedMacro extends Macro {
 
         const cleanContent = content.replace(componentRegex, "");
 
-        // Simple Parser for our custom embed syntax
+        // 1. Simple Parser for our custom embed syntax (s.title -> EMBED_TITLE)
         const titleMatch = cleanContent.match(/EMBED_TITLE::(.*?)::END/s);
         if (titleMatch) embed.title = titleMatch[1];
 
@@ -74,6 +74,25 @@ export class EmbedMacro extends Macro {
 
         const footerMatch = cleanContent.match(/EMBED_FOOTER::(.*?)::END/s);
         if (footerMatch) embed.footer = { text: footerMatch[1] };
+
+        // 2. Sugar Syntax Parser (KV usage inside s.embed directly)
+        // e.g. s.embed[title:Hello; color:red]
+        // We iterate args passed to execute.
+        for (const arg of args) {
+            const split = arg.indexOf(":");
+            if (split > -1) {
+                const key = arg.substring(0, split).trim().toLowerCase();
+                const val = arg.substring(split + 1).trim();
+
+                if (key === "title") embed.title = val;
+                if (key === "desc" || key === "description") embed.description = val;
+                if (key === "color") embed.color = parseInt(val.replace("#", ""), 16);
+                if (key === "image" || key === "img") embed.image = { url: val };
+                if (key === "thumb" || key === "thumbnail") embed.thumbnail = { url: val };
+                if (key === "footer") embed.footer = { text: val };
+                if (key === "url") embed.url = val;
+            }
+        }
 
         // Return safely with components separated
         return `<<EMBED>>${JSON.stringify(embed)}<<COMPONENTS>>${JSON.stringify(components)}`;

@@ -52,8 +52,53 @@ export class ReplyMacro extends Macro {
                 components.push(JSON.parse(cm[1]));
             } catch (e) { }
         }
-        if (components.length > 0) payload.components = components;
         processedContent = processedContent.replace(/COMPONENT_ROW::.*?::END/gs, "");
+
+        // 4. Auto-Wrap Loose Components (Buttons/Selects) into a new Row
+        const looseCompResult = [];
+        // Regex to find individual buttons/selects not inside a row
+        const btnRegex = /COMPONENT_BUTTON::(.*?)::END/gs;
+        const selRegex = /COMPONENT_SELECT::(.*?)::END/gs;
+
+        let bM;
+        while ((bM = btnRegex.exec(processedContent)) !== null) {
+            try { looseCompResult.push(JSON.parse(bM[1])); } catch (e) { }
+        }
+        processedContent = processedContent.replace(/COMPONENT_BUTTON::.*?::END/gs, "");
+
+        let sM;
+        while ((sM = selRegex.exec(processedContent)) !== null) {
+            try { looseCompResult.push(JSON.parse(sM[1])); } catch (e) { }
+        }
+        processedContent = processedContent.replace(/COMPONENT_SELECT::.*?::END/gs, "");
+
+        if (looseCompResult.length > 0) {
+            // Chunk into rows of 5 for buttons (Selects usually take full row, but we'll pack them for now or let Discord error if mixed invalidly)
+            // Ideally Selects should be on their own row.
+            // Simple logic: If select present, new row. If buttons, chunks of 5.
+
+            let currentChunk = [];
+            for (const comp of looseCompResult) {
+                if (comp.type === 3 || comp.type === 5 || comp.type === 6 || comp.type === 7 || comp.type === 8) { // Select Menus
+                    if (currentChunk.length > 0) {
+                        components.push({ type: 1, components: currentChunk });
+                        currentChunk = [];
+                    }
+                    components.push({ type: 1, components: [comp] });
+                } else {
+                    currentChunk.push(comp);
+                    if (currentChunk.length >= 5) {
+                        components.push({ type: 1, components: currentChunk });
+                        currentChunk = [];
+                    }
+                }
+            }
+            if (currentChunk.length > 0) {
+                components.push({ type: 1, components: currentChunk });
+            }
+        }
+
+        if (components.length > 0) payload.components = components;
 
         // 4. Remaining content
         payload.content = processedContent.trim();
