@@ -222,7 +222,8 @@ export class SevenClient {
                 this.sessionId = packet.d.session_id;
                 this.user = packet.d.user;
                 // Sync Slash on Ready
-                this.slash.sync();
+                // Sync Slash on Ready (Fire and Forget to avoid blocking/rate limits warnings affecting boot)
+                this.slash.sync().catch(e => { });
             }
 
             // Route to specific event handlers

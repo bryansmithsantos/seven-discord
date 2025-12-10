@@ -49,6 +49,7 @@ export class ReplyMacro extends Macro {
 
 
         // 2. Extract Hoisted Components (from Embeds)
+        const components: any[] = [];
         const hoistedRegex = /<<COMPONENTS>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
         let hm;
         while ((hm = hoistedRegex.exec(processedContent)) !== null) {

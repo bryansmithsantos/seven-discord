@@ -40,13 +40,20 @@ export class EmbedMacro extends Macro {
         // We need to capture them and REMOVE them from the content so they don't mess up embed parsing
         const componentRegex = /COMPONENT_[A-Z]+::(.*?)::END/gs;
         let match;
+        // 'content' IS available here from args joined earlier? 
+        // Wait, line 43 in previous error said 'content' not found.
+        // Let's check where content is defined.
+        // Ah, in my previous edit I removed `const content = args.join(" ");` !!!
+        // I need to add that back.
+
+        const content = args.join(" ");
+
         while ((match = componentRegex.exec(content)) !== null) {
             try {
                 components.push(JSON.parse(match[1]));
             } catch (e) { }
         }
 
-        // Clean content for Embed parsing (remove components)
         const cleanContent = content.replace(componentRegex, "");
 
         // Simple Parser for our custom embed syntax

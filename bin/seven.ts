@@ -89,7 +89,7 @@ const VERSION = require("../package.json").version;
 async function checkUpdate() {
     try {
         const res = await fetch("https://registry.npmjs.org/seven-discord/latest");
-        const data = await res.json();
+        const data = await res.json() as any;
         if (data.version !== VERSION) {
             console.log(`\n\x1b[33m[UPDATE AVAILABLE]\x1b[0m v${VERSION} -> v${data.version}`);
             console.log(`Run \x1b[36mbun add seven-discord@latest\x1b[0m to update.\n`);
