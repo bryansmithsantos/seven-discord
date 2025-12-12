@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seven-Discord | Documentation</title>
+    <meta name="description"
+        content="The most advanced macro-based framework for Discord Bots. Zero dependencies, maximum performance.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <script>
         tailwind.config = {
@@ -19,60 +21,78 @@
                         seven: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e', 950: '#082f49' },
                         dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
                     },
-                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
                 }
             }
         }
     </script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #020617;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #020617 100%);
             color: #f8fafc;
+            min-height: 100vh;
         }
 
         .glass {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.1);
         }
 
         .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            transition: all 0.2s;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .glass-card:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.2);
+            border-color: rgba(56, 189, 248, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px -15px rgba(14, 165, 233, 0.3);
         }
 
         .sidebar-link {
             transition: all 0.2s;
-            border-left: 2px solid transparent;
+            border-left: 3px solid transparent;
+            cursor: pointer;
         }
 
         .sidebar-link:hover,
         .sidebar-link.active {
-            background: rgba(56, 189, 248, 0.1);
+            background: rgba(56, 189, 248, 0.15);
             border-left-color: #0ea5e9;
             color: #38bdf8;
         }
 
         .code-block {
             font-family: 'JetBrains Mono';
-            background: #0f172a;
+            background: rgba(15, 23, 42, 0.9);
             padding: 1rem;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             overflow-x: auto;
-            border: 1px solid #1e293b;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .glow {
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+        }
+
+        .glow-box {
+            box-shadow: 0 0 60px rgba(14, 165, 233, 0.15);
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
@@ -80,237 +100,269 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
+            background: linear-gradient(180deg, #0ea5e9, #6366f1);
+            border-radius: 4px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 
-<body class="antialiased h-screen flex overflow-hidden">
+<body class="antialiased flex overflow-hidden h-screen">
 
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-dark-900 border-r border-slate-800 flex-shrink-0 flex flex-col hidden md:flex">
-        <div class="h-16 flex items-center px-6 border-b border-slate-800">
-            <span
-                class="text-xl font-bold bg-gradient-to-r from-seven-400 to-indigo-400 bg-clip-text text-transparent">Seven-Discord</span>
-            <span
-                class="ml-2 text-[10px] bg-seven-900/50 text-seven-300 px-1.5 py-0.5 rounded border border-seven-500/20">v2.5.18</span>
+    <aside id="sidebar" class="w-72 glass border-r border-slate-800/50 flex-shrink-0 flex flex-col">
+        <div class="h-20 flex items-center px-6 border-b border-slate-800/50">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-seven-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
+                    7</div>
+                <div>
+                    <span class="text-lg font-bold text-white">Seven-Discord</span>
+                    <span
+                        class="ml-2 text-[10px] bg-seven-500/20 text-seven-300 px-2 py-0.5 rounded-full border border-seven-500/30">v2.5.18</span>
+                </div>
+            </div>
         </div>
 
         <div class="p-4">
             <div class="relative">
-                <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-                <input type="text" id="sidebar-search" placeholder="Search..."
-                    class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-3 text-sm text-slate-300 focus:border-seven-500 focus:outline-none placeholder:text-slate-600">
+                <i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-slate-500"></i>
+                <input type="text" id="sidebar-search" placeholder="Buscar macros..."
+                    class="w-full glass rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-300 focus:border-seven-500 focus:outline-none focus:ring-2 focus:ring-seven-500/20 placeholder:text-slate-600">
             </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto px-2 space-y-1 pb-4" id="sidebar-nav">
-            <!-- Populated via JS -->
-        </nav>
+        <nav class="flex-1 overflow-y-auto px-3 space-y-1 pb-4" id="sidebar-nav"></nav>
 
-        <div class="p-4 border-t border-slate-800">
+        <div class="p-4 border-t border-slate-800/50">
             <a href="https://discord.gg/qpRjsjrXcx" target="_blank"
-                class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition-colors">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> Support Server
+                class="flex items-center gap-3 text-slate-400 hover:text-white text-sm transition-colors p-2 rounded-lg hover:bg-slate-800/50">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> Servidor de Suporte
             </a>
         </div>
     </aside>
 
-    <!-- CONTENT -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col min-w-0">
         <!-- HEADER -->
-        <header class="h-16 glass z-20 flex items-center justify-between px-6 md:px-8">
+        <header class="h-16 glass border-b border-slate-800/50 flex items-center justify-between px-6 md:px-8">
             <div class="flex items-center gap-4">
                 <button class="md:hidden text-slate-400 hover:text-white"
-                    onclick="document.querySelector('aside').classList.toggle('hidden')">
+                    onclick="document.getElementById('sidebar').classList.toggle('hidden')">
                     <i data-lucide="menu"></i>
                 </button>
-                <div class="flex gap-1 text-sm text-slate-400">
+                <div class="flex gap-2 text-sm text-slate-400">
                     <span class="opacity-50">Docs</span>
                     <span>/</span>
-                    <span class="text-seven-400 font-medium" id="page-title">Welcome</span>
+                    <span class="text-seven-400 font-medium" id="page-title">Início</span>
                 </div>
             </div>
             <div class="flex gap-4 items-center">
-                <div class="flex items-center bg-slate-800 rounded-lg p-1">
+                <div class="flex items-center glass rounded-lg p-1">
                     <button onclick="setLang('en')"
-                        class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-white transition-colors"
+                        class="lang-btn px-3 py-1.5 text-xs font-bold rounded-md transition-colors"
                         id="btn-en">EN</button>
                     <button onclick="setLang('pt')"
-                        class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-slate-400 transition-colors"
+                        class="lang-btn px-3 py-1.5 text-xs font-bold rounded-md transition-colors"
                         id="btn-pt">PT</button>
                 </div>
                 <a href="https://www.npmjs.com/package/seven-discord" target="_blank"
-                    class="text-slate-400 hover:text-white transition-colors"><i data-lucide="package"
-                        class="w-5 h-5"></i></a>
+                    class="text-slate-400 hover:text-seven-400 transition-colors">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                </a>
                 <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
-                    class="text-slate-400 hover:text-white transition-colors"><i data-lucide="github"
-                        class="w-5 h-5"></i></a>
+                    class="text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                </a>
             </div>
         </header>
 
-        <!-- SCROLLABLE AREA -->
-        <div class="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth" id="content-area">
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-10" id="content-area">
 
-            <div id="view-intro" class="max-w-4xl mx-auto space-y-12">
-                <div class="text-center py-20">
-                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
-                        <span data-i18n="hero.title1"></span>Build</span> <span class="text-seven-500"
-                            data-i18n="hero.title2">Faster</span>.<br><span data-i18n="hero.title3">Code</span> <span
-                            class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
-                            data-i18n="hero.title4">Less</span>.
+            <!-- INTRO VIEW -->
+            <div id="view-intro" class="max-w-5xl mx-auto space-y-16">
+                <div class="text-center py-16 space-y-8">
+                    <div class="animate-float">
+                        <div
+                            class="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-seven-500 via-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-5xl glow-box">
+                            7</div>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tight">
+                        <span class="text-white" data-i18n="hero.title1">Construa</span>
+                        <span class="gradient-text glow" data-i18n="hero.title2">Rápido</span>.
+                        <br>
+                        <span class="text-white" data-i18n="hero.title3">Codifique</span>
+                        <span class="gradient-text glow" data-i18n="hero.title4">Menos</span>.
                     </h1>
-                    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10" data-i18n="hero.subtitle">The most
-                        advanced macro-based framework
-                        for Discord Bots. Zero dependencies, maximum performance.</p>
-                    <div class="flex justify-center gap-4">
+                    <p class="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed" data-i18n="hero.subtitle">
+                        O framework baseado em macros mais avançado para Discord Bots. Zero dependências, performance
+                        máxima.
+                    </p>
+                    <div class="flex justify-center gap-4 flex-wrap">
                         <button onclick="filterCategory('Core')"
-                            class="bg-seven-600 hover:bg-seven-500 text-white px-6 py-3 rounded-lg font-bold transition-all transform hover:scale-105"
-                            data-i18n="hero.btn.start">Get
-                            Started</button>
+                            class="bg-gradient-to-r from-seven-600 to-indigo-600 hover:from-seven-500 hover:to-indigo-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 shadow-lg shadow-seven-500/30">
+                            <span data-i18n="hero.btn.start">Começar Agora</span> →
+                        </button>
                         <button onclick="document.getElementById('sidebar-search').focus()"
-                            class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium border border-slate-700 transition-all"
-                            data-i18n="hero.btn.search">Search
-                            Macros</button>
+                            class="glass hover:bg-slate-800/80 text-white px-8 py-4 rounded-xl font-medium transition-all">
+                            <span data-i18n="hero.btn.search">Buscar Macros</span>
+                        </button>
                     </div>
                 </div>
 
+                <!-- FEATURE CARDS -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass-card p-6 rounded-xl">
+                    <div class="glass-card p-8 rounded-2xl">
                         <div
-                            class="w-10 h-10 bg-seven-500/10 text-seven-400 rounded-lg flex items-center justify-center mb-4">
-                            <i data-lucide="zap"></i>
+                            class="w-14 h-14 bg-gradient-to-br from-seven-500/20 to-seven-500/5 text-seven-400 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="zap" class="w-7 h-7"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2" data-i18n="card.fast.title">Lightning Fast</h3>
-                        <p class="text-slate-400 text-sm" data-i18n="card.fast.desc">Built on native JSON builders. No
-                            heavy class overhead.
-                            Optimized for Bun.</p>
+                        <h3 class="text-xl font-bold text-white mb-3" data-i18n="card.fast.title">Ultra Rápido</h3>
+                        <p class="text-slate-400 leading-relaxed" data-i18n="card.fast.desc">Feito com JSON builders
+                            nativos. Sem peso extra. Otimizado para Bun.</p>
                     </div>
-                    <div class="glass-card p-6 rounded-xl">
+                    <div class="glass-card p-8 rounded-2xl">
                         <div
-                            class="w-10 h-10 bg-purple-500/10 text-purple-400 rounded-lg flex items-center justify-center mb-4">
-                            <i data-lucide="box"></i>
+                            class="w-14 h-14 bg-gradient-to-br from-purple-500/20 to-purple-500/5 text-purple-400 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="box" class="w-7 h-7"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2" data-i18n="card.macro.title">Macro Framework</h3>
-                        <p class="text-slate-400 text-sm" data-i18n="card.macro.desc">Write complex logic in single
-                            lines.
-                            <code>s.if[s.eq[a;b];...]</code>.
-                        </p>
+                        <h3 class="text-xl font-bold text-white mb-3" data-i18n="card.macro.title">Framework de Macros
+                        </h3>
+                        <p class="text-slate-400 leading-relaxed" data-i18n="card.macro.desc">Escreva lógica complexa em
+                            uma linha. <code class="text-seven-300">s.if[s.eq[a;b];...]</code></p>
                     </div>
-                    <div class="glass-card p-6 rounded-xl">
+                    <div class="glass-card p-8 rounded-2xl">
                         <div
-                            class="w-10 h-10 bg-green-500/10 text-green-400 rounded-lg flex items-center justify-center mb-4">
-                            <i data-lucide="check-circle"></i>
+                            class="w-14 h-14 bg-gradient-to-br from-green-500/20 to-green-500/5 text-green-400 rounded-xl flex items-center justify-center mb-6">
+                            <i data-lucide="check-circle" class="w-7 h-7"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-white mb-2" data-i18n="card.verify.title">Verified Ready</h3>
-                        <p class="text-slate-400 text-sm" data-i18n="card.verify.desc">Full support for Slash Commands,
-                            Buttons, and Modals required
-                            for verification.</p>
+                        <h3 class="text-xl font-bold text-white mb-3" data-i18n="card.verify.title">Pronto p/
+                            Verificação</h3>
+                        <p class="text-slate-400 leading-relaxed" data-i18n="card.verify.desc">Suporte total a Slash
+                            Commands, Botões e Modais.</p>
+                    </div>
+                </div>
+
+                <!-- QUICK START -->
+                <div class="glass-card p-8 rounded-2xl glow-box">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <i data-lucide="terminal" class="text-seven-400"></i>
+                        Quick Start
+                    </h3>
+                    <div class="code-block text-sm">
+                        <pre class="text-slate-300"><span class="text-slate-500"># Instalar</span>
+<span class="text-green-400">bun</span> add seven-discord
+
+<span class="text-slate-500"># Criar bot</span>
+<span class="text-green-400">bunx</span> seven-discord --init --name meu-bot
+
+<span class="text-slate-500"># Rodar</span>
+<span class="text-green-400">bun</span> run dev</pre>
                     </div>
                 </div>
             </div>
 
-            <div id="view-macros" class="max-w-5xl mx-auto hidden">
-                <h2 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
-                    <i data-lucide="book" class="text-seven-500"></i>
-                    <span id="category-title">All Macros</span>
-                </h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="macro-grid">
-                    <!-- Javascript Injected -->
+            <!-- MACROS VIEW -->
+            <div id="view-macros" class="max-w-6xl mx-auto hidden">
+                <div class="flex items-center gap-4 mb-8">
+                    <button onclick="showIntro()" class="text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i data-lucide="book-open" class="text-seven-500"></i>
+                        <span id="category-title">Macros</span>
+                    </h2>
                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4" id="macro-grid"></div>
             </div>
 
-            <!-- WHY SEVEN / STORY SECTION -->
+            <!-- STORY VIEW -->
             <div id="view-story" class="max-w-4xl mx-auto hidden space-y-16 py-10">
-                <!-- Story -->
-                <div class="space-y-6 text-center">
-                    <span class="text-seven-400 font-mono text-sm tracking-widest uppercase">The Origin</span>
-                    <h2 class="text-4xl md:text-5xl font-black text-white">The Story of Seven-Discord</h2>
-                    <p class="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-                        For too long, Discord bot development has been shackled by boilerplate.
-                        Developers spent more time wrestling with classes, intents, and configurations than actually
-                        building features.
+                <div class="text-center space-y-6">
+                    <span class="text-seven-400 font-mono text-sm tracking-widest uppercase" data-i18n="story.origin">A
+                        ORIGEM</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-white" data-i18n="story.title">A História do
+                        Seven-Discord</h2>
+                    <p class="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto" data-i18n="story.content">
+                        Por muito tempo, o desenvolvimento de bots foi preso a códigos repetitivos.
+                        Desenvolvedores gastavam mais tempo lutando com classes e configurações do que criando.
                         <br><br>
-                        We asked: <span class="text-white italic">"What if code could be as fluid as thought?"</span>
+                        A pergunta foi feita: <span class="text-white italic">"E se o código fluísse como o
+                            pensamento?"</span>
                         <br><br>
-                        Seven-Discord was born from this question. Forged in the fires of frustration and refined by the
-                        need for speed,
-                        it is not just a library—it is a rebellion against complexity. It is the tool for the developer
-                        who dares to dream big
-                        and build fast.
+                        O Seven-Discord nasceu dessa pergunta. Forjado na frustração e refinado pela velocidade,
+                        não é apenas uma biblioteca—é uma rebelião contra a complexidade.
                     </p>
                 </div>
 
-                <!-- Advantages -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="col-span-1 md:col-span-2 text-center mb-4">
-                        <h2 class="text-3xl font-bold text-white">Why Choose Seven?</h2>
-                        <p class="text-slate-500">The unfair advantages you get by using Seven-Discord.</p>
-                    </div>
-
-                    <!-- Adv 1 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-seven-500 flex gap-4">
-                        <div class="text-seven-400"><i data-lucide="zap" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Zero Boilerplate</h3>
-                            <p class="text-slate-400 text-sm mt-1">Forget 100 lines of setup. One file. One line. Your
-                                bot is online.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-seven-500">
+                        <div class="flex gap-4">
+                            <div class="text-seven-400"><i data-lucide="zap" class="w-8 h-8"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white" data-i18n="adv.1.title">Zero Boilerplate</h3>
+                                <p class="text-slate-400 text-sm mt-2" data-i18n="adv.1.desc">Esqueça 100 linhas de
+                                    setup. Um arquivo. Uma linha. Seu bot está online.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Adv 2 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-purple-500 flex gap-4">
-                        <div class="text-purple-400"><i data-lucide="code-2" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Macro Supremacy</h3>
-                            <p class="text-slate-400 text-sm mt-1">Logic that previously took 50 lines now takes 5.
-                                <code>s.if</code>, <code>s.math</code>, <code>s.db</code>—all instant.
-                            </p>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-purple-500">
+                        <div class="flex gap-4">
+                            <div class="text-purple-400"><i data-lucide="code-2" class="w-8 h-8"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white" data-i18n="adv.2.title">Supremacia das Macros
+                                </h3>
+                                <p class="text-slate-400 text-sm mt-2" data-i18n="adv.2.desc">Lógica que levava 50
+                                    linhas agora leva 5.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Adv 3 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-green-500 flex gap-4">
-                        <div class="text-green-400"><i data-lucide="cpu" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Bun Native</h3>
-                            <p class="text-slate-400 text-sm mt-1">Built specifically for the Bun runtime. Startup times
-                                in milliseconds, not seconds.</p>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-green-500">
+                        <div class="flex gap-4">
+                            <div class="text-green-400"><i data-lucide="cpu" class="w-8 h-8"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white" data-i18n="adv.3.title">Nativo do Bun</h3>
+                                <p class="text-slate-400 text-sm mt-2" data-i18n="adv.3.desc">Inicialização em
+                                    milissegundos, não segundos.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Adv 4 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-pink-500 flex gap-4">
-                        <div class="text-pink-400"><i data-lucide="layers" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Premium UI Components</h3>
-                            <p class="text-slate-400 text-sm mt-1">Buttons, Select Menus, and Modals are first-class
-                                citizens. Interactive bots made easy.</p>
-                        </div>
-                    </div>
-
-                    <!-- Adv 5 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-yellow-500 flex gap-4">
-                        <div class="text-yellow-400"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Type-Safe & Secure</h3>
-                            <p class="text-slate-400 text-sm mt-1">Full TypeScript support without the hassle. Catch
-                                errors before you run.</p>
-                        </div>
-                    </div>
-
-                    <!-- Adv 6 -->
-                    <div class="glass-card p-6 rounded-xl border-l-4 border-indigo-500 flex gap-4">
-                        <div class="text-indigo-400"><i data-lucide="users" class="w-8 h-8"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Developer Centric</h3>
-                            <p class="text-slate-400 text-sm mt-1">We listen. Features like "Key-Value Arguments" came
-                                directly from user feedback.</p>
+                    <div class="glass-card p-6 rounded-2xl border-l-4 border-pink-500">
+                        <div class="flex gap-4">
+                            <div class="text-pink-400"><i data-lucide="layers" class="w-8 h-8"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white" data-i18n="adv.4.title">Componentes UI Premium
+                                </h3>
+                                <p class="text-slate-400 text-sm mt-2" data-i18n="adv.4.desc">Botões, Menus e Modais são
+                                    cidadãos de primeira classe.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -319,427 +371,183 @@
         </div>
     </main>
 
-    <!-- WHY SEVEN / STORY SECTION -->
-    <div id="view-story" class="max-w-4xl mx-auto hidden space-y-16 py-10">
-        <!-- Story -->
-        <div class="space-y-6 text-center">
-            <span class="text-seven-400 font-mono text-sm tracking-widest uppercase">The Origin</span>
-            <h2 class="text-4xl md:text-5xl font-black text-white">The Story of Seven-Discord</h2>
-            <p class="text-lg text-slate-400 leading-relaxed max-w-3xl mx-auto">
-                For too long, Discord bot development has been shackled by boilerplate.
-                Developers spent more time wrestling with classes, intents, and configurations than actually building
-                features.
-                <br><br>
-                We asked: <span class="text-white italic">"What if code could be as fluid as thought?"</span>
-                <br><br>
-                Seven-Discord was born from this question. Forged in the fires of frustration and refined by the need
-                for speed,
-                it is not just a library—it is a rebellion against complexity. It is the tool for the developer who
-                dares to dream big
-                and build fast.
-            </p>
-        </div>
-
-        <!-- Advantages -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="col-span-1 md:col-span-2 text-center mb-4">
-                <h2 class="text-3xl font-bold text-white">Why Choose Seven?</h2>
-                <p class="text-slate-500">The unfair advantages you get by using Seven-Discord.</p>
-            </div>
-
-            <!-- Adv 1 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-seven-500 flex gap-4">
-                <div class="text-seven-400"><i data-lucide="zap" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Zero Boilerplate</h3>
-                    <p class="text-slate-400 text-sm mt-1">Forget 100 lines of setup. One file. One line. Your bot is
-                        online.</p>
-                </div>
-            </div>
-
-            <!-- Adv 2 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-purple-500 flex gap-4">
-                <div class="text-purple-400"><i data-lucide="code-2" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Macro Supremacy</h3>
-                    <p class="text-slate-400 text-sm mt-1">Logic that previously took 50 lines now takes 5.
-                        <code>s.if</code>, <code>s.math</code>, <code>s.db</code>—all instant.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Adv 3 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-green-500 flex gap-4">
-                <div class="text-green-400"><i data-lucide="cpu" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Bun Native</h3>
-                    <p class="text-slate-400 text-sm mt-1">Built specifically for the Bun runtime. Startup times in
-                        milliseconds, not seconds.</p>
-                </div>
-            </div>
-
-            <!-- Adv 4 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-pink-500 flex gap-4">
-                <div class="text-pink-400"><i data-lucide="layers" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Premium UI Components</h3>
-                    <p class="text-slate-400 text-sm mt-1">Buttons, Select Menus, and Modals are first-class citizens.
-                        Interactive bots made easy.</p>
-                </div>
-            </div>
-
-            <!-- Adv 5 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-yellow-500 flex gap-4">
-                <div class="text-yellow-400"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Type-Safe & Secure</h3>
-                    <p class="text-slate-400 text-sm mt-1">Full TypeScript support without the hassle. Catch errors
-                        before you run.</p>
-                </div>
-            </div>
-
-            <!-- Adv 6 -->
-            <div class="glass-card p-6 rounded-xl border-l-4 border-indigo-500 flex gap-4">
-                <div class="text-indigo-400"><i data-lucide="users" class="w-8 h-8"></i></div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Developer Centric</h3>
-                    <p class="text-slate-400 text-sm mt-1">We listen. Features like "Key-Value Arguments" came directly
-                        from user feedback.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL -->
-    <div id="modal"
-        class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-all opacity-0">
-        <div class="bg-[#0f172a] border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl transform scale-95 transition-all"
-            id="modal-panel">
-            <div class="flex justify-between items-center p-6 border-b border-slate-800 bg-slate-900/50">
+    <div id="modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass w-full max-w-2xl rounded-3xl shadow-2xl transform transition-all" id="modal-panel">
+            <div class="flex justify-between items-center p-6 border-b border-slate-800/50">
                 <div>
-                    <h3 class="text-2xl font-bold font-mono text-seven-400" id="m-name">s.name</h3>
+                    <h3 class="text-2xl font-bold font-mono gradient-text" id="m-name">s.name</h3>
                     <p class="text-xs text-slate-500 uppercase tracking-wider mt-1" id="m-cat">Category</p>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+                <button onclick="closeModal()"
+                    class="w-10 h-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             <div class="p-6 space-y-6">
                 <div>
-                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Description</label>
+                    <label class="text-xs text-seven-400 font-bold uppercase mb-2 block">Descrição</label>
                     <p class="text-slate-300" id="m-desc">Description here.</p>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Usage</label>
+                    <label class="text-xs text-seven-400 font-bold uppercase mb-2 block">Uso</label>
                     <div class="code-block text-seven-300 text-sm" id="m-usage">s.macro[...]</div>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-500 font-bold uppercase mb-2 block">Example</label>
-                    <div class="code-block text-green-300 text-sm bg-green-900/10 border-green-900/30" id="m-example">
+                    <label class="text-xs text-seven-400 font-bold uppercase mb-2 block">Exemplo</label>
+                    <div class="code-block text-green-300 text-sm bg-green-900/10 border-green-500/20" id="m-example">
                         s.macro[...]</div>
                 </div>
             </div>
-            <div class="p-4 bg-slate-900/50 border-t border-slate-800 text-right">
+            <div class="p-4 border-t border-slate-800/50 flex justify-end">
                 <button onclick="closeModal()"
-                    class="text-slate-400 hover:text-white text-sm font-medium">Close</button>
+                    class="px-6 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors">
+                    Fechar
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // ========== DATA ==========
         const macros = [
             // CORE
-            { name: "s.reply", cat: "Core", desc: "Replies to the current message or interaction.", usage: "s.reply[Content]", example: "s.reply[Hello World!]" },
-            { name: "s.log", cat: "Core", desc: "Logs a message to the console.", usage: "s.log[Message]", example: "s.log[Debug: Command ran]" },
-            { name: "s.setVar", cat: "Core", desc: "Sets a variable globally, per guild, or per user.", usage: "s.setVar[Name; Value; Type?; ID?]", example: "s.setVar[xp; 0; user; s.authorID]" },
-            { name: "s.getVar", cat: "Core", desc: "Retrieves a variable value.", usage: "s.getVar[Name; Type?; ID?]", example: "s.getVar[xp; user; s.authorID]" },
+            { name: "s.reply", cat: "Core", desc: "Responde à mensagem ou interação atual.", usage: "s.reply[Content]", example: "s.reply[Hello World!]" },
+            { name: "s.log", cat: "Core", desc: "Registra uma mensagem no console.", usage: "s.log[Message]", example: "s.log[Debug: Command ran]" },
+            { name: "s.setVar", cat: "Core", desc: "Define uma variável globalmente, por servidor ou por usuário.", usage: "s.setVar[Name; Value; Type?; ID?]", example: "s.setVar[xp; 0; user; s.authorID]" },
+            { name: "s.getVar", cat: "Core", desc: "Recupera o valor de uma variável.", usage: "s.getVar[Name; Type?; ID?]", example: "s.getVar[xp; user; s.authorID]" },
+            { name: "s.send", cat: "Core", desc: "Envia uma mensagem para um canal específico.", usage: "s.send[ChannelID; Content]", example: "s.send[123456789; Hello there!]" },
 
             // UI
-            { name: "s.embed", cat: "UI", desc: "Creates a rich embed container. Supports named arguments.", usage: "s.embed[title:Hi; desc:Hello; color:red]", example: "s.embed[title:Welcome; desc:This is a cool embed; color:#5865F2]" },
-            { name: "s.button", cat: "UI", desc: "Creates an interactive button.", usage: "s.button[label:Text; style:primary; id:btn_1; disabled:false]", example: "s.button[label:Google; url:https://google.com] s.button[label:Locked; style:danger; id:no; disabled:true]" },
-            { name: "s.row", cat: "UI", desc: "Groups components. Not strictly needed for single buttons anymore (Auto-Row).", usage: "s.row[...components]", example: "s.row[ s.button[Yes] s.button[No] ]" },
-            { name: "s.selectMenu", cat: "UI", desc: "Creates a dropdown selection menu.", usage: "s.selectMenu[id:menu; place:Choose; min:1; max:1; ...options]", example: "s.selectMenu[id:menu; place:Select Color; s.option[Red;red] s.option[Blue;blue]]" },
-            { name: "s.option", cat: "UI", desc: "Adds an option to a Select Menu.", usage: "s.option[label:Name; value:val; desc:Description; emoji:🔥]", example: "s.option[label:Fire; value:fire; emoji:🔥]" },
-            { name: "s.input", cat: "UI", desc: "Defines a text input field for Modals.", usage: "s.input[id:name; label:Text; style:short|paragraph; required:true]", example: "s.input[id:age; label:Your Age; style:short]" },
-            { name: "s.onInteraction", cat: "UI", desc: "Registers code to run when an interaction ID is triggered.", usage: "s.onInteraction[ID; Code]", example: "s.onInteraction[btn_id; s.reply[Clicked!]]" },
-            { name: "s.modal", cat: "UI", desc: "Creates a Modal form. Must be used as a response to an interaction or command.", usage: "s.modal[id:my_modal; title:My Form; ...inputs]", example: "s.modal[id:apply; title:Apply Now; s.input[id:name; label:Name]]" },
+            { name: "s.embed", cat: "UI", desc: "Cria um embed rico. Suporta argumentos nomeados.", usage: "s.embed[title:Hi; desc:Hello; color:red]", example: "s.embed[title:Welcome; desc:Embed bonito; color:#5865F2]" },
+            { name: "s.button", cat: "UI", desc: "Cria um botão interativo.", usage: "s.button[label:Text; style:primary; id:btn_1]", example: "s.button[label:Clique; style:primary; id:meu_btn]" },
+            { name: "s.row", cat: "UI", desc: "Agrupa componentes.", usage: "s.row[...components]", example: "s.row[ s.button[Sim] s.button[Não] ]" },
+            { name: "s.selectMenu", cat: "UI", desc: "Cria um menu de seleção (dropdown).", usage: "s.selectMenu[id:menu; place:Choose; ...options]", example: "s.selectMenu[id:menu; s.option[Opt1;v1]]" },
+            { name: "s.option", cat: "UI", desc: "Adiciona uma opção a um Menu de Seleção.", usage: "s.option[label:Name; value:val]", example: "s.option[label:Fire; value:fire; emoji:🔥]" },
+            { name: "s.input", cat: "UI", desc: "Define um campo de texto para Modais.", usage: "s.input[id:name; label:Text; style:short]", example: "s.input[id:age; label:Sua Idade; style:short]" },
+            { name: "s.modal", cat: "UI", desc: "Cria um formulário Modal.", usage: "s.modal[id:my_modal; title:My Form; ...inputs]", example: "s.modal[id:apply; title:Aplicar; s.input[id:name; label:Nome]]" },
+            { name: "s.onInteraction", cat: "UI", desc: "Registra código para rodar quando uma interação é ativada.", usage: "s.onInteraction[ID; Code]", example: "s.onInteraction[btn_id; s.reply[Clicado!]]" },
 
             // ECONOMY
-            { name: "s.cash", cat: "Economy", desc: "Gets the user's cash balance.", usage: "s.cash[UserID?]", example: "s.cash[s.authorID]" },
-            { name: "s.bank", cat: "Economy", desc: "Gets the user's bank balance.", usage: "s.bank[UserID?]", example: "s.bank[s.authorID]" },
-            { name: "s.addCash", cat: "Economy", desc: "Adds cash to a user's wallet.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]" },
-            { name: "s.removeCash", cat: "Economy", desc: "Removes cash from a user.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]" },
-            { name: "s.setCash", cat: "Economy", desc: "Sets a user's cash balance directly.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]" },
-            { name: "s.pay", cat: "Economy", desc: "Transfers cash from author to another user.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; @user]" },
-            { name: "s.deposit", cat: "Economy", desc: "Deposits cash into the bank.", usage: "s.deposit[Amount|all]", example: "s.deposit[all]" },
-            { name: "s.withdraw", cat: "Economy", desc: "Withdraws cash from the bank.", usage: "s.withdraw[Amount|all]", example: "s.withdraw[100]" },
-            { name: "s.setCurrency", cat: "Economy", desc: "Sets the currency symbol.", usage: "s.setCurrency[Symbol]", example: "s.setCurrency[$]" },
+            { name: "s.cash", cat: "Economy", desc: "Obtém o saldo da carteira do usuário.", usage: "s.cash[UserID?]", example: "s.cash[s.authorID]" },
+            { name: "s.bank", cat: "Economy", desc: "Obtém o saldo bancário do usuário.", usage: "s.bank[UserID?]", example: "s.bank[s.authorID]" },
+            { name: "s.addCash", cat: "Economy", desc: "Adiciona dinheiro à carteira.", usage: "s.addCash[Amount; UserID]", example: "s.addCash[100; s.authorID]" },
+            { name: "s.removeCash", cat: "Economy", desc: "Remove dinheiro de um usuário.", usage: "s.removeCash[Amount; UserID]", example: "s.removeCash[50; s.authorID]" },
+            { name: "s.setCash", cat: "Economy", desc: "Define o saldo diretamente.", usage: "s.setCash[Amount; UserID]", example: "s.setCash[1000; s.authorID]" },
+            { name: "s.pay", cat: "Economy", desc: "Transfere dinheiro para outro usuário.", usage: "s.pay[Amount; UserID]", example: "s.pay[50; @user]" },
+            { name: "s.deposit", cat: "Economy", desc: "Deposita dinheiro no banco.", usage: "s.deposit[Amount|all]", example: "s.deposit[all]" },
+            { name: "s.withdraw", cat: "Economy", desc: "Saca dinheiro do banco.", usage: "s.withdraw[Amount|all]", example: "s.withdraw[100]" },
+            { name: "s.setCurrency", cat: "Economy", desc: "Define o símbolo da moeda.", usage: "s.setCurrency[Symbol]", example: "s.setCurrency[R$]" },
 
             // MODERATION
-            { name: "s.ban", cat: "Moderation", desc: "Bans a member from the server. Supports KV.", usage: "s.ban[user:ID; reason:Spam]", example: "s.ban[user:12345; reason:Violated rules]" },
-            { name: "s.kick", cat: "Moderation", desc: "Kicks a member.", usage: "s.kick[user:ID; reason:Warning]", example: "s.kick[user:12345; reason:Warning]" },
-            { name: "s.mute", cat: "Moderation", desc: "Timeouts a member (Isolation).", usage: "s.mute[user:ID; time:1h; reason:Bad]", example: "s.mute[user:12345; time:10m; reason:Spam]" },
-            { name: "s.unmute", cat: "Moderation", desc: "Removes timeout.", usage: "s.unmute[UserID]", example: "s.unmute[123456789]" },
-            { name: "s.warn", cat: "Moderation", desc: "Adds a warning to a user.", usage: "s.warn[UserID; Reason]", example: "s.warn[123; Rule 1]" },
-            { name: "s.unwarn", cat: "Moderation", desc: "Removes a specific warning ID.", usage: "s.unwarn[UserID; WarnID]", example: "s.unwarn[123; 1]" },
-            { name: "s.warnings", cat: "Moderation", desc: "Lists user warnings.", usage: "s.warnings[UserID]", example: "s.warnings[123]" },
-            { name: "s.purge", cat: "Moderation", desc: "Bulk deletes messages.", usage: "s.purge[Amount]", example: "s.purge[50]" },
-            { name: "s.lock", cat: "Moderation", desc: "Locks the current channel.", usage: "s.lock[Reason?]", example: "s.lock[Raid in progress]" },
-            { name: "s.unlock", cat: "Moderation", desc: "Unlocks the current channel.", usage: "s.unlock", example: "s.unlock" },
-            { name: "s.slowmode", cat: "Moderation", desc: "Sets channel slowmode.", usage: "s.slowmode[Seconds]", example: "s.slowmode[10]" },
+            { name: "s.ban", cat: "Moderation", desc: "Bane um membro do servidor.", usage: "s.ban[user:ID; reason:Spam]", example: "s.ban[user:12345; reason:Tóxico]" },
+            { name: "s.kick", cat: "Moderation", desc: "Expulsa um membro.", usage: "s.kick[user:ID; reason:Warning]", example: "s.kick[user:12345; reason:Aviso]" },
+            { name: "s.mute", cat: "Moderation", desc: "Silencia um membro (Timeout).", usage: "s.mute[user:ID; time:1h; reason:Bad]", example: "s.mute[user:12345; time:10m; reason:Spam]" },
+            { name: "s.unmute", cat: "Moderation", desc: "Remove o silêncio.", usage: "s.unmute[UserID]", example: "s.unmute[123456789]" },
+            { name: "s.warn", cat: "Moderation", desc: "Adiciona um aviso a um usuário.", usage: "s.warn[UserID; Reason]", example: "s.warn[123; Regra 1]" },
+            { name: "s.unwarn", cat: "Moderation", desc: "Remove um aviso específico.", usage: "s.unwarn[UserID; WarnID]", example: "s.unwarn[123; 1]" },
+            { name: "s.warnings", cat: "Moderation", desc: "Lista os avisos de um usuário.", usage: "s.warnings[UserID]", example: "s.warnings[123]" },
+            { name: "s.purge", cat: "Moderation", desc: "Deleta mensagens em massa.", usage: "s.purge[Amount]", example: "s.purge[50]" },
+            { name: "s.lock", cat: "Moderation", desc: "Tranca o canal atual.", usage: "s.lock[Reason?]", example: "s.lock[Raid em andamento]" },
+            { name: "s.unlock", cat: "Moderation", desc: "Destranca o canal atual.", usage: "s.unlock", example: "s.unlock" },
+            { name: "s.slowmode", cat: "Moderation", desc: "Define o modo lento do canal.", usage: "s.slowmode[Seconds]", example: "s.slowmode[10]" },
 
-            // LOGIC & MATH
-            { name: "s.if", cat: "Logic", desc: "Conditional execution.", usage: "s.if[Condition; TrueCode; FalseCode]", example: "s.if[s.eq[1;1]; Equal; Not Equal]" },
-            { name: "s.eq", cat: "Logic", desc: "Equality check (Returns 'true' or 'false').", usage: "s.eq[A; B]", example: "s.eq[s.channelId; 12345]" },
-            { name: "s.math", cat: "Math", desc: "Evaluates a mathematical expression.", usage: "s.math[Expression]", example: "s.math[100 * 2]" },
-            { name: "s.random", cat: "Math", desc: "Returns a random integer between min and max.", usage: "s.random[Min; Max]", example: "s.random[1; 100]" },
+            // LOGIC
+            { name: "s.if", cat: "Logic", desc: "Execução condicional.", usage: "s.if[Condition; TrueCode; FalseCode]", example: "s.if[s.eq[1;1]; Igual; Diferente]" },
+            { name: "s.eq", cat: "Logic", desc: "Verificação de igualdade.", usage: "s.eq[A; B]", example: "s.eq[s.channelId; 12345]" },
+
+            // MATH
+            { name: "s.math", cat: "Math", desc: "Avalia uma expressão matemática.", usage: "s.math[Expression]", example: "s.math[100 * 2]" },
+            { name: "s.random", cat: "Math", desc: "Retorna um número aleatório.", usage: "s.random[Min; Max]", example: "s.random[1; 100]" },
 
             // STRING
-            { name: "s.len", cat: "String", desc: "Returns length of string.", usage: "s.len[Text]", example: "s.len[Hello]" },
-            { name: "s.upper", cat: "String", desc: "Converts to uppercase.", usage: "s.upper[Text]", example: "s.upper[hello]" },
-            { name: "s.lower", cat: "String", desc: "Converts to lowercase.", usage: "s.lower[Text]", example: "s.lower[HELLO]" },
-
-            { name: "s.send", cat: "Core", desc: "Sends a message to a specific channel.", usage: "s.send[ChannelID; Content]", example: "s.send[123456789; Hello there!]" },
+            { name: "s.len", cat: "String", desc: "Retorna o tamanho do texto.", usage: "s.len[Text]", example: "s.len[Hello]" },
+            { name: "s.upper", cat: "String", desc: "Converte para maiúsculas.", usage: "s.upper[Text]", example: "s.upper[hello]" },
+            { name: "s.lower", cat: "String", desc: "Converte para minúsculas.", usage: "s.lower[Text]", example: "s.lower[HELLO]" },
 
             // SYSTEM
-            { name: "s.ping", cat: "System", desc: "Returns bot API latency.", usage: "s.ping", example: "s.ping" },
-            { name: "s.uptime", cat: "System", desc: "Returns formatted uptime.", usage: "s.uptime", example: "s.uptime" },
-            { name: "s.time", cat: "System", desc: "Returns current time (Real Hours).", usage: "s.time[Zone?]", example: "s.time[America/Sao_Paulo]" },
-            { name: "s.cooldown", cat: "System", desc: "Applies a cooldown to the user.", usage: "s.cooldown[Seconds; Msg?]", example: "s.cooldown[10; wait!]" },
-            { name: "s.botInfo", cat: "System", desc: "Shows RAM/CPU usage.", usage: "s.botInfo", example: "s.botInfo" },
-            { name: "s.serverInfo", cat: "System", desc: "Displays server stats.", usage: "s.serverInfo", example: "s.serverInfo" },
-            { name: "s.userInfo", cat: "System", desc: "Displays user stats.", usage: "s.userInfo[UserID?]", example: "s.userInfo" },
-            { name: "s.avatar", cat: "System", desc: "Returns user avatar. Supports KV, ID, or Link.", usage: "s.avatar[user:ID]", example: "s.avatar[user:123] or s.avatar[link]" },
-            { name: "s.eval", cat: "System", desc: "Evaluates JavaScript code (Dangerous).", usage: "s.eval[Code]", example: "s.eval[2+2]" },
-            { name: "s.setStatus", cat: "System", desc: "Sets the bot's status activity.", usage: "s.setStatus[type:playing; status:online; name:Seven-Discord]", example: "s.setStatus[type:watching; name:You]" },
-            { name: "s.shutdown", cat: "System", desc: "Shuts down the bot.", usage: "s.shutdown", example: "s.shutdown" },
+            { name: "s.ping", cat: "System", desc: "Retorna a latência da API.", usage: "s.ping", example: "s.ping" },
+            { name: "s.uptime", cat: "System", desc: "Retorna o tempo de atividade.", usage: "s.uptime", example: "s.uptime" },
+            { name: "s.time", cat: "System", desc: "Retorna a hora atual.", usage: "s.time[Zone?]", example: "s.time[America/Sao_Paulo]" },
+            { name: "s.cooldown", cat: "System", desc: "Aplica um cooldown ao usuário.", usage: "s.cooldown[Seconds; Msg?]", example: "s.cooldown[10; Aguarde!]" },
+            { name: "s.botInfo", cat: "System", desc: "Mostra uso de RAM/CPU.", usage: "s.botInfo", example: "s.botInfo" },
+            { name: "s.serverInfo", cat: "System", desc: "Mostra estatísticas do servidor.", usage: "s.serverInfo", example: "s.serverInfo" },
+            { name: "s.userInfo", cat: "System", desc: "Mostra estatísticas do usuário.", usage: "s.userInfo[UserID?]", example: "s.userInfo" },
+            { name: "s.avatar", cat: "System", desc: "Retorna o avatar do usuário.", usage: "s.avatar[user:ID]", example: "s.avatar[user:123]" },
+            { name: "s.eval", cat: "System", desc: "Avalia código JavaScript (Perigoso).", usage: "s.eval[Code]", example: "s.eval[2+2]" },
+            { name: "s.setStatus", cat: "System", desc: "Define o status do bot.", usage: "s.setStatus[type:playing; name:Seven]", example: "s.setStatus[type:watching; name:Você]" },
+            { name: "s.shutdown", cat: "System", desc: "Desliga o bot.", usage: "s.shutdown", example: "s.shutdown" },
 
             // VARIABLES
-            { name: "s.authorID", cat: "Variables", desc: "Returns the ID of the command author.", usage: "s.authorID", example: "s.ban[user:s.authorID]" },
-            { name: "s.username", cat: "Variables", desc: "Returns the username of the author.", usage: "s.username", example: "Hello s.username!" },
-            { name: "s.channelId", cat: "Variables", desc: "Returns the current channel ID.", usage: "s.channelId", example: "Current channel: s.channelId" },
-            { name: "s.serverName", cat: "Variables", desc: "Returns the Server ID (Legacy Name).", usage: "s.serverName", example: "s.serverName" },
-            { name: "s.content", cat: "Variables", desc: "Returns the raw message content.", usage: "s.content", example: "You said: s.content" },
-            { name: "s.arg", cat: "Variables", desc: "Returns a specific argument from the command.", usage: "s.arg[Index]", example: "s.arg[1]" },
-
-            // SPECIAL TUTORIALS
-            { name: "Aliases & Cooldowns", cat: "Tutorials", desc: "Commands now support 'aliases: [...]' and 'cooldown: 5' in config.", usage: "Config Only", example: "module.exports = { name: 'test', aliases: ['t'], cooldown: 10, ... }" },
-            { name: "Modals (Easy)", cat: "Tutorials", desc: "Create Modals easily.", usage: "s.modal[id; title; s.input[...]]", example: "s.modal[id:form; title:Apply; s.input[id:name; label:Name]]" },
-            { name: "Affiliates System", cat: "Tutorials", desc: "How to create an Affiliates/Partnership system using Buttons and Logic.", usage: "See Example", example: "s.embed[title:Partnership; desc:Click below to partner!] s.button[label:Apply; style:primary; id:apply_partner]\n\ns.onInteraction[apply_partner; \n  s.reply[Thank you for applying! We will review your server.]\n  s.log[New Partner App from s.authorID]\n]" },
+            { name: "s.authorID", cat: "Variables", desc: "Retorna o ID do autor do comando.", usage: "s.authorID", example: "s.ban[user:s.authorID]" },
+            { name: "s.username", cat: "Variables", desc: "Retorna o nome do autor.", usage: "s.username", example: "Olá s.username!" },
+            { name: "s.channelId", cat: "Variables", desc: "Retorna o ID do canal atual.", usage: "s.channelId", example: "Canal: s.channelId" },
+            { name: "s.content", cat: "Variables", desc: "Retorna o conteúdo bruto da mensagem.", usage: "s.content", example: "Você disse: s.content" },
+            { name: "s.arg", cat: "Variables", desc: "Retorna um argumento específico do comando.", usage: "s.arg[Index]", example: "s.arg[1]" },
         ];
 
-        // LOGIC
+        // ========== TRANSLATIONS ==========
+        const translations = {
+            en: {
+                "hero.title1": "Build", "hero.title2": "Faster", "hero.title3": "Code", "hero.title4": "Less",
+                "hero.subtitle": "The most advanced macro-based framework for Discord Bots. Zero dependencies, maximum performance.",
+                "hero.btn.start": "Get Started", "hero.btn.search": "Search Macros",
+                "card.fast.title": "Lightning Fast", "card.fast.desc": "Built on native JSON builders. No heavy class overhead. Optimized for Bun.",
+                "card.macro.title": "Macro Framework", "card.macro.desc": "Write complex logic in single lines.",
+                "card.verify.title": "Verified Ready", "card.verify.desc": "Full support for Slash Commands, Buttons, and Modals.",
+                "nav.resources": "RESOURCES", "nav.intro": "Introduction", "nav.story": "Why Seven?",
+                "story.origin": "THE ORIGIN", "story.title": "The Story of Seven-Discord",
+                "story.content": "For too long, Discord bot development has been shackled by boilerplate...",
+                "adv.1.title": "Zero Boilerplate", "adv.1.desc": "One file. One line. Your bot is online.",
+                "adv.2.title": "Macro Supremacy", "adv.2.desc": "Logic that took 50 lines now takes 5.",
+                "adv.3.title": "Bun Native", "adv.3.desc": "Startup in milliseconds, not seconds.",
+                "adv.4.title": "Premium UI Components", "adv.4.desc": "Buttons, Menus, Modals are first-class citizens.",
+                "cat.Core": "Core", "cat.UI": "UI", "cat.Economy": "Economy", "cat.Moderation": "Moderation",
+                "cat.Logic": "Logic", "cat.Math": "Math", "cat.String": "String", "cat.System": "System", "cat.Variables": "Variables"
+            },
+            pt: {
+                "hero.title1": "Construa", "hero.title2": "Rápido", "hero.title3": "Codifique", "hero.title4": "Menos",
+                "hero.subtitle": "O framework baseado em macros mais avançado para Discord Bots. Zero dependências, performance máxima.",
+                "hero.btn.start": "Começar Agora", "hero.btn.search": "Buscar Macros",
+                "card.fast.title": "Ultra Rápido", "card.fast.desc": "Feito com JSON builders nativos. Sem peso extra. Otimizado para Bun.",
+                "card.macro.title": "Framework de Macros", "card.macro.desc": "Escreva lógica complexa em uma linha.",
+                "card.verify.title": "Pronto p/ Verificação", "card.verify.desc": "Suporte total a Slash Commands, Botões e Modais.",
+                "nav.resources": "RECURSOS", "nav.intro": "Introdução", "nav.story": "Por que Seven?",
+                "story.origin": "A ORIGEM", "story.title": "A História do Seven-Discord",
+                "story.content": "Por muito tempo, o desenvolvimento de bots foi preso a códigos repetitivos...",
+                "adv.1.title": "Zero Boilerplate", "adv.1.desc": "Um arquivo. Uma linha. Seu bot está online.",
+                "adv.2.title": "Supremacia das Macros", "adv.2.desc": "Lógica que levava 50 linhas agora leva 5.",
+                "adv.3.title": "Nativo do Bun", "adv.3.desc": "Inicialização em milissegundos, não segundos.",
+                "adv.4.title": "Componentes UI Premium", "adv.4.desc": "Botões, Menus e Modais são cidadãos de primeira classe.",
+                "cat.Core": "Principal", "cat.UI": "Interface", "cat.Economy": "Economia", "cat.Moderation": "Moderação",
+                "cat.Logic": "Lógica", "cat.Math": "Matemática", "cat.String": "Texto", "cat.System": "Sistema", "cat.Variables": "Variáveis"
+            }
+        };
+
+        // ========== STATE ==========
+        let currentLang = 'pt';
         const categories = [...new Set(macros.map(m => m.cat))].sort();
         const nav = document.getElementById('sidebar-nav');
         const grid = document.getElementById('macro-grid');
         const searchInput = document.getElementById('sidebar-search');
 
-        // I18N SYSTEM
-        let currentLang = 'en';
-
-        const translations = {
-            en: {
-                "nav.resources": "RESOURCES",
-                "nav.intro": "Introduction",
-                "nav.story": "Why Seven?",
-                "hero.title1": "Build",
-                "hero.title2": "Faster",
-                "hero.title3": "Code",
-                "hero.title4": "Less",
-                "hero.subtitle": "The most advanced macro-based framework for Discord Bots. Zero dependencies, maximum performance.",
-                "hero.btn.start": "Get Started",
-                "hero.btn.search": "Search Macros",
-                "card.fast.title": "Lightning Fast",
-                "card.fast.desc": "Built on native JSON builders. No heavy class overhead. Optimized for Bun.",
-                "card.macro.title": "Macro Framework",
-                "card.macro.desc": "Write complex logic in single lines. s.if[s.eq[a;b];...].",
-                "card.verify.title": "Verified Ready",
-                "card.verify.desc": "Full support for Slash Commands, Buttons, and Modals required for verification.",
-                "story.origin": "THE ORIGIN",
-                "story.title": "The Story of Seven-Discord",
-                "story.content": "For too long, Discord bot development has been shackled by boilerplate. Developers spent more time wrestling with classes, intents, and configurations than actually building features.<br><br>The question was asked: <span class='text-white italic'>\"What if code could be as fluid as thought?\"</span><br><br>Seven-Discord was born from this query. Forged in the fires of frustration and refined by the need for speed, it is not just a library—it is a rebellion against complexity.",
-                "story.why": "Why Choose Seven?",
-                "story.whySub": "The unfair advantages offered by Seven-Discord.",
-                "adv.1.title": "Zero Boilerplate",
-                "adv.1.desc": "Forget 100 lines of setup. One file. One line. Your bot is online.",
-                "adv.2.title": "Macro Supremacy",
-                "adv.2.desc": "Logic that previously took 50 lines now takes 5. s.if, s.math, s.db—all instant.",
-                "adv.3.title": "Bun Native",
-                "adv.3.desc": "Built specifically for the Bun runtime. Startup times in milliseconds, not seconds.",
-                "adv.4.title": "Premium UI Components",
-                "adv.4.desc": "Buttons, Select Menus, and Modals are first-class citizens. Interactive bots made easy.",
-                "adv.5.title": "Type-Safe & Secure",
-                "adv.5.desc": "Full TypeScript support without the hassle. Catch errors before you run.",
-                "adv.6.title": "Developer Centric",
-                "adv.6.desc": "Driven by community feedback. Features like \"Key-Value Arguments\" came directly from users.",
-                "modal.desc": "DESCRIPTION",
-                "modal.usage": "USAGE",
-                "modal.ex": "EXAMPLE",
-                "modal.close": "Close"
-            },
-            pt: {
-                "nav.resources": "RECURSOS",
-                "nav.intro": "Introdução",
-                "nav.story": "Por que Seven?",
-                "hero.title1": "Construa",
-                "hero.title2": "Rápido",
-                "hero.title3": "Codifique",
-                "hero.title4": "Menos",
-                "hero.subtitle": "O framework baseado em macros mais avançado para Discord Bots. Zero dependências, performance máxima.",
-                "hero.btn.start": "Começar",
-                "hero.btn.search": "Buscar Macros",
-                "card.fast.title": "Ultra Rápido",
-                "card.fast.desc": "Feito com JSON builders nativos. Sem peso extra. Otimizado para Bun.",
-                "card.macro.title": "Framework de Macros",
-                "card.macro.desc": "Escreva lógica complexa em uma linha. s.if[s.eq[a;b];...].",
-                "card.verify.title": "Pronto p/ Verificação",
-                "card.verify.desc": "Suporte total a Slash Commands, Botões e Modais necessários para verificação.",
-                "story.origin": "A ORIGEM",
-                "story.title": "A História do Seven-Discord",
-                "story.content": "Por muito tempo, o desenvolvimento de bots foi preso a códigos repetitivos. Desenvolvedores gastavam mais tempo lutando com classes e configurações do que criando.<br><br>A pergunta foi feita: <span class='text-white italic'>\"E se o código fluísse como o pensamento?\"</span><br><br>O Seven-Discord nasceu dessa pergunta. Forjado na frustração e refinado pela velocidade, não é apenas uma biblioteca—é uma rebelião contra a complexidade.",
-                "story.why": "Por que escolher Seven?",
-                "story.whySub": "As vantagens desleais que você tem usando Seven-Discord.",
-                "adv.1.title": "Zero Boilerplate",
-                "adv.1.desc": "Esqueça 100 linhas de setup. Um arquivo. Uma linha. Seu bot está online.",
-                "adv.2.title": "Supremacia das Macros",
-                "adv.2.desc": "Lógica que levava 50 linhas agora leva 5. s.if, s.math, s.db—tudo instantâneo.",
-                "adv.3.title": "Nativo do Bun",
-                "adv.3.desc": "Feito especificamente para Bun. Inicialização em milissegundos, não segundos.",
-                "adv.4.title": "Componentes UI Premium",
-                "adv.4.desc": "Botões, Menus e Modais são cidadãos de primeira classe. Bots interativos fáceis.",
-                "adv.5.title": "Type-Safe & Seguro",
-                "adv.5.desc": "Suporte total a TypeScript sem dor de cabeça. Pegue erros antes de rodar.",
-                "adv.6.title": "Centrado no Dev",
-                "adv.6.desc": "Guiado por feedback. Funcionalidades como \"Argumentos Chave-Valor\" vieram de usuários.",
-                "modal.desc": "DESCRIÇÃO",
-                "modal.usage": "USO",
-                "modal.ex": "EXEMPLO",
-                "modal.close": "Fechar",
-
-                // CATEGORIES
-                "cat.Core": "Principal",
-                "cat.UI": "Interface",
-                "cat.Economy": "Economia",
-                "cat.Moderation": "Moderação",
-                "cat.Logic": "Lógica",
-                "cat.Math": "Matemática",
-                "cat.String": "Texto",
-                "cat.System": "Sistema",
-                "cat.Tutorials": "Tutoriais",
-                "cat.Variables": "Variáveis",
-
-                // MACROS
-                "m.s.reply": "Responde à mensagem ou interação atual.",
-                "m.s.log": "Registra uma mensagem no console.",
-                "m.s.setVar": "Define uma variável globalmente, por servidor ou por usuário.",
-                "m.s.getVar": "Recupera o valor de uma variável.",
-                "m.s.embed": "Cria um embed rico. Suporta argumentos nomeados.",
-                "m.s.button": "Cria um botão interativo.",
-                "m.s.row": "Agrupa componentes (Não é mais estritamente necessário).",
-                "m.s.selectMenu": "Cria um menu de seleção (dropdown).",
-                "m.s.option": "Adiciona uma opção a um Menu de Seleção.",
-                "m.s.input": "Define um campo de texto para Modais.",
-                "m.s.onInteraction": "Registra código para rodar quando uma interação é ativada.",
-                "m.s.modal": "Cria um formulário Modal.",
-                "m.s.cash": "Obtém o saldo da carteira do usuário.",
-                "m.s.bank": "Obtém o saldo bancário do usuário.",
-                "m.s.addCash": "Adiciona dinheiro à carteira do usuário.",
-                "m.s.removeCash": "Remove dinheiro de um usuário.",
-                "m.s.setCash": "Define o saldo de um usuário diretamente.",
-                "m.s.pay": "Transfere dinheiro para outro usuário.",
-                "m.s.deposit": "Deposita dinheiro no banco.",
-                "m.s.withdraw": "Saca dinheiro do banco.",
-                "m.s.setCurrency": "Define o símbolo da moeda.",
-                "m.s.ban": "Bane um membro do servidor. Suporta KV.",
-                "m.s.kick": "Expulsa um membro.",
-                "m.s.mute": "Silencia um membro (Timeout).",
-                "m.s.unmute": "Remove o silêncio.",
-                "m.s.warn": "Adiciona um aviso a um usuário.",
-                "m.s.unwarn": "Remove um aviso específico.",
-                "m.s.warnings": "Lista os avisos de um usuário.",
-                "m.s.purge": "Deleta mensagens em massa.",
-                "m.s.lock": "Tranca o canal atual.",
-                "m.s.unlock": "Destranca o canal atual.",
-                "m.s.slowmode": "Define o modo lento do canal.",
-                "m.s.if": "Execução condicional.",
-                "m.s.eq": "Verificação de igualdade (Retorna 'true' ou 'false').",
-                "m.s.math": "Avalia uma expressão matemática.",
-                "m.s.random": "Retorna um número aleatório entre min e max.",
-                "m.s.len": "Retorna o tamanho do texto.",
-                "m.s.upper": "Converte para maiúsculas.",
-                "m.s.lower": "Converte para minúsculas.",
-                "m.s.send": "Envia uma mensagem para um canal específico.",
-                "m.s.ping": "Retorna a latência da API do bot.",
-                "m.s.uptime": "Retorna o tempo de atividade formatado.",
-                "m.s.time": "Retorna a hora atual (Real Hours).",
-                "m.s.cooldown": "Aplica um cooldown ao usuário.",
-                "m.s.botInfo": "Mostra uso de RAM/CPU.",
-                "m.s.serverInfo": "Mostra estatísticas do servidor.",
-                "m.s.userInfo": "Mostra estatísticas do usuário.",
-                "m.s.avatar": "Retorna o avatar do usuário.",
-                "m.s.eval": "Avalia código JavaScript (Perigoso).",
-                "m.s.setStatus": "Define o status do bot.",
-                "m.s.shutdown": "Desliga o bot.",
-                "m.s.authorID": "Retorna o ID do autor do comando.",
-                "m.s.username": "Retorna o nome do autor.",
-                "m.s.channelId": "Retorna o ID do canal atual.",
-                "m.s.serverName": "Retorna o ID do Servidor (Nome Legado).",
-                "m.s.content": "Retorna o conteúdo bruto da mensagem.",
-                "m.s.arg": "Retorna um argumento específico do comando.",
-                "Aliases & Cooldowns": "Comandos agora suportam 'aliases: [...]' e 'cooldown: 5'.",
-                "Modals (Easy)": "Crie Modais facilmente.",
-                "Affiliates System": "Como criar um sistema de Parcerias."
-            }
-        };
-
-        function setLang(lang) {
-            currentLang = lang;
-
-            // Update Buttons
-            document.getElementById('btn-en').className = lang === 'en' ? "px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-white transition-colors bg-slate-700" : "px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-slate-400 transition-colors";
-            document.getElementById('btn-pt').className = lang === 'pt' ? "px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-white transition-colors bg-slate-700" : "px-2 py-1 text-xs font-bold rounded hover:bg-slate-700 text-slate-400 transition-colors";
-
-            // Update Static Text
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) el.innerHTML = translations[lang][key];
-            });
-
-            // Re-render dynamic parts
-            renderSidebar();
-
-            // Re-render Grid if visible
-            const activeCat = document.getElementById('page-title').innerText;
-            if (categories.includes(activeCat) || activeCat.includes("Results") || activeCat === "Search Results") {
-                // If it's a category match, re-filter
-                if (categories.includes(activeCat)) {
-                    filterCategory(activeCat);
-                } else if (document.getElementById('view-macros').classList.contains('hidden') === false) {
-                    // Search result or general list
-                    // Just re-trigger search or default
-                }
-            }
+        // ========== FUNCTIONS ==========
+        function hideAllViews() {
+            document.getElementById('view-intro').classList.add('hidden');
+            document.getElementById('view-macros').classList.add('hidden');
+            document.getElementById('view-story').classList.add('hidden');
         }
 
-        // Render Sidebar
-        function renderSidebar() {
-            const t = translations[currentLang];
+        function showIntro() {
+            hideAllViews();
+            document.getElementById('view-intro').classList.remove('hidden');
+            document.getElementById('page-title').innerText = currentLang === 'pt' ? 'Início' : 'Home';
+        }
 
-            nav.innerHTML = categories.map(cat => {
-                const localizedCat = t[`cat.${cat}`] || cat;
-                return `
-                <button onclick="filterCategory('${cat}')" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    ${localizedCat}
-                </button>
-            `}).join('');
-
-            nav.innerHTML += `
-                <div class="mt-4 pt-4 border-t border-slate-800 px-4 mb-2 text-xs font-bold text-slate-600 uppercase">${t["nav.resources"]}</div>
-                <button onclick="showIntro()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    ${t["nav.intro"]}
-                </button>
-                <button onclick="showStory()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    ${t["nav.story"]}
-                </button>
-            `;
+        function showStory() {
+            hideAllViews();
+            document.getElementById('view-story').classList.remove('hidden');
+            document.getElementById('page-title').innerText = translations[currentLang]['nav.story'];
         }
 
         function filterCategory(cat) {
@@ -756,22 +564,100 @@
             renderGrid(filtered);
         }
 
+        function renderSidebar() {
+            const t = translations[currentLang];
+
+            nav.innerHTML = categories.map(cat => {
+                const localizedCat = t[`cat.${cat}`] || cat;
+                return `<button onclick="filterCategory('${cat}')" class="sidebar-link w-full text-left px-4 py-2.5 text-sm text-slate-400 font-medium rounded-r-lg">${localizedCat}</button>`;
+            }).join('');
+
+            nav.innerHTML += `
+                <div class="mt-6 pt-4 border-t border-slate-800/50 px-4 mb-2 text-xs font-bold text-slate-600 uppercase">${t["nav.resources"]}</div>
+                <button onclick="showIntro()" class="sidebar-link w-full text-left px-4 py-2.5 text-sm text-slate-400 font-medium rounded-r-lg">${t["nav.intro"]}</button>
+                <button onclick="showStory()" class="sidebar-link w-full text-left px-4 py-2.5 text-sm text-slate-400 font-medium rounded-r-lg">${t["nav.story"]}</button>
+            `;
+        }
+
         function renderGrid(list) {
             const t = translations[currentLang];
             grid.innerHTML = list.map(m => {
-                const localizedDesc = t[`m.${m.name}`] || t[m.name] || m.desc;
                 const localizedCat = t[`cat.${m.cat}`] || m.cat;
-
                 return `
-                <div onclick="openModal('${m.name}')" class="glass-card p-5 rounded-lg cursor-pointer group">
-                    <div class="flex items-center justify-between mb-2">
-                        <code class="text-seven-400 font-bold bg-seven-900/20 px-2 py-1 rounded text-sm group-hover:text-seven-300">${m.name}</code>
-                        <span class="text-xs text-slate-600 border border-slate-800 px-1.5 py-0.5 rounded">${localizedCat}</span>
+                <div onclick="openModal('${m.name}')" class="glass-card p-5 rounded-xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <code class="text-seven-400 font-bold bg-seven-500/10 px-3 py-1 rounded-lg text-sm">${m.name}</code>
+                        <span class="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-md">${localizedCat}</span>
                     </div>
-                    <p class="text-slate-400 text-sm line-clamp-2">${localizedDesc}</p>
-                </div>
-            `}).join('');
+                    <p class="text-slate-400 text-sm leading-relaxed line-clamp-2">${m.desc}</p>
+                </div>`;
+            }).join('');
         }
+
+        function openModal(name) {
+            const m = macros.find(x => x.name === name);
+            if (!m) return;
+
+            const t = translations[currentLang];
+            document.getElementById('m-name').innerText = m.name;
+            document.getElementById('m-cat').innerText = t[`cat.${m.cat}`] || m.cat;
+            document.getElementById('m-desc').innerText = m.desc;
+            document.getElementById('m-usage').innerText = m.usage;
+            document.getElementById('m-example').innerText = m.example;
+
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            // Update buttons
+            document.getElementById('btn-en').className = `lang-btn px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${lang === 'en' ? 'bg-seven-500 text-white' : 'text-slate-400 hover:text-white'}`;
+            document.getElementById('btn-pt').className = `lang-btn px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${lang === 'pt' ? 'bg-seven-500 text-white' : 'text-slate-400 hover:text-white'}`;
+
+            // Update data-i18n elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+
+            renderSidebar();
+        }
+
+        // ========== SEARCH ==========
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if (term.length > 0) {
+                hideAllViews();
+                document.getElementById('view-macros').classList.remove('hidden');
+                document.getElementById('page-title').innerText = 'Busca';
+                document.getElementById('category-title').innerText = `Resultados para "${term}"`;
+
+                const filtered = macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term));
+                renderGrid(filtered);
+            } else {
+                showIntro();
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        // ========== INIT ==========
+        lucide.createIcons();
+        renderSidebar();
+        setLang('pt');
     </script>
 </body>
 
