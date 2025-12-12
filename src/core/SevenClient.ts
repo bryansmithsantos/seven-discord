@@ -89,7 +89,7 @@ export class SevenClient {
             }
             return bitfield;
         }
-        return Intents.ALL;
+        return Intents.SevenAll;
     }
 
     public loadCommands(dir: string): void {

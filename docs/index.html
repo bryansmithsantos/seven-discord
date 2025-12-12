@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.5.22</title>
+    <title>Seven-Discord v2.5.22 - The Logic Framework</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -73,6 +73,7 @@
             border: 1px solid #333;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
         .mac-header {
@@ -101,6 +102,7 @@
             background: #27c93f;
         }
 
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -122,7 +124,7 @@
 
 <body class="flex h-screen overflow-hidden text-sm">
 
-    <!-- Specs Panel -->
+    <!-- Specs Panel (Drawer) -->
     <aside id="specs-panel"
         class="spec-panel fixed inset-y-0 right-0 w-full md:w-[480px] bg-[#080808] border-l border-border-800 z-50 flex flex-col shadow-2xl">
         <div class="p-6 border-b border-border-800 flex justify-between items-center bg-[#080808]">
@@ -142,9 +144,8 @@
         <div class="flex-1 overflow-y-auto p-6 space-y-8">
             <div>
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Description</h4>
-                <p id="spec-desc" class="text-gray-300 leading-relaxed">...</p>
+                <p id="spec-desc" class="text-gray-300 leading-relaxed font-sans">...</p>
             </div>
-
             <div id="spec-args-container">
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Arguments</h4>
                 <div class="bg-bg-700/50 rounded border border-border-800 overflow-hidden">
@@ -161,7 +162,6 @@
                     </table>
                 </div>
             </div>
-
             <div>
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Example Usage</h4>
                 <div class="mac-window">
@@ -180,7 +180,6 @@
         class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-40 hidden opacity-0 transition-opacity duration-300">
     </div>
 
-
     <!-- Sidebar -->
     <nav class="w-64 bg-bg-900 border-r border-border-800 flex flex-col h-full flex-shrink-0">
         <div class="p-5 border-b border-border-800">
@@ -190,28 +189,36 @@
                 <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.22</span>
             </h1>
         </div>
-
         <div class="p-3">
             <input type="text" id="search" placeholder="Filter..."
                 class="w-full bg-bg-800 border border-border-800 rounded px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-gray-600 transition-colors font-mono">
         </div>
-
         <div class="flex-1 overflow-y-auto px-3 py-2 space-y-6 sidebar-scroll">
             <div class="nav-group">
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2">General</h4>
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2" data-lang="en">
+                    General</h4>
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2 hidden"
+                    data-lang="pt">Geral</h4>
+
                 <a href="#intro"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Start
                     Here</a>
                 <a href="#history"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Comparison
-                    (vs DJS)</a>
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">The
+                    Story (vs DJS)</a>
+                <a href="#intents"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Intents
+                    System</a>
                 <a href="#events"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Event
                     System</a>
             </div>
-
             <div class="nav-group">
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2">Macros</h4>
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2" data-lang="en">
+                    Macros</h4>
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2 hidden"
+                    data-lang="pt">Macros</h4>
+
                 <a href="#section-core"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Core
                     & IO</a>
@@ -235,7 +242,6 @@
                     Ops</a>
             </div>
         </div>
-
         <div class="p-4 border-t border-border-800">
             <div class="flex border border-border-800 rounded overflow-hidden">
                 <button onclick="setLang('en')"
@@ -259,69 +265,162 @@
                             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Faster.</span>
                     </h1>
                     <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">The high-performance Discord framework
-                        for <strong>Bun</strong>.</p>
+                        for <strong>Bun</strong>. <br> Stop writing boilerplate. Start writing logic.</p>
                 </div>
                 <div data-lang="pt" class="hidden">
                     <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Crie Bots, <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Mais
                             Rápido.</span></h1>
                     <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">O framework Discord de alta performance
-                        para <strong>Bun</strong>.</p>
+                        para <strong>Bun</strong>. <br> Pare de escrever boilerplate. Comece a escrever lógica.</p>
                 </div>
             </section>
 
-            <!-- History / Comparison -->
+            <!-- History / Story -->
             <section id="history" class="mb-24 scroll-mt-20">
-                <h2 class="text-2xl font-bold text-white mb-6">Seven vs Discord.js</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div data-lang="en">
+                    <h2 class="text-3xl font-bold text-white mb-8">The Story of Seven</h2>
+                    <div class="prose prose-invert text-gray-400 max-w-none space-y-6">
+                        <p>
+                            In the early days of Discord Bot development, we had libraries like Discord.js (DJS) and
+                            Eris. They were powerful, but <b>extremely verbose</b>.
+                            To send a simple embedded message with buttons in DJS v14, you need approximately 40 lines
+                            of code, importing multiple builders, managers, and handling async/await promises manually.
+                        </p>
+                        <p>
+                            <b>Seven-Discord was born from frustration.</b> We wanted the power of a real coding
+                            language (TypeScript) but with the simplicity of "Low-Code" tools like Bot Designer for
+                            Discord (BDFD).
+                            Functionality shouldn't require boilerplate.
+                        </p>
 
-                    <!-- DJS -->
-                    <div>
-                        <h3 class="text-xs font-bold text-red-500 uppercase tracking-widest mb-3">Discord.js (Verbose)
-                        </h3>
-                        <div class="mac-window opacity-75">
-                            <div class="mac-header">
-                                <div class="dot red"></div>
-                                <div class="dot yellow"></div>
-                                <div class="dot green"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
+                            <div class="card p-6 rounded-lg border-l-4 border-red-500">
+                                <h3 class="text-white font-bold mb-2">The Old Way (Discord.js)</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-xs">
+                                    <li>Complex Object-Oriented Boilerplate</li>
+                                    <li>Manual Interaction Handling (Collectors)</li>
+                                    <li>Verbose Builders (EmbedBuilder, ActionRowBuilder...)</li>
+                                    <li>Heavy memory usage (Node.js)</li>
+                                </ul>
                             </div>
-                            <pre class="p-4 overflow-x-auto text-[10px] m-0"><code class="language-javascript">client.on('messageCreate', async message => {
-  if (message.content === '!ping') {
-     const latency = Date.now() - message.createdTimestamp;
-     await message.reply(`Pong! ${latency}ms`);
-  }
-});</code></pre>
+                            <div class="card p-6 rounded-lg border-l-4 border-blue-500">
+                                <h3 class="text-white font-bold mb-2">The Seven Way</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-xs">
+                                    <li><b>Macro System:</b> Logic in single lines (`s.embed[...]`)</li>
+                                    <li><b>Automatic handling:</b> No need to manually ack interactions.</li>
+                                    <li><b>Bun Native:</b> Starts in milliseconds, uses 40% less RAM.</li>
+                                    <li><b>Human Readable:</b> `s.ban[@user]` vs `guild.members.ban(...)`</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Seven -->
-                    <div>
-                        <h3 class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-3">Seven (Logic)</h3>
-                        <div class="mac-window border-blue-500/30 shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]">
-                            <div class="mac-header">
-                                <div class="dot red"></div>
-                                <div class="dot yellow"></div>
-                                <div class="dot green"></div>
+                <div data-lang="pt" class="hidden">
+                    <h2 class="text-3xl font-bold text-white mb-8">A História do Seven</h2>
+                    <div class="prose prose-invert text-gray-400 max-w-none space-y-6">
+                        <p>
+                            Nos primórdios do desenvolvimento de bots, tínhamos bibliotecas como Discord.js (DJS). Elas
+                            eram poderosas, mas <b>extremamente verbosas</b>.
+                            Para enviar um simples embed com botões no DJS v14, você precisa de aprox. 40 linhas de
+                            código, importando vários builders e gerenciando promises manualmente.
+                        </p>
+                        <p>
+                            <b>Seven-Discord nasceu da frustração.</b> Queríamos o poder de uma linguagem real
+                            (TypeScript) mas com a simplicidade de ferramentas "Low-Code" como o BDFD.
+                            Funcionalidade não deveria exigir boilerplate.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
+                            <div class="card p-6 rounded-lg border-l-4 border-red-500">
+                                <h3 class="text-white font-bold mb-2">O Jeito Antigo (Discord.js)</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-xs">
+                                    <li>Boilerplate Orientado a Objetos Complexo</li>
+                                    <li>Manuseio Manual de Interações (Collectors)</li>
+                                    <li>Builders Verbos (EmbedBuilder, ActionRowBuilder...)</li>
+                                    <li>Uso pesado de memória (Node.js)</li>
+                                </ul>
                             </div>
-                            <pre class="p-4 overflow-x-auto text-[10px] m-0"><code class="language-typescript">client.cmd({
-    name: "ping",
-    code: "Pong! s.pingms"
-});</code></pre>
+                            <div class="card p-6 rounded-lg border-l-4 border-blue-500">
+                                <h3 class="text-white font-bold mb-2">O Jeito Seven</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-xs">
+                                    <li><b>Sistema de Macros:</b> Lógica em uma linha (`s.embed[...]`)</li>
+                                    <li><b>Automático:</b> Sem necessidade de ack manual em interações.</li>
+                                    <li><b>Bun Native:</b> Inicia em milissegundos, 40% menos RAM.</li>
+                                    <li><b>Legível:</b> `s.ban[@user]` vs `guild.members.ban(...)`</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Intents System -->
+            <section id="intents" class="mb-24 scroll-mt-20">
+                <div data-lang="en">
+                    <h2 class="text-2xl font-bold text-white mb-6">Readable Intents System</h2>
+                    <p class="text-gray-400 mb-6">Seven removes "Magic Numbers". Use these readable strings in your
+                        `client` config.</p>
+                </div>
+                <div data-lang="pt" class="hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Sistema de Intents Legíveis</h2>
+                    <p class="text-gray-400 mb-6">Seven remove "Números Mágicos". Use estas strings legíveis na config
+                        do seu `client`.</p>
+                </div>
+
+                <div class="card p-0 rounded-lg overflow-hidden border border-border-800">
+                    <table class="w-full text-left">
+                        <thead class="bg-bg-800 text-gray-500 font-mono text-xs uppercase">
+                            <tr>
+                                <th class="p-4">Intent Name</th>
+                                <th class="p-4">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-border-800 text-sm font-mono text-gray-300">
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenGuild</td>
+                                <td class="p-4 text-gray-500">Basic guild data (roles, channels).</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenMembers</td>
+                                <td class="p-4 text-gray-500">Privileged. Detecting user joins/leaves.</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenBans</td>
+                                <td class="p-4 text-gray-500">Detecting bans.</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenMessages</td>
+                                <td class="p-4 text-gray-500">Detecting new messages.</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenMessageContent</td>
+                                <td class="p-4 text-gray-500">Privileged. Reading text content.</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-blue-400">SevenVoice</td>
+                                <td class="p-4 text-gray-500">Voice state updates.</td>
+                            </tr>
+                            <tr class="hover:bg-bg-800/50">
+                                <td class="p-4 text-purple-400 font-bold">SevenAll</td>
+                                <td class="p-4 text-gray-500">Enables EVERYTHING (Dev mode).</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
             <!-- Event System -->
             <section id="events" class="mb-24 scroll-mt-20">
-                <h2 class="text-2xl font-bold text-white mb-6">Event System</h2>
+                <div data-lang="en">
+                    <h2 class="text-2xl font-bold text-white mb-6">Event System</h2>
+                </div>
+                <div data-lang="pt" class="hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Sistema de Eventos</h2>
+                </div>
+
                 <div class="card p-8 rounded-xl">
-                    <p class="text-gray-400 mb-6 leading-relaxed" data-lang="en">
-                        Hook into native Discord events directly.
-                    </p>
-                    <p class="text-gray-400 mb-6 leading-relaxed hidden" data-lang="pt">
-                        Conecte-se a eventos nativos do Discord diretamente.
-                    </p>
                     <div class="mac-window">
                         <div class="mac-header">
                             <div class="dot red"></div>
@@ -522,7 +621,13 @@ client.setReady("s.log[Bot is online!]");</code></pre>
         // LANGUAGE
         window.setLang = (lang) => {
             document.querySelectorAll('[data-lang]').forEach(el => {
-                el.style.display = el.getAttribute('data-lang') === lang ? 'block' : 'none';
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.remove('hidden');
+                    el.style.display = 'block'; // Ensure block display
+                } else {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
+                }
             });
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if (btn.dataset.target === lang) {
