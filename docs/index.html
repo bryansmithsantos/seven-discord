@@ -468,7 +468,7 @@ client.setReady("s.log[Bot is online!]");</code></pre>
                 ]
             },
             {
-                id: "section-ui", title: "UI & Embeds",
+                id: "section-ui", title: "UI & Embed",
                 macros: [
                     { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF]" },
                     { name: "s.button", desc: "Create button", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "style" }, { name: "disabled", type: "bool", req: false }], code: "s.button[btn1;Click Me;Primary]" },
@@ -508,7 +508,7 @@ client.setReady("s.log[Bot is online!]");</code></pre>
                     { name: "s.ban", desc: "Ban user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.ban[@user;Spam]" },
                     { name: "s.kick", desc: "Kick user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.kick[@user;Bye]" },
                     { name: "s.mute", desc: "Timeout user", args: [{ name: "user", type: "string" }, { name: "dur", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.mute[@user;1h]" },
-                    { name: "s.purge", desc: "Delete msgs", args: [{ name: "amt", type: "number" }], code: "s.purge[10]" }
+                    { name: "s.purge", desc: "Delete msg", args: [{ name: "amt", type: "number" }], code: "s.purge[10]" }
                 ]
             },
             {
@@ -522,7 +522,7 @@ client.setReady("s.log[Bot is online!]");</code></pre>
                 ]
             },
             {
-                id: "section-string", title: "String Ops",
+                id: "section-string", title: "String Op",
                 macros: [
                     { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
                     { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
