@@ -511,10 +511,21 @@
             { name: "s.setStatus", cat: "System", desc: "Sets the bot's status activity.", usage: "s.setStatus[type:playing; status:online; name:Seven-Discord]", example: "s.setStatus[type:watching; name:You]" },
             { name: "s.shutdown", cat: "System", desc: "Shuts down the bot.", usage: "s.shutdown", example: "s.shutdown" },
 
+            // VARIABLES
+            { name: "s.authorID", cat: "Variables", desc: "Returns the ID of the command author.", usage: "s.authorID", example: "s.ban[user:s.authorID]" },
+            { name: "s.username", cat: "Variables", desc: "Returns the username of the author.", usage: "s.username", example: "Hello s.username!" },
+            { name: "s.channelId", cat: "Variables", desc: "Returns the current channel ID.", usage: "s.channelId", example: "Current channel: s.channelId" },
+            { name: "s.serverName", cat: "Variables", desc: "Returns the Server ID (Legacy Name).", usage: "s.serverName", example: "s.serverName" },
+            { name: "s.content", cat: "Variables", desc: "Returns the raw message content.", usage: "s.content", example: "You said: s.content" },
+            { name: "s.arg", cat: "Variables", desc: "Returns a specific argument from the command.", usage: "s.arg[Index]", example: "s.arg[1]" },
+
             // SPECIAL TUTORIALS
             { name: "Aliases & Cooldowns", cat: "Tutorials", desc: "Commands now support 'aliases: [...]' and 'cooldown: 5' in config.", usage: "Config Only", example: "module.exports = { name: 'test', aliases: ['t'], cooldown: 10, ... }" },
             { name: "Modals (Easy)", cat: "Tutorials", desc: "Create Modals easily.", usage: "s.modal[id; title; s.input[...]]", example: "s.modal[id:form; title:Apply; s.input[id:name; label:Name]]" },
             { name: "Affiliates System", cat: "Tutorials", desc: "How to create an Affiliates/Partnership system using Buttons and Logic.", usage: "See Example", example: "s.embed[title:Partnership; desc:Click below to partner!] s.button[label:Apply; style:primary; id:apply_partner]\n\ns.onInteraction[apply_partner; \n  s.reply[Thank you for applying! We will review your server.]\n  s.log[New Partner App from s.authorID]\n]" },
+
+            // MISSING MACROS
+            { name: "s.modal", cat: "UI", desc: "Creates a Modal form. Must be used as a response to an interaction or command.", usage: "s.modal[id:my_modal; title:My Form; ...inputs]", example: "s.modal[id:apply; title:Apply Now; s.input[id:name; label:Name]]" },
         ];
 
         // LOGIC
