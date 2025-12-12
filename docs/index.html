@@ -216,109 +216,100 @@
     <main class="flex-1 flex flex-col bg-[#050505]">
         <header class="h-14 border-b border-white/5 flex items-center px-8 justify-between">
             <div class="flex items-center gap-2 text-sm breadcrumbs">
-                <span class="text-zinc-500">Docs</span>
-                <span class="text-zinc-700">/</span>
-                <span class="text-zinc-200 font-medium" id="title">Início</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="text-[10px] font-mono text-zinc-600 bg-zinc-900 px-2 py-1 rounded border border-white/5">
-                    v2.6.0</div>
-            </div>
-        </header>
-        <div class="flex-1 overflow-y-auto" id="content"></div>
-    </main>
+                <!-- Modal História -->
+                <div id="historyModal" class="modal-overlay" onclick="closeHistory(e)">
+                    <div class="modal animate-in" onclick="event.stopPropagation()">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-white">A História do Seven</h3>
+                            <button onclick="closeModal()" class="text-zinc-500 hover:text-white"><i data-lucide="x"
+                                    class="w-5 h-5"></i></button>
+                        </div>
+                        <div class="prose prose-invert prose-sm">
+                            <p>O Seven Discord nasceu da necessidade de criar bots complexos de forma simples usando a
+                                runtime Bun.
+                                Criado por um desenvolvedor apaixonado por otimização, ele remove a complexidade do
+                                discord.js e
+                                traz uma sintaxe intuitiva baseada em macros.</p>
+                            <p class="mt-2 text-zinc-400">Versão atual: <span class="text-white font-mono">2.6.0</span>
+                                - Focada em
+                                Economia e UI.</p>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Modal História -->
-    <div id="historyModal" class="modal-overlay" onclick="closeHistory(e)">
-        <div class="modal animate-in" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-white">A História do Seven</h3>
-                <button onclick="closeModal()" class="text-zinc-500 hover:text-white"><i data-lucide="x"
-                        class="w-5 h-5"></i></button>
-            </div>
-            <div class="prose prose-invert prose-sm">
-                <p>O Seven Discord nasceu da necessidade de criar bots complexos de forma simples usando a runtime Bun.
-                    Criado por um desenvolvedor apaixonado por otimização, ele remove a complexidade do discord.js e
-                    traz uma sintaxe intuitiva baseada em macros.</p>
-                <p class="mt-2 text-zinc-400">Versão atual: <span class="text-white font-mono">2.6.0</span> - Focada em
-                    Economia e UI.</p>
-            </div>
-        </div>
-    </div>
+                <script>
+                    // Dados (Macros e Eventos)
+                    const M = [
+                        // Core
+                        { n: "s.reply", c: "Core", d: "Responde à interação/mensagem.", p: [{ n: "content", t: "string", r: 1, d: "Texto ou JSON" }], s: "s.reply[content]", ex: [{ c: "s.reply[Olá mundo!]", d: "Texto Simples" }] },
+                        { n: "s.send", c: "Core", d: "Envia mensagem.", p: [{ n: "channelId", t: "string", r: 1, d: "ID do Canal" }, { n: "content", t: "string", r: 1, d: "Conteúdo" }], s: "s.send[id;content]", ex: [{ c: "s.send[123456789;Aviso!]", d: "Enviar msg" }] },
+                        { n: "s.log", c: "Core", d: "Log no console.", p: [{ n: "msg", t: "string", r: 1, d: "Mensagem" }], s: "s.log[msg]", ex: [{ c: "s.log[Debug: s.username]", d: "Debug" }] },
+                        // UI
+                        { n: "s.button", c: "UI", d: "Cria um botão.", p: [{ n: "label", t: "string", r: 1 }, { n: "style", t: "string", r: 1 }, { n: "id/url", t: "string", r: 1 }, { n: "props", t: "obj", r: 0, d: "emoji:X;disabled:true" }], s: "s.button[label:X;style:primary;id:btn_1]", ex: [{ c: "s.button[label:Google;style:link;url:https://google.com]", d: "Botão Link" }, { c: "s.button[label:Não;style:danger;id:no;disabled:true]", d: "Desativado" }] },
+                        { n: "s.selectMenu", c: "UI", d: "Menu de seleção simplificado.", p: [{ n: "id", t: "string", r: 1 }, { n: "placeholder", t: "string", r: 0 }, { n: "options", t: "list", r: 1 }], s: "s.selectMenu[id:menu;placeholder:Escolha;Opção 1:valor1;Opção 2:valor2]", ex: [{ c: "s.selectMenu[id:cargos;placeholder:Selecione um cargo;Admin:adm;Membro:member]", d: "Menu Simples" }] },
+                        { n: "s.row", c: "UI", d: "Linha de componentes.", p: [{ n: "components", t: "...", r: 1 }], s: "s.row[...]", ex: [{ c: "s.row[s.button[A] s.button[B]]", d: "Agrupar" }] },
+                        { n: "s.modal", c: "UI", d: "Cria um modal.", p: [{ n: "id", t: "string", r: 1 }, { n: "title", t: "string", r: 1 }], s: "s.modal[id:m;title:T]", ex: [{ c: "s.modal[id:form;title:Formulário]", d: "Modal" }] },
+                        { n: "s.input", c: "UI", d: "Input de texto (Modal).", p: [{ n: "id", t: "string", r: 1 }, { n: "label", t: "string", r: 1 }], s: "s.input[id:i;label:L]", ex: [{ c: "s.input[id:nome;label:Seu Nome]", d: "Input" }] },
+                        { n: "s.onInteraction", c: "UI", d: "Recebe interações.", p: [{ n: "id", t: "string", r: 1 }, { n: "code", t: "string", r: 1 }], s: "s.onInteraction[btn_id; code]", ex: [{ c: "s.onInteraction[btn_1; s.reply[Clicou!]]", d: "Responder botão" }] },
+                        { n: "s.defer", c: "UI", d: "Adia a resposta (Pensando...).", p: [], s: "s.defer", ex: [{ c: "s.defer s.wait[5s] s.edit[Pronto!]", d: "Processamento longo" }] },
+                        { n: "s.update", c: "UI", d: "Atualiza a mensagem do componente.", p: [{ n: "content", t: "string", r: 0 }], s: "s.update[novo conteudo]", ex: [{ c: "s.update[Botão clicado!]", d: "Alterar msg" }] },
+                        // Economy
+                        { n: "s.cash", c: "Economy", d: "Ver saldo.", p: [{ n: "user", t: "string", r: 0 }], s: "s.cash[user?]", ex: [{ c: "s.cash", d: "Meu saldo" }] },
+                        { n: "s.addCash", c: "Economy", d: "Adicionar dinheiro.", p: [{ n: "amount", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.addCash[val;user]", ex: [{ c: "s.addCash[100;s.authorID]", d: "+100" }] },
+                        { n: "s.pay", c: "Economy", d: "Pagar usuário.", p: [{ n: "val", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.pay[val;user]", ex: [{ c: "s.pay[50;@user]", d: "Transferir" }] },
+                        // Moderation
+                        { n: "s.ban", c: "Moderation", d: "Banir usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "reason", t: "string", r: 0 }], s: "s.ban[user;reason]", ex: [{ c: "s.ban[@troll;Spam]", d: "Ban" }] },
+                        { n: "s.kick", c: "Moderation", d: "Expulsar usuário.", p: [{ n: "user", t: "string", r: 1 }], s: "s.kick[user]", ex: [{ c: "s.kick[@user]", d: "Kick" }] },
+                        { n: "s.mute", c: "Moderation", d: "Silenciar usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "time", t: "string", r: 1 }], s: "s.mute[user;time]", ex: [{ c: "s.mute[@user;1h]", d: "Mute 1h" }] },
+                        // Variables
+                        { n: "s.setVar", c: "Variables", d: "Definir variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "value", t: "any", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.setVar[n;v;t;id]", ex: [{ c: "s.setVar[xp;0;user;s.authorID]", d: "Set XP" }] },
+                        { n: "s.getVar", c: "Variables", d: "Ler variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.getVar[n;t;id]", ex: [{ c: "s.getVar[xp;user;s.authorID]", d: "Get XP" }] },
+                        { n: "s.authorID", c: "Variables", d: "ID do autor/interator.", p: [], s: "s.authorID", ex: [{ c: "s.reply[Seu ID: s.authorID]", d: "Retorna ID" }] },
+                        // System
+                        { n: "s.avatar", c: "System", d: "Avatar URL.", p: [{ n: "user", t: "string", r: 0 }], s: "s.avatar[user?]", ex: [{ c: "s.embed[image:s.avatar]", d: "Avatar Autor" }] },
+                        { n: "s.ping", c: "System", d: "Latência do bot.", p: [], s: "s.ping", ex: [{ c: "s.reply[Ping: s.ping ms]", d: "Ping" }] },
+                        { n: "s.eval", c: "System", d: "Executa JavaScript.", p: [{ n: "code", t: "string", r: 1 }], s: "s.eval[code]", ex: [{ c: "s.eval[2+2]", d: "Math JS" }] },
+                        { n: "s.if", c: "Logic", d: "Condicional.", p: [{ n: "cond", t: "bool", r: 1 }, { n: "then", t: "any", r: 1 }, { n: "else", t: "any", r: 0 }], s: "s.if[cond;then;else]", ex: [{ c: "s.if[s.eq[1;1];Verdade;Falso]", d: "Lógica" }] }
+                    ];
 
-    <script>
-        // Dados (Macros e Eventos)
-        const M = [
-            // Core
-            { n: "s.reply", c: "Core", d: "Responde à interação/mensagem.", p: [{ n: "content", t: "string", r: 1, d: "Texto ou JSON" }], s: "s.reply[content]", ex: [{ c: "s.reply[Olá mundo!]", d: "Texto Simples" }] },
-            { n: "s.send", c: "Core", d: "Envia mensagem.", p: [{ n: "channelId", t: "string", r: 1, d: "ID do Canal" }, { n: "content", t: "string", r: 1, d: "Conteúdo" }], s: "s.send[id;content]", ex: [{ c: "s.send[123456789;Aviso!]", d: "Enviar msg" }] },
-            { n: "s.log", c: "Core", d: "Log no console.", p: [{ n: "msg", t: "string", r: 1, d: "Mensagem" }], s: "s.log[msg]", ex: [{ c: "s.log[Debug: s.username]", d: "Debug" }] },
-            // UI
-            { n: "s.button", c: "UI", d: "Cria um botão.", p: [{ n: "label", t: "string", r: 1 }, { n: "style", t: "string", r: 1 }, { n: "id/url", t: "string", r: 1 }, { n: "props", t: "obj", r: 0, d: "emoji:X;disabled:true" }], s: "s.button[label:X;style:primary;id:btn_1]", ex: [{ c: "s.button[label:Google;style:link;url:https://google.com]", d: "Botão Link" }, { c: "s.button[label:Não;style:danger;id:no;disabled:true]", d: "Desativado" }] },
-            { n: "s.selectMenu", c: "UI", d: "Menu de seleção simplificado.", p: [{ n: "id", t: "string", r: 1 }, { n: "placeholder", t: "string", r: 0 }, { n: "options", t: "list", r: 1 }], s: "s.selectMenu[id:menu;placeholder:Escolha;Opção 1:valor1;Opção 2:valor2]", ex: [{ c: "s.selectMenu[id:cargos;placeholder:Selecione um cargo;Admin:adm;Membro:member]", d: "Menu Simples" }] },
-            { n: "s.row", c: "UI", d: "Linha de componentes.", p: [{ n: "components", t: "...", r: 1 }], s: "s.row[...]", ex: [{ c: "s.row[s.button[A] s.button[B]]", d: "Agrupar" }] },
-            { n: "s.modal", c: "UI", d: "Cria um modal.", p: [{ n: "id", t: "string", r: 1 }, { n: "title", t: "string", r: 1 }], s: "s.modal[id:m;title:T]", ex: [{ c: "s.modal[id:form;title:Formulário]", d: "Modal" }] },
-            { n: "s.input", c: "UI", d: "Input de texto (Modal).", p: [{ n: "id", t: "string", r: 1 }, { n: "label", t: "string", r: 1 }], s: "s.input[id:i;label:L]", ex: [{ c: "s.input[id:nome;label:Seu Nome]", d: "Input" }] },
-            { n: "s.onInteraction", c: "UI", d: "Recebe interações.", p: [{ n: "id", t: "string", r: 1 }, { n: "code", t: "string", r: 1 }], s: "s.onInteraction[btn_id; code]", ex: [{ c: "s.onInteraction[btn_1; s.reply[Clicou!]]", d: "Responder botão" }] },
-            { n: "s.defer", c: "UI", d: "Adia a resposta (Pensando...).", p: [], s: "s.defer", ex: [{ c: "s.defer s.wait[5s] s.edit[Pronto!]", d: "Processamento longo" }] },
-            { n: "s.update", c: "UI", d: "Atualiza a mensagem do componente.", p: [{ n: "content", t: "string", r: 0 }], s: "s.update[novo conteudo]", ex: [{ c: "s.update[Botão clicado!]", d: "Alterar msg" }] },
-            // Economy
-            { n: "s.cash", c: "Economy", d: "Ver saldo.", p: [{ n: "user", t: "string", r: 0 }], s: "s.cash[user?]", ex: [{ c: "s.cash", d: "Meu saldo" }] },
-            { n: "s.addCash", c: "Economy", d: "Adicionar dinheiro.", p: [{ n: "amount", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.addCash[val;user]", ex: [{ c: "s.addCash[100;s.authorID]", d: "+100" }] },
-            { n: "s.pay", c: "Economy", d: "Pagar usuário.", p: [{ n: "val", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.pay[val;user]", ex: [{ c: "s.pay[50;@user]", d: "Transferir" }] },
-            // Moderation
-            { n: "s.ban", c: "Moderation", d: "Banir usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "reason", t: "string", r: 0 }], s: "s.ban[user;reason]", ex: [{ c: "s.ban[@troll;Spam]", d: "Ban" }] },
-            { n: "s.kick", c: "Moderation", d: "Expulsar usuário.", p: [{ n: "user", t: "string", r: 1 }], s: "s.kick[user]", ex: [{ c: "s.kick[@user]", d: "Kick" }] },
-            { n: "s.mute", c: "Moderation", d: "Silenciar usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "time", t: "string", r: 1 }], s: "s.mute[user;time]", ex: [{ c: "s.mute[@user;1h]", d: "Mute 1h" }] },
-            // Variables
-            { n: "s.setVar", c: "Variables", d: "Definir variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "value", t: "any", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.setVar[n;v;t;id]", ex: [{ c: "s.setVar[xp;0;user;s.authorID]", d: "Set XP" }] },
-            { n: "s.getVar", c: "Variables", d: "Ler variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.getVar[n;t;id]", ex: [{ c: "s.getVar[xp;user;s.authorID]", d: "Get XP" }] },
-            { n: "s.authorID", c: "Variables", d: "ID do autor/interator.", p: [], s: "s.authorID", ex: [{ c: "s.reply[Seu ID: s.authorID]", d: "Retorna ID" }] },
-            // System
-            { n: "s.avatar", c: "System", d: "Avatar URL.", p: [{ n: "user", t: "string", r: 0 }], s: "s.avatar[user?]", ex: [{ c: "s.embed[image:s.avatar]", d: "Avatar Autor" }] },
-            { n: "s.ping", c: "System", d: "Latência do bot.", p: [], s: "s.ping", ex: [{ c: "s.reply[Ping: s.ping ms]", d: "Ping" }] },
-            { n: "s.eval", c: "System", d: "Executa JavaScript.", p: [{ n: "code", t: "string", r: 1 }], s: "s.eval[code]", ex: [{ c: "s.eval[2+2]", d: "Math JS" }] },
-            { n: "s.if", c: "Logic", d: "Condicional.", p: [{ n: "cond", t: "bool", r: 1 }, { n: "then", t: "any", r: 1 }, { n: "else", t: "any", r: 0 }], s: "s.if[cond;then;else]", ex: [{ c: "s.if[s.eq[1;1];Verdade;Falso]", d: "Lógica" }] }
-        ];
+                    const E = [
+                        { n: "ready", d: "Quando o bot liga." },
+                        { n: "messageCreate", d: "Nova mensagem enviada." },
+                        { n: "interactionCreate", d: "Botão/Slash usado." },
+                        { n: "guildMemberAdd", d: "Novo membro entra." },
+                        { n: "guildMemberRemove", d: "Membro sai do server." },
+                        { n: "interactionCreate", d: "Recebe interações (botões, menus)." }
+                    ];
 
-        const E = [
-            { n: "ready", d: "Quando o bot liga." },
-            { n: "messageCreate", d: "Nova mensagem enviada." },
-            { n: "interactionCreate", d: "Botão/Slash usado." },
-            { n: "guildMemberAdd", d: "Novo membro entra." },
-            { n: "guildMemberRemove", d: "Membro sai do server." },
-            { n: "interactionCreate", d: "Recebe interações (botões, menus)." }
-        ];
+                    const CATS = {
+                        Core: { i: 'terminal', n: 'Essenciais' },
+                        UI: { i: 'layout', n: 'Interface' },
+                        Economy: { i: 'coins', n: 'Economia' },
+                        Moderation: { i: 'shield', n: 'Moderação' },
+                        Variables: { i: 'database', n: 'Variáveis' },
+                        System: { i: 'cpu', n: 'Sistema' },
+                        Logic: { i: 'git-branch', n: 'Lógica' }
+                    };
 
-        const CATS = {
-            Core: { i: 'terminal', n: 'Essenciais' },
-            UI: { i: 'layout', n: 'Interface' },
-            Economy: { i: 'coins', n: 'Economia' },
-            Moderation: { i: 'shield', n: 'Moderação' },
-            Variables: { i: 'database', n: 'Variáveis' },
-            System: { i: 'cpu', n: 'Sistema' },
-            Logic: { i: 'git-branch', n: 'Lógica' }
-        };
-
-        function renderNav() {
-            let h = `<div class="sidebar-section">MACROS</div>`;
-            for (let c in CATS) {
-                h += `<button onclick="viewCat('${c}')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5" id="btn-${c}">
+                    function renderNav() {
+                        let h = `<div class="sidebar-section">MACROS</div>`;
+                        for (let c in CATS) {
+                            h += `<button onclick="viewCat('${c}')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5" id="btn-${c}">
             <i data-lucide="${CATS[c].i}"></i>${CATS[c].n}
         </button>`;
-            }
-            h += `<div class="sidebar-section">DOCUMENTAÇÃO</div>
+                        }
+                        h += `<div class="sidebar-section">DOCUMENTAÇÃO</div>
     <button onclick="viewPage('intro')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="home"></i>Início</button>
     <button onclick="viewPage('events')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="zap"></i>Eventos</button>
     <button onclick="viewPage('guides')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="book-open"></i>Guias</button>`;
-            document.getElementById('nav').innerHTML = h;
-            lucide.createIcons();
-        }
+                        document.getElementById('nav').innerHTML = h;
+                        lucide.createIcons();
+                    }
 
-        function viewCat(c) {
-            document.getElementById('title').innerText = CATS[c].n;
-            const ms = M.filter(x => x.c === c);
-            let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
+                    function viewCat(c) {
+                        document.getElementById('title').innerText = CATS[c].n;
+                        const ms = M.filter(x => x.c === c);
+                        let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
         <div class="flex items-center gap-3 mb-8">
             <div class="p-3 bg-zinc-900 rounded-xl border border-white/10"><i data-lucide="${CATS[c].i}" class="w-6 h-6 text-white"></i></div>
             <div>
@@ -327,7 +318,7 @@
             </div>
         </div>
         <div class="grid gap-3">`;
-            h += ms.map(m => `
+                        h += ms.map(m => `
         <button onclick="viewMacro('${m.n}')" class="card p-4 text-left group">
             <div class="flex justify-between items-start">
                 <div>
@@ -338,16 +329,16 @@
             </div>
         </button>
     `).join('');
-            h += `</div></div>`;
-            document.getElementById('content').innerHTML = h;
-            lucide.createIcons();
-        }
+                        h += `</div></div>`;
+                        document.getElementById('content').innerHTML = h;
+                        lucide.createIcons();
+                    }
 
-        function viewMacro(n) {
-            const m = M.find(x => x.n === n);
-            if (!m) return;
-            document.getElementById('title').innerText = m.n;
-            let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
+                    function viewMacro(n) {
+                        const m = M.find(x => x.n === n);
+                        if (!m) return;
+                        document.getElementById('title').innerText = m.n;
+                        let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
         <button onclick="viewCat('${m.c}')" class="mb-6 flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">
             <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar para ${CATS[m.c].n}
         </button>
@@ -400,15 +391,15 @@
             </section>
         </div>
     </div>`;
-            document.getElementById('content').innerHTML = h;
-            Prism.highlightAll();
-            lucide.createIcons();
-        }
+                        document.getElementById('content').innerHTML = h;
+                        Prism.highlightAll();
+                        lucide.createIcons();
+                    }
 
-        function viewPage(p) {
-            const c = document.getElementById('content');
-            if (p === 'intro') {
-                c.innerHTML = `<div class="max-w-3xl mx-auto px-8 py-16 text-center animate-in">
+                    function viewPage(p) {
+                        const c = document.getElementById('content');
+                        if (p === 'intro') {
+                            c.innerHTML = `<div class="max-w-3xl mx-auto px-8 py-16 text-center animate-in">
             <div class="inline-flex items-center justify-center p-4 bg-zinc-900 rounded-2xl mb-6 shadow-2xl border border-white/5">
                  <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg">7</div>
             </div>
@@ -438,8 +429,8 @@
                 <button onclick="viewMacro('s.button')" class="bg-zinc-900 text-white px-6 py-2.5 rounded-lg font-medium text-sm border border-zinc-800 hover:border-zinc-700 transition-colors">Ver Exemplos</button>
             </div>
         </div>`;
-            } else if (p === 'events') {
-                c.innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
+                        } else if (p === 'events') {
+                            c.innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
             <h1 class="text-2xl font-bold text-white mb-6">Eventos Disponíveis</h1>
             <div class="grid gap-2">
                 ${E.map(e => `<div class="card px-4 py-3 flex items-center justify-between">
@@ -448,33 +439,33 @@
                 </div>`).join('')}
             </div>
         </div>`;
-            }
-            lucide.createIcons();
-        }
+                        }
+                        lucide.createIcons();
+                    }
 
-        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('historyModal').style.display = 'none'; }
+                    function openHistory() { document.getElementById('historyModal').style.display = 'flex'; }
+                    function closeModal() { document.getElementById('historyModal').style.display = 'none'; }
 
-        // Search Logic
-        document.getElementById('search').addEventListener('input', (e) => {
-            const v = e.target.value.toLowerCase();
-            if (v.length < 2) return;
+                    // Search Logic
+                    document.getElementById('search').addEventListener('input', (e) => {
+                        const v = e.target.value.toLowerCase();
+                        if (v.length < 2) return;
 
-            document.getElementById('title').innerText = 'Busca';
-            const found = M.filter(m => m.n.toLowerCase().includes(v) || m.d.toLowerCase().includes(v));
+                        document.getElementById('title').innerText = 'Busca';
+                        const found = M.filter(m => m.n.toLowerCase().includes(v) || m.d.toLowerCase().includes(v));
 
-            document.getElementById('content').innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
+                        document.getElementById('content').innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
         <h2 class="text-lg font-bold text-white mb-4">Resultados para "${v}"</h2>
         <div class="grid gap-2">
              ${found.map(m => `<button onclick="viewMacro('${m.n}')" class="card px-4 py-3 text-left"><div class="flex justify-between"><span class="text-white font-mono font-medium">${m.n}</span><span class="text-zinc-600 text-xs">${m.c}</span></div><p class="text-zinc-500 text-xs mt-1">${m.d}</p></button>`).join('')}
         </div>
     </div>`;
-        });
+                    });
 
-        // Init
-        renderNav();
-        viewPage('intro');
-    </script>
+                    // Init
+                    renderNav();
+                    viewPage('intro');
+                </script>
 </body>
 
 </html>
