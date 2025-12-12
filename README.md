@@ -39,7 +39,7 @@ client.start();
 - **Aliases & Cooldowns**: Built-in command management.
 
 ## 📚 Documentation
-[View Full Documentation](https://bryansmithsantos.github.io/seven-discord/index.html)
+[View Full Documentation](https://bryansmithsantos.github.io/seven-discord/)
 *For now, open `docs/index.html` in your browser.*
 
 ## 🛠️ Advanced Usage

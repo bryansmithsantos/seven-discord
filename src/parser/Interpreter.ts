@@ -35,15 +35,45 @@ export class Interpreter {
         // Logic
         this.register(new EqMacro());
         this.register(new (require("../macros/logic/If").IfMacro)());
+        this.register(new (require("../macros/logic/And").AndMacro)());
+        this.register(new (require("../macros/logic/Or").OrMacro)());
+        this.register(new (require("../macros/logic/Not").NotMacro)());
+        this.register(new (require("../macros/logic/Gt").GtMacro)());
+        this.register(new (require("../macros/logic/Lt").LtMacro)());
+        this.register(new (require("../macros/logic/Gte").GteMacro)());
+        this.register(new (require("../macros/logic/Lte").LteMacro)());
+        this.register(new (require("../macros/logic/Ternary").TernaryMacro)());
+        this.register(new (require("../macros/logic/Includes").IncludesMacro)());
+        this.register(new (require("../macros/logic/IsNumber").IsNumberMacro)());
 
         // Math
         this.register(new (require("../macros/math/Math").MathMacro)());
         this.register(new (require("../macros/math/Random").RandomMacro)());
+        this.register(new (require("../macros/math/Round").RoundMacro)());
+        this.register(new (require("../macros/math/Floor").FloorMacro)());
+        this.register(new (require("../macros/math/Ceil").CeilMacro)());
+        this.register(new (require("../macros/math/Abs").AbsMacro)());
+        this.register(new (require("../macros/math/Pow").PowMacro)());
+        this.register(new (require("../macros/math/Sqrt").SqrtMacro)());
+        this.register(new (require("../macros/math/Min").MinMacro)());
+        this.register(new (require("../macros/math/Max").MaxMacro)());
+        this.register(new (require("../macros/math/RandomInt").RandomIntMacro)());
+        this.register(new (require("../macros/math/Pi").PiMacro)());
 
         // String
         this.register(new (require("../macros/string/Len").LenMacro)());
         this.register(new (require("../macros/string/Upper").UpperMacro)());
         this.register(new (require("../macros/string/Lower").LowerMacro)());
+        this.register(new (require("../macros/string/Replace").ReplaceMacro)());
+        this.register(new (require("../macros/string/ReplaceAll").ReplaceAllMacro)());
+        this.register(new (require("../macros/string/Slice").SliceMacro)());
+        this.register(new (require("../macros/string/Split").SplitMacro)());
+        this.register(new (require("../macros/string/Trim").TrimMacro)());
+        this.register(new (require("../macros/string/Capitalize").CapitalizeMacro)());
+        this.register(new (require("../macros/string/Repeat").RepeatMacro)());
+        this.register(new (require("../macros/string/StartsWith").StartsWithMacro)());
+        this.register(new (require("../macros/string/EndsWith").EndsWithMacro)());
+        this.register(new (require("../macros/string/Reverse").ReverseMacro)());
 
         // UI
         this.register(new (require("../macros/ui/Embed").EmbedMacro)());
@@ -55,6 +85,15 @@ export class Interpreter {
         this.register(new (require("../macros/economy/Bank").BankMacro)());
         this.register(new (require("../macros/economy/Deposit").DepositMacro)());
         this.register(new (require("../macros/economy/Withdraw").WithdrawMacro)());
+        this.register(new (require("../macros/economy/Give").GiveMacro)());
+        this.register(new (require("../macros/economy/Take").TakeMacro)());
+        this.register(new (require("../macros/economy/ResetEco").ResetEcoMacro)());
+        this.register(new (require("../macros/economy/Work").WorkMacro)());
+        this.register(new (require("../macros/economy/Daily").DailyMacro)());
+        this.register(new (require("../macros/economy/Rob").RobMacro)());
+        this.register(new (require("../macros/economy/Gamble").GambleMacro)());
+        this.register(new (require("../macros/economy/Coinflip").CoinflipMacro)());
+        this.register(new (require("../macros/economy/Leaderboard").LeaderboardMacro)());
 
         // Moderation
         this.register(new (require("../macros/moderation/Mute").MuteMacro)());
@@ -77,6 +116,20 @@ export class Interpreter {
         this.register(new (require("../macros/system/Shutdown").ShutdownMacro)());
         this.register(new (require("../macros/system/Eval").EvalMacro)());
         this.register(new (require("../macros/system/SetStatus").SetStatusMacro)());
+        this.register(new (require("../macros/system/ShardId").ShardIdMacro)());
+        this.register(new (require("../macros/system/GuildCount").GuildCountMacro)());
+        this.register(new (require("../macros/system/UserCount").UserCountMacro)());
+        this.register(new (require("../macros/system/ChannelCount").ChannelCountMacro)());
+        this.register(new (require("../macros/system/EmojiCount").EmojiCountMacro)());
+        this.register(new (require("../macros/system/RoleCount").RoleCountMacro)());
+        this.register(new (require("../macros/system/ClientID").ClientIDMacro)());
+        this.register(new (require("../macros/system/OwnerID").OwnerIDMacro)());
+        this.register(new (require("../macros/system/Ram").RamMacro)());
+        this.register(new (require("../macros/system/Cpu").CpuMacro)());
+        this.register(new (require("../macros/system/Os").OsMacro)());
+        this.register(new (require("../macros/system/NodeVersion").NodeVersionMacro)());
+        this.register(new (require("../macros/system/Date").DateMacro)());
+        this.register(new (require("../macros/system/Timestamp").TimestampMacro)());
 
         // UI
         this.register(new (require("../macros/ui/Embed").EmbedMacro)());
@@ -86,6 +139,10 @@ export class Interpreter {
         this.register(new (require("../macros/ui/EmbedHelpers").EmbedImageMacro)());
         this.register(new (require("../macros/ui/EmbedHelpers").EmbedThumbMacro)());
         this.register(new (require("../macros/ui/EmbedHelpers").EmbedFooterMacro)());
+        this.register(new (require("../macros/ui/EmbedHelpers").EmbedFieldMacro)());
+        this.register(new (require("../macros/ui/EmbedHelpers").EmbedAuthorMacro)());
+        this.register(new (require("../macros/ui/EmbedHelpers").EmbedUrlMacro)());
+        this.register(new (require("../macros/ui/EmbedHelpers").EmbedTimestampMacro)());
 
         this.register(new (require("../macros/ui/Button").ButtonMacro)());
         this.register(new (require("../macros/ui/Row").RowMacro)());

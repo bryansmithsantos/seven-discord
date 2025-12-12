@@ -1,482 +1,536 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord | Docs</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Seven-Discord v2.5.21</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
-        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
+        :root {
+            --bg: #0f172a;
+            --sidebar: #1e293b;
+            --text: #f8fafc;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: #334155;
+            --code-bg: #000000;
         }
 
         body {
-            background: #000;
-            color: #a1a1aa;
             font-family: 'Inter', sans-serif;
-        }
-
-        .sidebar {
-            background: rgba(8, 8, 8, 0.95);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .sidebar-section {
-            color: #52525b;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            margin-top: 16px;
-            padding: 0 12px;
-        }
-
-        .sidebar-item {
-            color: #71717a;
-            border-radius: 6px;
-            transition: all 0.2s;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .sidebar-item:hover {
-            color: #f4f4f5;
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .sidebar-item.active {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-        }
-
-        .sidebar-item i {
-            width: 14px;
-            height: 14px;
-            opacity: 0.7;
-        }
-
-        .card {
-            background: #0a0a0a;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-            transform: translateY(-1px);
-        }
-
-        .code-block {
-            background: #0c0c0c;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .code-block pre {
-            margin: 0;
-            padding: 12px 16px;
-            font-size: 13px;
-            background: transparent !important;
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: transform 0.3s;
+            z-index: 100;
         }
 
-        .tag {
+        .logo-area {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version-badge {
+            background: var(--accent);
+            color: white;
             padding: 2px 6px;
             border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
         }
 
-        .tag-string {
-            background: rgba(34, 197, 94, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
+        .nav-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
         }
 
-        .tag-number {
+        .nav-group {
+            margin-bottom: 20px;
+        }
+
+        .nav-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 8px 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
             background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--accent);
         }
 
-        .tag-boolean {
-            background: rgba(245, 158, 11, 0.1);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.2);
+        .lang-toggle {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid var(--border);
         }
 
-        .tag-any {
-            background: rgba(168, 85, 247, 0.1);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.2);
+        .lang-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: #94a3b8;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        .lang-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 3px;
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            position: relative;
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .animate-in {
-            animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #60a5fa, #a855f7);
+            --webkit-background-clip: text;
+            color: transparent;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
 
-        .modal-overlay {
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+
+        p,
+        li {
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #e2e8f0;
+        }
+
+        pre {
+            background: var(--code-bg) !important;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+
+        .macro-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: 0.2s;
+        }
+
+        .macro-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .macro-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .macro-name {
+            font-family: 'JetBrains Mono';
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .macro-desc {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 50;
-            display: none;
+            z-index: 1000;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(5px);
         }
 
-        .modal {
-            background: #09090b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
+        .modal-content {
+            background: var(--sidebar);
+            width: 600px;
+            max-width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            padding: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 30px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Mobile */
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            background: var(--sidebar);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                width: 250px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .main {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 
-<body class="antialiased flex h-screen overflow-hidden selection:bg-indigo-500/30">
-    <aside class="sidebar w-56 flex flex-col flex-shrink-0">
-        <div class="px-4 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
-                <span class="text-white font-bold text-sm tracking-wide">SEVEN</span>
-            </div>
-            <button onclick="openHistory()" class="text-zinc-500 hover:text-white transition-colors" title="História"><i
-                    data-lucide="book" class="w-4 h-4"></i></button>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo-text">⚡ Seven <span class="version-badge">v2.5.21</span></div>
         </div>
 
-        <div class="px-3 mb-2">
-            <div class="relative group">
-                <i data-lucide="search"
-                    class="absolute left-3 top-2.5 w-3.5 h-3.5 text-zinc-600 group-focus-within:text-indigo-400 transition-colors"></i>
-                <input type="text" id="search" placeholder="Buscar..."
-                    class="w-full bg-zinc-900/50 border border-white/5 rounded-md py-2 pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:bg-zinc-900 transition-all font-medium">
+        <div class="nav-scroll">
+            <input type="text" id="search" placeholder="Search macros..."
+                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 4px; color: white; margin-bottom: 20px; font-family: inherit;">
+
+            <div class="nav-group">
+                <div class="nav-header" data-lang="en">Getting Started</div>
+                <div class="nav-header" data-lang="pt" style="display:none">Começando</div>
+                <a href="#intro" class="nav-item">Introduction</a>
+                <a href="#install" class="nav-item">Installation</a>
+                <a href="#setup" class="nav-item">Quick Setup</a>
             </div>
+
+            <div class="nav-group">
+                <div class="nav-header">Reference</div>
+                <a href="#core" class="nav-item">Core & IO</a>
+                <a href="#ui" class="nav-item">UI & Embeds</a>
+                <a href="#economy" class="nav-item">Economy</a>
+                <a href="#system" class="nav-item">System & Info</a>
+                <a href="#moderation" class="nav-item">Moderation</a>
+                <a href="#logic" class="nav-item">Logic & Math</a>
+                <a href="#string" class="nav-item">String Ops</a>
+            </div>
+
+            <button onclick="openModal()" class="nav-item"
+                style="margin-top: 10px; border: 1px dashed var(--border); text-align: center;">
+                <span data-lang="en">📖 View History</span>
+                <span data-lang="pt" style="display:none">📖 Ver História</span>
+            </button>
         </div>
 
-        <nav class="flex-1 overflow-y-auto px-2 pb-4 scrollbar-hide" id="nav"></nav>
-
-        <div class="p-3 border-t border-white/5 flex gap-1">
-            <a href="https://discord.gg/qpRjsjrXcx" target="_blank"
-                class="flex-1 flex justify-center items-center gap-2 py-2 bg-white/5 hover:bg-white/10 rounded overflow-hidden transition-colors text-xs font-medium text-zinc-400 hover:text-white">
-                <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Suporte
-            </a>
-            <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
-                class="flex-1 flex justify-center items-center gap-2 py-2 bg-white/5 hover:bg-white/10 rounded overflow-hidden transition-colors text-xs font-medium text-zinc-400 hover:text-white">
-                <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
-            </a>
+        <div class="lang-toggle">
+            <button class="lang-btn active" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('pt')">PT</button>
         </div>
-    </aside>
+    </div>
 
-    <main class="flex-1 flex flex-col bg-[#050505]">
-        <header class="h-14 border-b border-white/5 flex items-center px-8 justify-between">
-            <div class="flex items-center gap-2 text-sm breadcrumbs">
-                <span class="text-zinc-500">Docs</span>
-                <span class="text-zinc-700">/</span>
-                <span class="text-zinc-200 font-medium" id="title">Início</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="text-[10px] font-mono text-zinc-600 bg-zinc-900 px-2 py-1 rounded border border-white/5">
-                    v2.5.20</div>
-            </div>
-        </header>
-        <div class="flex-1 overflow-y-auto" id="content"></div>
-    </main>
+    <!-- Mobile Button -->
+    <button class="mobile-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 
-    <!-- Modal História -->
-    <div id="historyModal" class="modal-overlay" onclick="closeHistory(e)">
-        <div class="modal animate-in" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-white">A História do Seven</h3>
-                <button onclick="closeModal()" class="text-zinc-500 hover:text-white"><i data-lucide="x"
-                        class="w-5 h-5"></i></button>
+    <!-- Main -->
+    <div class="main">
+        <div class="container">
+
+            <!-- Intro -->
+            <section id="intro">
+                <h1 data-lang="en">Seven-Discord Framework</h1>
+                <h1 data-lang="pt" style="display:none">Framework Seven-Discord</h1>
+
+                <p data-lang="en">A high-performance, macro-based Discord library built natively for Bun. Design complex
+                    bots with simple, one-line macros.</p>
+                <p data-lang="pt" style="display:none">Uma biblioteca Discord de alto desempenho baseada em macros
+                    construída nativamente para Bun. Crie bots complexos com macros simples de uma linha.</p>
+
+                <div class="macro-card">
+                    <pre><code class="language-typescript">import { SevenClient } from "seven-discord";
+const client = new SevenClient({ token: "..." });
+client.start();</code></pre>
+                </div>
+            </section>
+
+            <!-- Macros Sections -->
+            <!-- Note: Filling content dynamically might be better but for static docs, we list them. -->
+
+            <section id="core">
+                <h2>Core & IO</h2>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.send</div>
+                    </div>
+                    <div class="macro-desc"><code data-lang="en">Send a message to a channel.</code><code data-lang="pt"
+                            style="display:none">Envia uma mensagem para um canal.</code></div>
+                    <code>s.send[channelID; content]</code>
+                </div>
+                <!-- Log, Reply, etc -->
+            </section>
+
+            <section id="ui">
+                <h2>UI & Embeds</h2>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.embed</div>
+                    </div>
+                    <div class="macro-desc">Create rich embeds. Support nested macros.</div>
+                    <code>s.embed[title:Hi; color:#ff0000; s.field[Name;Value]]</code>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.button</div>
+                    </div>
+                    <div class="macro-desc">Create interactive buttons.</div>
+                    <code>s.button[id; Label; style; disabled?]</code>
+                </div>
+                <!-- SelectMenu, Modal, Defer, UpdateInteraction -->
+            </section>
+
+            <section id="economy">
+                <h2>Economy</h2>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.cash</div>
+                    </div>
+                    <div class="macro-desc">Check user balance.</div>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.give / s.take</div>
+                    </div>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.work / s.daily</div>
+                    </div>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.gamble / s.coinflip</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="system">
+                <h2>System & Info</h2>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.ping / s.uptime</div>
+                    </div>
+                    <div class="macro-desc">Bot stats.</div>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.guildCount / s.userCount</div>
+                    </div>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.ram / s.cpu</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="logic">
+                <h2>Logic & Math</h2>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.if</div>
+                    </div><code>s.if[condition; true; false]</code>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.math</div>
+                    </div><code>s.math[1 + 1]</code>
+                </div>
+                <div class="macro-card">
+                    <div class="macro-header">
+                        <div class="macro-name">s.randomInt</div>
+                    </div><code>s.randomInt[1; 100]</code>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>Project History</h2>
+            <div data-lang="en">
+                <p>Seven-Discord began as an experiment to simplify Discord bot development using Bun's incredible
+                    performance.</p>
+                <p>Unlike discord.js, which is feature-complete but heavy, Seven focuses on raw speed and a unique
+                    "Macro" system inspired by Aoi.js but modernized for TypeScript.</p>
+                <p><strong>v1.0:</strong> Initial prototype.<br><strong>v2.0:</strong> Macro Interpreter
+                    overhaul.<br><strong>v2.5:</strong> The Mega Expansion (Current), adding 90+ macros, full economy,
+                    and bilingual support.</p>
             </div>
-            <div class="prose prose-invert prose-sm">
-                <p>O Seven Discord nasceu da necessidade de criar bots complexos de forma simples usando a
-                    runtime Bun.
-                    Criado por um desenvolvedor apaixonado por otimização, ele remove a complexidade do
-                    discord.js e
-                    traz uma sintaxe intuitiva baseada em macros.</p>
-                <p class="mt-2 text-zinc-400">Versão atual: <span class="text-white font-mono">2.6.0</span>
-                    - Focada em
-                    Economia e UI.</p>
+            <div data-lang="pt" style="display:none">
+                <p>Seven-Discord começou como um experimento para simplificar o desenvolvimento de bots Discord usando o
+                    desempenho incrível do Bun.</p>
+                <p>Diferente do discord.js, que é completo mas pesado, o Seven foca em velocidade bruta e um sistema
+                    único de "Macros" inspirado no Aoi.js mas modernizado para TypeScript.</p>
+                <p><strong>v1.0:</strong> Protótipo inicial.<br><strong>v2.0:</strong> Reformulação do Interpretador de
+                    Macros.<br><strong>v2.5:</strong> A Mega Expansão (Atual), adicionando 90+ macros, economia completa
+                    e suporte bilíngue.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Dados (Macros e Eventos)
-        const M = [
-            // Core
-            { n: "s.reply", c: "Core", d: "Responde à interação/mensagem.", p: [{ n: "content", t: "string", r: 1, d: "Texto ou JSON" }], s: "s.reply[content]", ex: [{ c: "s.reply[Olá mundo!]", d: "Texto Simples" }] },
-            { n: "s.send", c: "Core", d: "Envia mensagem.", p: [{ n: "channelId", t: "string", r: 1, d: "ID do Canal" }, { n: "content", t: "string", r: 1, d: "Conteúdo" }], s: "s.send[id;content]", ex: [{ c: "s.send[123456789;Aviso!]", d: "Enviar msg" }] },
-            { n: "s.log", c: "Core", d: "Log no console.", p: [{ n: "msg", t: "string", r: 1, d: "Mensagem" }], s: "s.log[msg]", ex: [{ c: "s.log[Debug: s.username]", d: "Debug" }] },
-            // UI
-            { n: "s.button", c: "UI", d: "Cria um botão.", p: [{ n: "label", t: "string", r: 1 }, { n: "style", t: "string", r: 1 }, { n: "id/url", t: "string", r: 1 }, { n: "props", t: "obj", r: 0, d: "emoji:X;disabled:true" }], s: "s.button[label:X;style:primary;id:btn_1]", ex: [{ c: "s.button[label:Google;style:link;url:https://google.com]", d: "Botão Link" }, { c: "s.button[label:Não;style:danger;id:no;disabled:true]", d: "Desativado" }] },
-            { n: "s.selectMenu", c: "UI", d: "Menu de seleção simplificado.", p: [{ n: "id", t: "string", r: 1 }, { n: "placeholder", t: "string", r: 0 }, { n: "options", t: "list", r: 1 }], s: "s.selectMenu[id:menu;placeholder:Escolha;Opção 1:valor1;Opção 2:valor2]", ex: [{ c: "s.selectMenu[id:cargos;placeholder:Selecione um cargo;Admin:adm;Membro:member]", d: "Menu Simples" }] },
-            { n: "s.row", c: "UI", d: "Linha de componentes.", p: [{ n: "components", t: "...", r: 1 }], s: "s.row[...]", ex: [{ c: "s.row[s.button[A] s.button[B]]", d: "Agrupar" }] },
-            { n: "s.modal", c: "UI", d: "Cria um modal.", p: [{ n: "id", t: "string", r: 1 }, { n: "title", t: "string", r: 1 }], s: "s.modal[id:m;title:T]", ex: [{ c: "s.modal[id:form;title:Formulário]", d: "Modal" }] },
-            { n: "s.input", c: "UI", d: "Input de texto (Modal).", p: [{ n: "id", t: "string", r: 1 }, { n: "label", t: "string", r: 1 }], s: "s.input[id:i;label:L]", ex: [{ c: "s.input[id:nome;label:Seu Nome]", d: "Input" }] },
-            { n: "s.onInteraction", c: "UI", d: "Recebe interações.", p: [{ n: "id", t: "string", r: 1 }, { n: "code", t: "string", r: 1 }], s: "s.onInteraction[btn_id; code]", ex: [{ c: "s.onInteraction[btn_1; s.reply[Clicou!]]", d: "Responder botão" }] },
-            { n: "s.defer", c: "UI", d: "Adia a resposta (Pensando...).", p: [], s: "s.defer", ex: [{ c: "s.defer s.wait[5s] s.edit[Pronto!]", d: "Processamento longo" }] },
-            { n: "s.update", c: "UI", d: "Atualiza a mensagem do componente.", p: [{ n: "content", t: "string", r: 0 }], s: "s.update[novo conteudo]", ex: [{ c: "s.update[Botão clicado!]", d: "Alterar msg" }] },
-            // Economy
-            { n: "s.cash", c: "Economy", d: "Ver saldo.", p: [{ n: "user", t: "string", r: 0 }], s: "s.cash[user?]", ex: [{ c: "s.cash", d: "Meu saldo" }] },
-            { n: "s.addCash", c: "Economy", d: "Adicionar dinheiro.", p: [{ n: "amount", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.addCash[val;user]", ex: [{ c: "s.addCash[100;s.authorID]", d: "+100" }] },
-            { n: "s.pay", c: "Economy", d: "Pagar usuário.", p: [{ n: "val", t: "number", r: 1 }, { n: "user", t: "string", r: 1 }], s: "s.pay[val;user]", ex: [{ c: "s.pay[50;@user]", d: "Transferir" }] },
-            // Moderation
-            { n: "s.ban", c: "Moderation", d: "Banir usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "reason", t: "string", r: 0 }], s: "s.ban[user;reason]", ex: [{ c: "s.ban[@troll;Spam]", d: "Ban" }] },
-            { n: "s.kick", c: "Moderation", d: "Expulsar usuário.", p: [{ n: "user", t: "string", r: 1 }], s: "s.kick[user]", ex: [{ c: "s.kick[@user]", d: "Kick" }] },
-            { n: "s.mute", c: "Moderation", d: "Silenciar usuário.", p: [{ n: "user", t: "string", r: 1 }, { n: "time", t: "string", r: 1 }], s: "s.mute[user;time]", ex: [{ c: "s.mute[@user;1h]", d: "Mute 1h" }] },
-            // Variables
-            { n: "s.setVar", c: "Variables", d: "Definir variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "value", t: "any", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.setVar[n;v;t;id]", ex: [{ c: "s.setVar[xp;0;user;s.authorID]", d: "Set XP" }] },
-            { n: "s.getVar", c: "Variables", d: "Ler variável.", p: [{ n: "name", t: "string", r: 1 }, { n: "type", t: "string", r: 0 }, { n: "id", t: "string", r: 0 }], s: "s.getVar[n;t;id]", ex: [{ c: "s.getVar[xp;user;s.authorID]", d: "Get XP" }] },
-            { n: "s.authorID", c: "Variables", d: "ID do autor/interator.", p: [], s: "s.authorID", ex: [{ c: "s.reply[Seu ID: s.authorID]", d: "Retorna ID" }] },
-            // System
-            { n: "s.avatar", c: "System", d: "Avatar URL.", p: [{ n: "user", t: "string", r: 0 }], s: "s.avatar[user?]", ex: [{ c: "s.embed[image:s.avatar]", d: "Avatar Autor" }] },
-            { n: "s.ping", c: "System", d: "Latência do bot.", p: [], s: "s.ping", ex: [{ c: "s.reply[Ping: s.ping ms]", d: "Ping" }] },
-            { n: "s.eval", c: "System", d: "Executa JavaScript.", p: [{ n: "code", t: "string", r: 1 }], s: "s.eval[code]", ex: [{ c: "s.eval[2+2]", d: "Math JS" }] },
-            { n: "s.if", c: "Logic", d: "Condicional.", p: [{ n: "cond", t: "bool", r: 1 }, { n: "then", t: "any", r: 1 }, { n: "else", t: "any", r: 0 }], s: "s.if[cond;then;else]", ex: [{ c: "s.if[s.eq[1;1];Verdade;Falso]", d: "Lógica" }] }
-        ];
+        function setLang(lang) {
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if (el.tagName === 'SPAN' && el.parentElement.tagName === 'BUTTON') return; // Skip buttons inside setter if logic differs
+                el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+            });
 
-        const E = [
-            { n: "ready", d: "Quando o bot liga." },
-            { n: "messageCreate", d: "Nova mensagem enviada." },
-            { n: "interactionCreate", d: "Botão/Slash usado." },
-            { n: "guildMemberAdd", d: "Novo membro entra." },
-            { n: "guildMemberRemove", d: "Membro sai do server." },
-            { n: "interactionCreate", d: "Recebe interações (botões, menus)." }
-        ];
+            // Buttons toggle
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
 
-        const CATS = {
-            Core: { i: 'terminal', n: 'Essenciais' },
-            UI: { i: 'layout', n: 'Interface' },
-            Economy: { i: 'coins', n: 'Economia' },
-            Moderation: { i: 'shield', n: 'Moderação' },
-            Variables: { i: 'database', n: 'Variáveis' },
-            System: { i: 'cpu', n: 'Sistema' },
-            Logic: { i: 'git-branch', n: 'Lógica' }
-        };
-
-        function renderNav() {
-            let h = `<div class="sidebar-section">MACROS</div>`;
-            for (let c in CATS) {
-                h += `<button onclick="viewCat('${c}')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5" id="btn-${c}">
-            <i data-lucide="${CATS[c].i}"></i>${CATS[c].n}
-        </button>`;
-            }
-            h += `<div class="sidebar-section">DOCUMENTAÇÃO</div>
-    <button onclick="viewPage('intro')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="home"></i>Início</button>
-    <button onclick="viewPage('events')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="zap"></i>Eventos</button>
-    <button onclick="viewPage('guides')" class="sidebar-item w-full px-3 py-1.5 text-xs mb-0.5"><i data-lucide="book-open"></i>Guias</button>`;
-            document.getElementById('nav').innerHTML = h;
-            lucide.createIcons();
+            // Specific manual toggles if any
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.style.display = el.getAttribute('data-lang') === lang ? 'block' : 'none';
+                if (el.tagName === 'SPAN') el.style.display = el.getAttribute('data-lang') === lang ? 'inline' : 'none';
+            });
         }
 
-        function viewCat(c) {
-            document.getElementById('title').innerText = CATS[c].n;
-            const ms = M.filter(x => x.c === c);
-            let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
-        <div class="flex items-center gap-3 mb-8">
-            <div class="p-3 bg-zinc-900 rounded-xl border border-white/10"><i data-lucide="${CATS[c].i}" class="w-6 h-6 text-white"></i></div>
-            <div>
-                <h1 class="text-2xl font-bold text-white">${CATS[c].n}</h1>
-                <p class="text-zinc-500 text-sm">Macros de ${CATS[c].n.toLowerCase()}</p>
-            </div>
-        </div>
-        <div class="grid gap-3">`;
-            h += ms.map(m => `
-        <button onclick="viewMacro('${m.n}')" class="card p-4 text-left group">
-            <div class="flex justify-between items-start">
-                <div>
-                     <code class="text-indigo-400 font-bold text-sm bg-indigo-500/10 px-2 py-0.5 rounded">${m.n}</code>
-                     <p class="text-zinc-500 text-xs mt-2 leading-relaxed pr-8">${m.d}</p>
-                </div>
-                <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors"></i>
-            </div>
-        </button>
-    `).join('');
-            h += `</div></div>`;
-            document.getElementById('content').innerHTML = h;
-            lucide.createIcons();
-        }
+        const openModal = () => document.getElementById('historyModal').style.display = 'flex';
+        const closeModal = () => document.getElementById('historyModal').style.display = 'none';
 
-        function viewMacro(n) {
-            const m = M.find(x => x.n === n);
-            if (!m) return;
-            document.getElementById('title').innerText = m.n;
-            let h = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
-        <button onclick="viewCat('${m.c}')" class="mb-6 flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">
-            <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar para ${CATS[m.c].n}
-        </button>
-        
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-white tracking-tight font-mono">${m.n}</h1>
-            <span class="px-3 py-1 bg-zinc-900 border border-white/10 rounded-full text-xs text-zinc-400 font-medium">${m.c}</span>
-        </div>
-        
-        <p class="text-zinc-400 text-sm mb-8 leading-relaxed max-w-2xl">${m.d}</p>
-
-        <div class="space-y-8">
-            ${m.p && m.p.length > 0 ? `
-            <section>
-                <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Parâmetros</h3>
-                <div class="border border-white/5 rounded-lg overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-900/50 text-zinc-500 font-medium text-xs border-b border-white/5">
-                            <tr><th class="p-3 font-medium">Nome</th><th class="p-3 font-medium">Tipo</th><th class="p-3 font-medium">Obrigatório</th><th class="p-3 font-medium">Descrição</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/5">
-                            ${m.p.map(p => `
-                                <tr class="hover:bg-white/[0.02]">
-                                    <td class="p-3 font-mono text-zinc-300">${p.n}</td>
-                                    <td class="p-3"><span class="tag tag-${p.t === 'list' ? 'any' : p.t}">${p.t}</span></td>
-                                    <td class="p-3">${p.r ? '<span class="text-rose-400 text-xs font-medium">Sim</span>' : '<span class="text-zinc-600 text-xs">Não</span>'}</td>
-                                    <td class="p-3 text-zinc-500">${p.d || '-'}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </section>` : ''}
-
-            <section>
-                <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Sintaxe</h3>
-                <div class="code-block"><pre><code class="language-javascript">${m.s}</code></pre></div>
-            </section>
-
-            <section>
-                <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Exemplos</h3>
-                <div class="grid gap-4">
-                    ${m.ex.map(e => `
-                        <div class="code-block group relative">
-                            <div class="absolute top-2 right-2 text-[10px] text-zinc-600 font-medium px-2 py-1 bg-white/5 rounded opacity-0 group-hover:opacity-100 transition-opacity">${e.d}</div>
-                            <pre><code class="language-javascript">${e.c}</code></pre>
-                        </div>
-                    `).join('')}
-                </div>
-            </section>
-        </div>
-    </div>`;
-            document.getElementById('content').innerHTML = h;
-            Prism.highlightAll();
-            lucide.createIcons();
-        }
-
-        function viewPage(p) {
-            const c = document.getElementById('content');
-            if (p === 'intro') {
-                c.innerHTML = `<div class="max-w-3xl mx-auto px-8 py-16 text-center animate-in">
-            <div class="inline-flex items-center justify-center p-4 bg-zinc-900 rounded-2xl mb-6 shadow-2xl border border-white/5">
-                 <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg">7</div>
-            </div>
-            <h1 class="text-4xl font-bold text-white mb-4 tracking-tight">Seven Framework</h1>
-            <p class="text-zinc-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">A maneira mais rápida e poderosa de criar bots complexos no Discord usando Bun.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-12">
-                <div class="card p-5">
-                    <i data-lucide="zap" class="w-5 h-5 text-amber-400 mb-3"></i>
-                    <h3 class="text-white font-medium mb-1">Rápido</h3>
-                    <p class="text-zinc-500 text-xs">Runtime nativa Bun.</p>
-                </div>
-                <div class="card p-5">
-                    <i data-lucide="box" class="w-5 h-5 text-indigo-400 mb-3"></i>
-                    <h3 class="text-white font-medium mb-1">Simples</h3>
-                    <p class="text-zinc-500 text-xs">Sintaxe limpa e direta.</p>
-                </div>
-                <div class="card p-5">
-                    <i data-lucide="puzzle" class="w-5 h-5 text-emerald-400 mb-3"></i>
-                    <h3 class="text-white font-medium mb-1">Modular</h3>
-                    <p class="text-zinc-500 text-xs">Extensível via plugins.</p>
-                </div>
-            </div>
-
-            <div class="flex justify-center gap-3">
-                <button onclick="viewCat('Core')" class="bg-white text-black px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-zinc-200 transition-colors">Começar Agora</button>
-                <button onclick="viewMacro('s.button')" class="bg-zinc-900 text-white px-6 py-2.5 rounded-lg font-medium text-sm border border-zinc-800 hover:border-zinc-700 transition-colors">Ver Exemplos</button>
-            </div>
-        </div>`;
-            } else if (p === 'events') {
-                c.innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
-            <h1 class="text-2xl font-bold text-white mb-6">Eventos Disponíveis</h1>
-            <div class="grid gap-2">
-                ${E.map(e => `<div class="card px-4 py-3 flex items-center justify-between">
-                    <code class="text-indigo-400 text-sm font-bold bg-indigo-500/10 px-2 py-0.5 rounded">${e.n}</code>
-                    <span class="text-zinc-500 text-xs">${e.d}</span>
-                </div>`).join('')}
-            </div>
-        </div>`;
-            }
-            lucide.createIcons();
-        }
-
-        function openHistory() { document.getElementById('historyModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('historyModal').style.display = 'none'; }
-
-        // Search Logic
+        // Search
         document.getElementById('search').addEventListener('input', (e) => {
-            const v = e.target.value.toLowerCase();
-            if (v.length < 2) return;
-
-            document.getElementById('title').innerText = 'Busca';
-            const found = M.filter(m => m.n.toLowerCase().includes(v) || m.d.toLowerCase().includes(v));
-
-            document.getElementById('content').innerHTML = `<div class="max-w-4xl mx-auto px-8 py-10 animate-in">
-        <h2 class="text-lg font-bold text-white mb-4">Resultados para "${v}"</h2>
-        <div class="grid gap-2">
-             ${found.map(m => `<button onclick="viewMacro('${m.n}')" class="card px-4 py-3 text-left"><div class="flex justify-between"><span class="text-white font-mono font-medium">${m.n}</span><span class="text-zinc-600 text-xs">${m.c}</span></div><p class="text-zinc-500 text-xs mt-1">${m.d}</p></button>`).join('')}
-        </div>
-    </div>`;
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.macro-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(term) ? 'block' : 'none';
+            });
         });
 
-        // Init
-        renderNav();
-        viewPage('intro');
+        // Initialize
+        setLang('en');
     </script>
 </body>
 

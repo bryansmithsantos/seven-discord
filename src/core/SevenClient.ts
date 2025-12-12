@@ -43,6 +43,10 @@ export class SevenClient {
     public user: any = null; // Store bot user info
     public sessionId: string | null = null;
 
+    public get sevenvariables() {
+        return this.variables;
+    }
+
 
     constructor(options: SevenClientOptions) {
         this.token = options.token;
@@ -157,12 +161,20 @@ export class SevenClient {
         return this;
     }
 
+    public eventCommands: Map<string, EventConfig[]> = new Map();
+
     /**
      * Register an event listener.
      */
     public on(config: EventConfig): SevenClient {
         Logger.debug(`Registered event: ${config.event}`);
-        // Future: Add event macro handling here
+
+        const key = config.event.toLowerCase();
+        if (!this.eventCommands.has(key)) {
+            this.eventCommands.set(key, []);
+        }
+        this.eventCommands.get(key)?.push(config);
+
         return this;
     }
 
@@ -189,17 +201,17 @@ export class SevenClient {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s Timeout
-            
+
             const res = await fetch("https://registry.npmjs.org/seven-discord/latest", { signal: controller.signal });
             clearTimeout(timeoutId);
-            
+
             const data = await res.json() as any;
             if (data.version && data.version !== currentVersion) {
                 updateMsg = `
    \x1b[33m[!] UPDATE AVAILABLE: v${data.version}\x1b[0m
    \x1b[90mRun 'npm update seven-discord' to upgrade.\x1b[0m`;
             }
-        } catch (e) { 
+        } catch (e) {
             // Silent Fail
         }
 

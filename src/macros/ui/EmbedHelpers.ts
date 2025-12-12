@@ -1,4 +1,3 @@
-
 import { Macro } from "../Macro";
 
 export class EmbedTitleMacro extends Macro {
@@ -29,4 +28,28 @@ export class EmbedThumbMacro extends Macro {
 export class EmbedFooterMacro extends Macro {
     constructor() { super({ name: "footer", description: "Sets embed footer", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_FOOTER::${args.join(" ")}::END`; }
+}
+
+export class EmbedUrlMacro extends Macro {
+    constructor() { super({ name: "url", description: "Sets embed url", category: "ui" }); }
+    async execute(ctx: any, ...args: string[]) { return `EMBED_URL::${args[0]}::END`; }
+}
+
+export class EmbedAuthorMacro extends Macro {
+    constructor() { super({ name: "author", description: "Sets embed author. Usage: s.author[name; icon?; url?]", category: "ui" }); }
+    async execute(ctx: any, ...args: string[]) {
+        return `EMBED_AUTHOR::${args[0]}::${args[1] || ""}::${args[2] || ""}::END`;
+    }
+}
+
+export class EmbedFieldMacro extends Macro {
+    constructor() { super({ name: "field", description: "Adds a field. Usage: s.field[name; value; inline?]", category: "ui" }); }
+    async execute(ctx: any, ...args: string[]) {
+        return `EMBED_FIELD::${args[0]}::${args[1]}::${args[2] || "false"}::END`;
+    }
+}
+
+export class EmbedTimestampMacro extends Macro {
+    constructor() { super({ name: "timestamp", description: "Sets timestamp (default now)", category: "ui" }); }
+    async execute(ctx: any, ...args: string[]) { return `EMBED_TIMESTAMP::${args[0] || "now"}::END`; }
 }

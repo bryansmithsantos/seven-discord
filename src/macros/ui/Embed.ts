@@ -75,9 +75,36 @@ export class EmbedMacro extends Macro {
         const footerMatch = cleanContent.match(/EMBED_FOOTER::(.*?)::END/s);
         if (footerMatch) embed.footer = { text: footerMatch[1] };
 
+        const urlMatch = cleanContent.match(/EMBED_URL::(.*?)::END/s);
+        if (urlMatch) embed.url = urlMatch[1];
+
+        const tsMatch = cleanContent.match(/EMBED_TIMESTAMP::(.*?)::END/s);
+        if (tsMatch) embed.timestamp = tsMatch[1] === "now" ? new Date().toISOString() : tsMatch[1];
+
+        const authorMatch = cleanContent.match(/EMBED_AUTHOR::(.*?)::(.*?)::(.*?)::END/s);
+        if (authorMatch) {
+            embed.author = {
+                name: authorMatch[1],
+                icon_url: authorMatch[2] || undefined,
+                url: authorMatch[3] || undefined
+            };
+        }
+
+        // Fields (Global Search)
+        const fieldRegex = /EMBED_FIELD::(.*?)::(.*?)::(.*?)::END/gs;
+        let fMatch;
+        const fields = [];
+        while ((fMatch = fieldRegex.exec(cleanContent)) !== null) {
+            fields.push({
+                name: fMatch[1],
+                value: fMatch[2],
+                inline: fMatch[3] === "true"
+            });
+        }
+        if (fields.length > 0) embed.fields = fields;
+
         // 2. Sugar Syntax Parser (KV usage inside s.embed directly)
         // e.g. s.embed[title:Hello; color:red]
-        // We iterate args passed to execute.
         for (const arg of args) {
             const split = arg.indexOf(":");
             if (split > -1) {
