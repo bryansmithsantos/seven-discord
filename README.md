@@ -101,4 +101,4 @@ We completely redesigned our docs. They are now built-in!
 ---
 
 ## 📄 License
-MIT © Koxik
+MIT © Seven
