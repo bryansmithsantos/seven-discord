@@ -12,73 +12,77 @@ export class SelectMenuMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        let customId, placeholder, minValues, maxValues, optionsArg;
+        let customId, placeholder;
+        let min = 1, max = 1;
+        let options: any[] = [];
 
-        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http") && !a.startsWith("Option::"));
+        // Check for Named Arguments (KV) - but also handle mixed style
+        // If args contain explicit kv pairs for id/placeholder, assume KV mode.
+        // Otherwise, assume positional: id, placeholder, ...options
 
-        let optionStrings: string[] = [];
+        const hasKV = args.some(a => (a.startsWith("id:") || a.startsWith("placeholder:")) && !a.startsWith("http"));
 
         if (hasKV) {
-            const map: any = {};
-            const cleanArgs = [];
-
+            // KV Parsing Loop
             for (const arg of args) {
-                // Important: Options might be passed as args too if not using KV correctly, 
-                // BUT s.option returns "Option::JSON::END". We must preserve these.
                 if (arg.startsWith("Option::") || arg.startsWith("SelectOption::")) {
-                    optionStrings.push(arg);
+                    // pre-parsed option macro? unlikely used this way but support it
                     continue;
                 }
 
+                // Check for standard properties
                 const split = arg.indexOf(":");
                 if (split > -1) {
                     const key = arg.substring(0, split).trim().toLowerCase();
                     const val = arg.substring(split + 1).trim();
-                    map[key] = val;
+
+                    if (key === "id" || key === "custom_id") customId = val;
+                    else if (key === "placeholder" || key === "text") placeholder = val;
+                    else if (key === "min") min = parseInt(val);
+                    else if (key === "max") max = parseInt(val);
+                    else {
+                        // Assume it's an inline option: Label:Value
+                        options.push({ label: key, value: val });
+                    }
                 } else {
-                    // Non-KV arg, assume it's an option string if it fails regex check later or ignored
-                    // OR it's a positional arg mixed in? 
-                    // Let's assume if KV is used, ALL metadata is KV, and Options are just appended args.
-                    optionStrings.push(arg);
+                    // Just a label, use as value too? or ignore?
+                    // Let's assume Label=Value
+                    options.push({ label: arg, value: arg });
                 }
             }
-            customId = map.id || map.custom_id || map.customId;
-            placeholder = map.placeholder || map.place || map.text;
-            minValues = parseInt(map.min || map.min_values || "1");
-            maxValues = parseInt(map.max || map.max_values || "1");
         } else {
-            // Fallback to positional: [id, placeholder, ...options]
-            // We need to shift args to find options.
+            // Positional: [id, placeholder, ...options]
             customId = args[0];
             placeholder = args[1];
-            optionStrings = args.slice(2);
-            minValues = 1;
-            maxValues = 1;
-        }
 
-        // Option syntax could be complex. 
-        // Let's iterate args. If an arg looks like OPTION::JSON::END, use it.
-
-        const content = optionStrings.join(" ");
-        const options: any[] = [];
-
-        const regex = /SelectOption::(.*?)::END/g;
-        let match;
-        while ((match = regex.exec(content)) !== null) {
-            try {
-                options.push(JSON.parse(match[1]));
-            } catch (e) { }
+            // Remaining args are options
+            for (let i = 2; i < args.length; i++) {
+                const arg = args[i];
+                if (arg.includes(":")) {
+                    const [l, v] = arg.split(":");
+                    options.push({ label: l.trim(), value: v.trim() });
+                } else {
+                    options.push({ label: arg, value: arg });
+                }
+            }
         }
 
         if (options.length === 0) return "No options provided.";
+
+        // Fix casing for display
+        const finalOptions = options.map(o => ({
+            label: o.label.substring(0, 100), // Discord Limit
+            value: o.value.substring(0, 100),
+            default: false
+        }));
 
         const select = {
             type: 3, // String Select
             custom_id: customId,
             placeholder: placeholder || "Select an option",
-            options: options,
-            min_values: 1,
-            max_values: 1 // Default single selection
+            options: finalOptions,
+            min_values: min || 1,
+            max_values: max || 1
         };
 
         return `COMPONENT_SELECT::${JSON.stringify(select)}::END`;

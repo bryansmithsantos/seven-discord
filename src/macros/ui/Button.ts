@@ -13,9 +13,9 @@ export class ButtonMacro extends Macro {
     async execute(ctx: any, ...args: string[]) {
         let label, styleStr, customId, emoji;
         let disabled = false;
+        let url = null;
 
         // Check for Named Arguments (KV)
-        // e.g. s.button[label:Click Me; style:primary; id:btn_1]
         const hasKV = args.some(a => a.includes(":") && !a.startsWith("http"));
 
         if (hasKV) {
@@ -30,25 +30,23 @@ export class ButtonMacro extends Macro {
             }
             label = map.label || map.l || map.name;
             styleStr = map.style || map.s;
-
-            // Explicit URL vs CustomID logic
-            if (map.url || map.link) {
-                styleStr = "link";
-                customId = map.url || map.link;
-            } else {
-                customId = map.id || map.custom_id || map.customId;
-            }
-
+            customId = map.id || map.custom_id || map.customId;
+            url = map.url || map.link;
             emoji = map.emoji || map.e || map.icon;
 
-            // Disabled State
-            disabled = map.disabled === "true" || map.disabled === "yes";
+            // Allow explicit "disabled:true"
+            if (map.disabled === "true" || map.disabled === "yes") disabled = true;
+
         } else {
-            // Fallback to positional
             [label, styleStr, customId, emoji] = args;
         }
 
-        // Map styles
+        // Auto-detect URL style if URL is provided
+        if (url) {
+            styleStr = "link";
+            customId = url; // for link buttons, url goes in url field, but we store it here temp
+        }
+
         const styles: any = {
             "primary": 1, "blue": 1, "blurple": 1,
             "secondary": 2, "gray": 2, "grey": 2,
@@ -58,22 +56,21 @@ export class ButtonMacro extends Macro {
         };
 
         const style = styles[styleStr?.toLowerCase()] || 1;
+
         const btn: any = {
-            type: 2, // Button
+            type: 2,
             label: label || "Button",
             style: style,
             disabled: disabled
         };
 
         if (style === 5) {
-            btn.url = customId; // Link buttons use url instead of custom_id
+            btn.url = customId;
         } else {
             btn.custom_id = customId;
         }
 
         if (emoji) {
-            // Simple emoji support (unicode or id?)
-            // If it matches <:name:id>, parse it.
             if (emoji.startsWith("<:") || emoji.startsWith("<a:")) {
                 const parts = emoji.replace(/<a?:|>/g, "").split(":");
                 btn.emoji = { name: parts[0], id: parts[1], animated: emoji.startsWith("<a:") };

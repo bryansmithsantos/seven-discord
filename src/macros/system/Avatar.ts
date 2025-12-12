@@ -29,16 +29,16 @@ export class AvatarMacro extends Macro {
             userId = args[0];
         }
 
-        // If no ID provided, default to author
+        // Feature: Input URL Bypass
+        if (userId && userId.startsWith("http")) return userId;
+
+        // Smart Default: Priority to Interaction User
         if (!userId) {
-            userId = ctx.interaction ? ctx.interaction.member.user.id : ctx.message.author.id;
+            userId = ctx.author?.id || ctx.interaction?.member?.user?.id || ctx.message?.author?.id;
         }
 
-        // Feature: If input is already a URL, just return it (flexibility)
-        if (userId.startsWith("http")) return userId;
-
         try {
-            // If it's "server" or "guild", get guild icon
+            // Guild Icon
             if (userId === "server" || userId === "guild") {
                 const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;
                 const guild = await ctx.client.rest.get(`/guilds/${guildId}`);
@@ -48,12 +48,16 @@ export class AvatarMacro extends Macro {
 
             // User Avatar
             const user = await ctx.client.rest.get(`/users/${userId}`);
-            if (!user.avatar) return user.default_avatar_url || "";
 
-            // Format: https://cdn.discordapp.com/avatars/USER_ID/HASH.png
+            if (!user.avatar) {
+                // Default Avatar Logic (based on discriminator)
+                const disc = parseInt(user.discriminator) % 5;
+                return `https://cdn.discordapp.com/embed/avatars/${disc}.png`;
+            }
+
             return `https://cdn.discordapp.com/avatars/${userId}/${user.avatar}.png?size=1024`;
         } catch (e) {
-            return "User not found.";
+            return "https://cdn.discordapp.com/embed/avatars/0.png"; // Fallback
         }
     }
 }

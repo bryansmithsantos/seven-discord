@@ -5,7 +5,7 @@ export class OnInteractionMacro extends Macro {
     constructor() {
         super({
             name: "onInteraction",
-            aliases: ["onButton", "buttonClicked", "onSelect"],
+            aliases: ["onButton", "onSelect", "buttonClicked", "interaction"],
             description: "Sets code for an interaction. Usage: s.onInteraction[id; code]",
             category: "ui",
             disableNestedParsing: true
