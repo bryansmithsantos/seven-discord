@@ -1,530 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seven-Discord v2.5.21</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    colors: {
+                        brand: { 500: '#3b82f6', 600: '#2563eb' },
+                        dark: { 800: '#1e293b', 900: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg: #0f172a;
-            --sidebar: #1e293b;
-            --text: #f8fafc;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --border: #334155;
-            --code-bg: #000000;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            background-color: #0f172a;
+            color: #f8fafc;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            transition: transform 0.3s;
-            z-index: 100;
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
         }
 
-        .logo-area {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-text {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .version-badge {
-            background: var(--accent);
-            color: white;
-            padding: 2px 6px;
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
             border-radius: 4px;
-            font-size: 0.75rem;
         }
 
-        .nav-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .nav-group {
-            margin-bottom: 20px;
-        }
-
-        .nav-header {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #94a3b8;
-            font-weight: 700;
-            margin-bottom: 8px;
-            padding-left: 10px;
-        }
-
-        .nav-item {
-            display: block;
-            padding: 8px 10px;
-            color: #cbd5e1;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent);
-        }
-
-        .lang-toggle {
-            display: flex;
-            gap: 10px;
-            margin-top: auto;
-            padding: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .lang-btn {
-            background: none;
-            border: 1px solid var(--border);
-            color: #94a3b8;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
-
-        .lang-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        /* Main Content */
-        .main {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            position: relative;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #60a5fa, #a855f7);
-            --webkit-background-clip: text;
-            color: transparent;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        h3 {
-            font-size: 1.3rem;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            color: #e2e8f0;
-        }
-
-        p,
-        li {
-            line-height: 1.6;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-        }
-
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            color: #e2e8f0;
-        }
-
-        pre {
-            background: var(--code-bg) !important;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            border: 1px solid var(--border);
-        }
-
-        .macro-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: 0.2s;
-        }
-
-        .macro-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .macro-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .macro-name {
-            font-family: 'JetBrains Mono';
-            font-weight: bold;
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .macro-desc {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: var(--sidebar);
-            width: 600px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 30px;
-            animation: slideUp 0.3s ease;
-        }
-
-        .close-modal {
-            float: right;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #94a3b8;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Mobile */
-        .mobile-menu {
-            display: none;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 200;
-            background: var(--sidebar);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                transform: translateX(-100%);
-                width: 250px;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .mobile-menu {
-                display: block;
-            }
-
-            .main {
-                padding: 20px;
-            }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
 
-<body>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Mobile Menu Button -->
+    <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
+        class="fixed top-4 right-4 z-50 md:hidden bg-brand-600 p-2 rounded text-white shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
 
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo-area">
-            <div class="logo-text">⚡ Seven <span class="version-badge">v2.5.21</span></div>
+    <nav id="sidebar"
+        class="fixed inset-y-0 left-0 w-72 bg-dark-800 border-r border-gray-800 transform -translate-x-full md:translate-x-0 transition-transform duration-200 z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+            <h1
+                class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Seven<span class="text-white">Discord</span>
+            </h1>
+            <span
+                class="px-2 py-0.5 rounded text-xs font-mono bg-brand-600/20 text-blue-400 border border-brand-600/30">v2.5.21</span>
         </div>
 
-        <div class="nav-scroll">
-            <input type="text" id="search" placeholder="Search macros..."
-                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 4px; color: white; margin-bottom: 20px; font-family: inherit;">
+        <div class="p-4">
+            <div class="relative">
+                <input type="text" id="search" placeholder="Search / Procurar..."
+                    class="w-full bg-dark-900 border border-gray-700 rounded-md py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-gray-300 placeholder-gray-500 font-sans">
+                <svg class="w-4 h-4 text-gray-500 absolute left-3 top-2.5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
 
-            <div class="nav-group">
-                <div class="nav-header" data-lang="en">Getting Started</div>
-                <div class="nav-header" data-lang="pt" style="display:none">Começando</div>
-                <a href="#intro" class="nav-item">Introduction</a>
-                <a href="#install" class="nav-item">Installation</a>
-                <a href="#setup" class="nav-item">Quick Setup</a>
+        <div class="flex-1 overflow-y-auto sidebar-scroll px-4 pb-4 space-y-6">
+
+            <!-- Group: Getting Started -->
+            <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">Getting
+                    Started</h3>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
+                    Começando</h3>
+                <div class="space-y-1">
+                    <a href="#intro"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors group">
+                        <span data-lang="en">Introduction</span><span data-lang="pt" class="hidden">Introdução</span>
+                    </a>
+                    <a href="#install"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors group">
+                        <span data-lang="en">Installation</span><span data-lang="pt" class="hidden">Instalação</span>
+                    </a>
+                </div>
             </div>
 
-            <div class="nav-group">
-                <div class="nav-header">Reference</div>
-                <a href="#core" class="nav-item">Core & IO</a>
-                <a href="#ui" class="nav-item">UI & Embeds</a>
-                <a href="#economy" class="nav-item">Economy</a>
-                <a href="#system" class="nav-item">System & Info</a>
-                <a href="#moderation" class="nav-item">Moderation</a>
-                <a href="#logic" class="nav-item">Logic & Math</a>
-                <a href="#string" class="nav-item">String Ops</a>
+            <!-- Group: Core -->
+            <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">Core & IO</h3>
+                <div class="space-y-1">
+                    <a href="#macro-send"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.send</a>
+                    <a href="#macro-reply"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.reply</a>
+                </div>
             </div>
 
-            <button onclick="openModal()" class="nav-item"
-                style="margin-top: 10px; border: 1px dashed var(--border); text-align: center;">
-                <span data-lang="en">📖 View History</span>
-                <span data-lang="pt" style="display:none">📖 Ver História</span>
+            <!-- Group: UI -->
+            <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">UI & Embeds</h3>
+                <div class="space-y-1">
+                    <a href="#ui"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.embed</a>
+                    <a href="#ui"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.button</a>
+                    <a href="#ui"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.selectMenu</a>
+                    <a href="#ui"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.modal</a>
+                </div>
+            </div>
+
+            <!-- Group: Economy -->
+            <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">Economy
+                </h3>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
+                    Economia</h3>
+                <div class="space-y-1">
+                    <a href="#economy"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.cash
+                        / s.pay</a>
+                    <a href="#economy"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.work
+                        / s.daily</a>
+                    <a href="#economy"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.bank
+                        / s.rob</a>
+                </div>
+            </div>
+
+            <!-- Group: System -->
+            <div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">System
+                </h3>
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
+                    Sistema</h3>
+                <div class="space-y-1">
+                    <a href="#system"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.ping
+                        / s.uptime</a>
+                    <a href="#system"
+                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.ram
+                        / s.cpu</a>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('history-modal').classList.remove('hidden')"
+                class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded text-sm transition-colors border border-gray-700 border-dashed">
+                <span data-lang="en">📜 View Project History</span>
+                <span data-lang="pt" class="hidden">📜 Ver História do Projeto</span>
             </button>
         </div>
 
-        <div class="lang-toggle">
-            <button class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('pt')">PT</button>
+        <!-- Language Toggle Footer -->
+        <div class="p-4 border-t border-gray-800 bg-black/20">
+            <div class="flex bg-dark-900 rounded-lg p-1 border border-gray-700">
+                <button onclick="setLang('en')"
+                    class="flex-1 py-1.5 text-xs font-bold text-center rounded transition-colors lang-btn active-lang"
+                    data-target="en">ENGLISH</button>
+                <button onclick="setLang('pt')"
+                    class="flex-1 py-1.5 text-xs font-bold text-center rounded transition-colors text-gray-500 hover:text-white lang-btn"
+                    data-target="pt">PORTUGUÊS</button>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Mobile Button -->
-    <button class="mobile-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <!-- Main Content -->
+    <main class="flex-1 ml-0 md:ml-72 p-6 md:p-12 overflow-y-auto">
+        <div class="max-w-4xl mx-auto space-y-16">
 
-    <!-- Main -->
-    <div class="main">
-        <div class="container">
+            <!-- Hero -->
+            <section id="intro" class="space-y-6">
+                <div class="space-y-2">
+                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white" data-lang="en">
+                        Build Discord Bots <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-500">Faster.</span>
+                    </h2>
+                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white hidden" data-lang="pt">
+                        Crie Bots de Discord <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-500">Mais
+                            Rápido.</span>
+                    </h2>
 
-            <!-- Intro -->
-            <section id="intro">
-                <h1 data-lang="en">Seven-Discord Framework</h1>
-                <h1 data-lang="pt" style="display:none">Framework Seven-Discord</h1>
+                    <p class="text-lg text-gray-400 max-w-2xl" data-lang="en">
+                        Seven-Discord is a high-performance framework built natively for <strong>Bun</strong>. Forget
+                        boilerplate. Use mostly standard Discord features with powerful clean syntax.
+                    </p>
+                    <p class="text-lg text-gray-400 max-w-2xl hidden" data-lang="pt">
+                        Seven-Discord é um framework de alta performance construído nativamente para
+                        <strong>Bun</strong>. Esqueça o boilerplate. Use recursos padrão do Discord com uma sintaxe
+                        limpa e poderosa.
+                    </p>
+                </div>
 
-                <p data-lang="en">A high-performance, macro-based Discord library built natively for Bun. Design complex
-                    bots with simple, one-line macros.</p>
-                <p data-lang="pt" style="display:none">Uma biblioteca Discord de alto desempenho baseada em macros
-                    construída nativamente para Bun. Crie bots complexos com macros simples de uma linha.</p>
-
-                <div class="macro-card">
+                <div class="glass-panel p-6 rounded-xl shadow-2xl">
                     <pre><code class="language-typescript">import { SevenClient } from "seven-discord";
-const client = new SevenClient({ token: "..." });
+
+const client = new SevenClient({ 
+    token: "MySuperSecretToken",
+    intents: 3276799 
+});
+
+client.cmd({
+    name: "ping",
+    code: "Pong! 🏓 Latency: s.pingms"
+});
+
 client.start();</code></pre>
                 </div>
             </section>
 
-            <!-- Macros Sections -->
-            <!-- Note: Filling content dynamically might be better but for static docs, we list them. -->
+            <!-- Macros Section -->
+            <section id="ui" class="space-y-8">
+                <div class="flex items-center gap-4">
+                    <div class="h-px bg-gray-800 flex-1"></div>
+                    <span class="text-sm font-bold text-brand-500 uppercase tracking-widest">UI & Embeds</span>
+                    <div class="h-px bg-gray-800 flex-1"></div>
+                </div>
 
-            <section id="core">
-                <h2>Core & IO</h2>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.send</div>
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- s.embed -->
+                    <div
+                        class="glass-panel p-6 rounded-xl hover:border-brand-500/50 transition-colors group macro-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold font-mono text-brand-400">s.embed</h3>
+                            <span
+                                class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-400 border border-gray-700">UI</span>
+                        </div>
+                        <p class="text-gray-400 mb-4 text-sm" data-lang="en">Creates a rich embed. Supports nested
+                            macros like s.field and s.author.</p>
+                        <p class="text-gray-400 mb-4 text-sm hidden" data-lang="pt">Cria um embed rico. Suporta macros
+                            aninhados como s.field e s.author.</p>
+                        <div
+                            class="bg-black/50 rounded-lg p-3 border border-gray-800 font-mono text-sm text-gray-300 overflow-x-auto">
+                            s.embed[title:Hello World; color:#5865F2; s.field[Name;Value]]
+                        </div>
                     </div>
-                    <div class="macro-desc"><code data-lang="en">Send a message to a channel.</code><code data-lang="pt"
-                            style="display:none">Envia uma mensagem para um canal.</code></div>
-                    <code>s.send[channelID; content]</code>
-                </div>
-                <!-- Log, Reply, etc -->
-            </section>
 
-            <section id="ui">
-                <h2>UI & Embeds</h2>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.embed</div>
-                    </div>
-                    <div class="macro-desc">Create rich embeds. Support nested macros.</div>
-                    <code>s.embed[title:Hi; color:#ff0000; s.field[Name;Value]]</code>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.button</div>
-                    </div>
-                    <div class="macro-desc">Create interactive buttons.</div>
-                    <code>s.button[id; Label; style; disabled?]</code>
-                </div>
-                <!-- SelectMenu, Modal, Defer, UpdateInteraction -->
-            </section>
-
-            <section id="economy">
-                <h2>Economy</h2>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.cash</div>
-                    </div>
-                    <div class="macro-desc">Check user balance.</div>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.give / s.take</div>
-                    </div>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.work / s.daily</div>
-                    </div>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.gamble / s.coinflip</div>
+                    <!-- s.button -->
+                    <div
+                        class="glass-panel p-6 rounded-xl hover:border-brand-500/50 transition-colors group macro-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold font-mono text-brand-400">s.button</h3>
+                            <span
+                                class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-400 border border-gray-700">UI</span>
+                        </div>
+                        <p class="text-gray-400 mb-4 text-sm" data-lang="en">Creates an interactive button.</p>
+                        <p class="text-gray-400 mb-4 text-sm hidden" data-lang="pt">Cria um botão interativo.</p>
+                        <div
+                            class="bg-black/50 rounded-lg p-3 border border-gray-800 font-mono text-sm text-gray-300 overflow-x-auto">
+                            s.button[customId; Label; Primary; false; 😃]
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="system">
-                <h2>System & Info</h2>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.ping / s.uptime</div>
-                    </div>
-                    <div class="macro-desc">Bot stats.</div>
+            <section id="economy" class="space-y-8">
+                <div class="flex items-center gap-4">
+                    <div class="h-px bg-gray-800 flex-1"></div>
+                    <span class="text-sm font-bold text-green-500 uppercase tracking-widest">Economy / Economia</span>
+                    <div class="h-px bg-gray-800 flex-1"></div>
                 </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.guildCount / s.userCount</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
+                        <h4 class="font-bold font-mono text-green-400 mb-2">s.cash</h4>
+                        <p class="text-xs text-gray-500 mb-3">View balance / Ver saldo</p>
+                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.cash[userID?]</code>
                     </div>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.ram / s.cpu</div>
+                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
+                        <h4 class="font-bold font-mono text-green-400 mb-2">s.pay</h4>
+                        <p class="text-xs text-gray-500 mb-3">Pay user / Pagar usuário</p>
+                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.pay[amount; userID]</code>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
+                        <h4 class="font-bold font-mono text-green-400 mb-2">s.work</h4>
+                        <p class="text-xs text-gray-500 mb-3">Work / Trabalhar</p>
+                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.work[min?; max?]</code>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
+                        <h4 class="font-bold font-mono text-green-400 mb-2">s.rob</h4>
+                        <p class="text-xs text-gray-500 mb-3">Rob user / Roubar usuário</p>
+                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.rob[victimID]</code>
                     </div>
                 </div>
             </section>
 
-            <section id="logic">
-                <h2>Logic & Math</h2>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.if</div>
-                    </div><code>s.if[condition; true; false]</code>
+            <section id="system" class="space-y-8">
+                <div class="flex items-center gap-4">
+                    <div class="h-px bg-gray-800 flex-1"></div>
+                    <span class="text-sm font-bold text-purple-500 uppercase tracking-widest">System</span>
+                    <div class="h-px bg-gray-800 flex-1"></div>
                 </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.math</div>
-                    </div><code>s.math[1 + 1]</code>
-                </div>
-                <div class="macro-card">
-                    <div class="macro-header">
-                        <div class="macro-name">s.randomInt</div>
-                    </div><code>s.randomInt[1; 100]</code>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
+                        <code class="text-purple-400 font-bold">s.ping</code>
+                        <span class="text-gray-500 text-sm">Returns websocket latency</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
+                        <code class="text-purple-400 font-bold">s.uptime</code>
+                        <span class="text-gray-500 text-sm">Returns bot uptime</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
+                        <code class="text-purple-400 font-bold">s.ram</code>
+                        <span class="text-gray-500 text-sm">RAM Usage</span>
+                    </div>
                 </div>
             </section>
 
         </div>
-    </div>
+    </main>
 
     <!-- History Modal -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2>Project History</h2>
-            <div data-lang="en">
-                <p>Seven-Discord began as an experiment to simplify Discord bot development using Bun's incredible
-                    performance.</p>
-                <p>Unlike discord.js, which is feature-complete but heavy, Seven focuses on raw speed and a unique
-                    "Macro" system inspired by Aoi.js but modernized for TypeScript.</p>
-                <p><strong>v1.0:</strong> Initial prototype.<br><strong>v2.0:</strong> Macro Interpreter
-                    overhaul.<br><strong>v2.5:</strong> The Mega Expansion (Current), adding 90+ macros, full economy,
-                    and bilingual support.</p>
+    <div id="history-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div
+            class="bg-dark-800 border border-gray-700 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-dark-900">
+                <h3 class="text-xl font-bold text-white tracking-tight">Project History</h3>
+                <button onclick="document.getElementById('history-modal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
-            <div data-lang="pt" style="display:none">
-                <p>Seven-Discord começou como um experimento para simplificar o desenvolvimento de bots Discord usando o
-                    desempenho incrível do Bun.</p>
-                <p>Diferente do discord.js, que é completo mas pesado, o Seven foca em velocidade bruta e um sistema
-                    único de "Macros" inspirado no Aoi.js mas modernizado para TypeScript.</p>
-                <p><strong>v1.0:</strong> Protótipo inicial.<br><strong>v2.0:</strong> Reformulação do Interpretador de
-                    Macros.<br><strong>v2.5:</strong> A Mega Expansão (Atual), adicionando 90+ macros, economia completa
-                    e suporte bilíngue.</p>
+            <div class="p-6 overflow-y-auto space-y-4 text-gray-300 leading-relaxed">
+                <div data-lang="en" class="space-y-4">
+                    <p><strong>Seven-Discord</strong> was born from a frustration with the bloated state of modern
+                        Discord libraries. While libraries like <em>discord.js</em> are powerful, they are heavy and
+                        memory-intensive.</p>
+                    <p>Inspired by <em>Aoi.js</em> (a string-based bot package) but wanting the type-safety and speed of
+                        <strong>Bun</strong>, we created Seven.</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>v1.0:</strong> A simple proof-of-concept macro interpreter.</li>
+                        <li><strong>v2.0:</strong> Complete rewrite of the logic engine for nested macros.</li>
+                        <li><strong>v2.5 (The Mega Expansion):</strong> Added a full Economy system, extensive System
+                            macros, and completed the verification of all Logic/Math modules.</li>
+                    </ul>
+                </div>
+                <div data-lang="pt" class="hidden space-y-4">
+                    <p><strong>Seven-Discord</strong> nasceu da frustração com o estado inchado das bibliotecas modernas
+                        do Discord. Enquanto bibliotecas como <em>discord.js</em> são poderosas, elas são pesadas e
+                        consomem muita memória.</p>
+                    <p>Inspirado pelo <em>Aoi.js</em> (um pacote de bot baseado em strings), mas querendo a segurança de
+                        tipos e velocidade do <strong>Bun</strong>, criamos o Seven.</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>v1.0:</strong> Uma prova de conceito simples de interpretador de macros.</li>
+                        <li><strong>v2.0:</strong> Reescrita completa do mecanismo lógico para macros aninhados.</li>
+                        <li><strong>v2.5 (A Mega Expansão):</strong> Adicionado um sistema completo de Economia, macros
+                            de Sistema extensos e verificação completa de módulos Lógicos/Matemáticos.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-700 bg-dark-900 text-right">
+                <button onclick="document.getElementById('history-modal').classList.add('hidden')"
+                    class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded font-medium transition-colors">Close</button>
             </div>
         </div>
     </div>
 
     <script>
         function setLang(lang) {
+            // Content Toggling
             document.querySelectorAll('[data-lang]').forEach(el => {
-                if (el.tagName === 'SPAN' && el.parentElement.tagName === 'BUTTON') return; // Skip buttons inside setter if logic differs
-                el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
             });
 
-            // Buttons toggle
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-
-            // Specific manual toggles if any
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                el.style.display = el.getAttribute('data-lang') === lang ? 'block' : 'none';
-                if (el.tagName === 'SPAN') el.style.display = el.getAttribute('data-lang') === lang ? 'inline' : 'none';
+            // Button Styles
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.target === lang) {
+                    btn.classList.remove('text-gray-500', 'hover:text-white');
+                    btn.classList.add('bg-brand-600', 'text-white');
+                } else {
+                    btn.classList.add('text-gray-500', 'hover:text-white');
+                    btn.classList.remove('bg-brand-600', 'text-white');
+                }
             });
         }
 
-        const openModal = () => document.getElementById('historyModal').style.display = 'flex';
-        const closeModal = () => document.getElementById('historyModal').style.display = 'none';
-
-        // Search
+        // Search Filter
         document.getElementById('search').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('.macro-card').forEach(card => {
-                const text = card.textContent.toLowerCase();
+                const text = card.innerText.toLowerCase();
                 card.style.display = text.includes(term) ? 'block' : 'none';
             });
         });
