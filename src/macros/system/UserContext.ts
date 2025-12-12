@@ -1,4 +1,4 @@
-import { Macro } from "../../Macro";
+import { Macro } from "../Macro";
 
 // --- USER ID ---
 export class UserIdMacro extends Macro {
@@ -29,17 +29,7 @@ export class UserCreatedMacro extends Macro {
     }
 }
 
-// --- USER AVATAR ---
-export class UserAvatarMacro extends Macro {
-    constructor() { super({ name: "userAvatar", description: "Get avatar URL", category: "user" }); }
-    async execute(ctx: any, ...args: string[]) {
-        const target = args[0] ? (await ctx.client.rest.get(`/users/${args[0]}`).catch(() => { })) : (ctx.author || ctx.user);
-        if (!target) return "";
-        return target.avatar
-            ? `https://cdn.discordapp.com/avatars/${target.id}/${target.avatar}.png`
-            : `https://cdn.discordapp.com/embed/avatars/${Number(target.discriminator) % 5}.png`;
-    }
-}
+
 
 // --- USER BOT ---
 export class UserBotMacro extends Macro {

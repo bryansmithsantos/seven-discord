@@ -167,7 +167,7 @@ export class Interpreter {
         this.register(new (require("../macros/system/UserContext").UserIdMacro)());
         this.register(new (require("../macros/system/UserContext").UserTagMacro)());
         this.register(new (require("../macros/system/UserContext").UserCreatedMacro)());
-        this.register(new (require("../macros/system/UserContext").UserAvatarMacro)());
+
         this.register(new (require("../macros/system/UserContext").UserBotMacro)());
 
         Logger.info("Interpreter System initialized.");

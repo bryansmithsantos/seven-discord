@@ -7,7 +7,7 @@ export class AvatarMacro extends Macro {
             name: "avatar",
             description: "Shows user avatar URL. Usage: s.avatar[user?]",
             category: "system",
-            aliases: ["av"]
+            aliases: ["av", "userAvatar"]
         });
     }
 

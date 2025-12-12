@@ -1,4 +1,4 @@
-import { Macro } from "../../Macro";
+import { Macro } from "../Macro";
 
 // --- CREATE MODAL (Simplifies s.modal) ---
 export class CreateModalMacro extends Macro {
