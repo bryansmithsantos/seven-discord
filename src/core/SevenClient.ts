@@ -76,9 +76,20 @@ export class SevenClient {
         this.registerInternalListeners();
     }
 
-    private resolveIntents(intents: number | string[]): number {
+    private resolveIntents(intents: number | IntentFlag[]): number {
         if (typeof intents === "number") return intents;
-        return 3276799;
+        if (Array.isArray(intents)) {
+            let bitfield = 0;
+            for (const intent of intents) {
+                if (Intents[intent]) {
+                    bitfield |= Intents[intent];
+                } else {
+                    Logger.warn(`Unknown intent: ${intent}`);
+                }
+            }
+            return bitfield;
+        }
+        return Intents.ALL;
     }
 
     public loadCommands(dir: string): void {
