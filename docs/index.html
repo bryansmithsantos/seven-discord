@@ -10,17 +10,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     colors: {
-                        brand: { 500: '#3b82f6', 600: '#2563eb' },
-                        dark: { 800: '#1e293b', 900: '#0f172a' }
+                        bg: { 900: '#050505', 800: '#0A0A0A', 700: '#111111' },
+                        border: { 800: '#1F1F1F', 700: '#333333' },
+                        accent: { 500: '#3b82f6', 600: '#2563eb' }
                     }
                 }
             }
@@ -28,387 +30,533 @@
     </script>
     <style>
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #050505;
+            color: #ededed;
         }
 
-        .sidebar-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
+        .glass {
+            background: rgba(10, 10, 10, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card {
+            background: #0A0A0A;
+            border: 1px solid #1F1F1F;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover {
+            border-color: #333333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-left: 2px solid #fff;
+        }
+
+        .spec-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .spec-panel.open {
+            transform: translateX(0);
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
         }
     </style>
 </head>
 
-<body class="flex h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden text-sm">
 
-    <!-- Mobile Menu Button -->
-    <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
-        class="fixed top-4 right-4 z-50 md:hidden bg-brand-600 p-2 rounded text-white shadow-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
-
-    <!-- Sidebar -->
-    <nav id="sidebar"
-        class="fixed inset-y-0 left-0 w-72 bg-dark-800 border-r border-gray-800 transform -translate-x-full md:translate-x-0 transition-transform duration-200 z-40 flex flex-col">
-        <div class="p-6 border-b border-gray-800 flex items-center justify-between">
-            <h1
-                class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-                Seven<span class="text-white">Discord</span>
-            </h1>
-            <span
-                class="px-2 py-0.5 rounded text-xs font-mono bg-brand-600/20 text-blue-400 border border-brand-600/30">v2.5.21</span>
-        </div>
-
-        <div class="p-4">
-            <div class="relative">
-                <input type="text" id="search" placeholder="Search / Procurar..."
-                    class="w-full bg-dark-900 border border-gray-700 rounded-md py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-gray-300 placeholder-gray-500 font-sans">
-                <svg class="w-4 h-4 text-gray-500 absolute left-3 top-2.5" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+    <!-- Specs Panel (Side Drawer) -->
+    <aside id="specs-panel"
+        class="spec-panel fixed inset-y-0 right-0 w-full md:w-[480px] bg-[#080808] border-l border-border-800 z-50 flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-border-800 flex justify-between items-center bg-[#080808]">
+            <div>
+                <h3 id="spec-title" class="text-xl font-bold font-mono text-white tracking-tight">s.embed</h3>
+                <span id="spec-category" class="text-xs uppercase tracking-widest text-gray-500 font-bold mt-1 block">UI
+                    & INTERACTION</span>
+            </div>
+            <button onclick="closeSpecs()"
+                class="hover:bg-white/10 p-2 rounded-full transition-colors text-gray-400 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
-            </div>
-        </div>
-
-        <div class="flex-1 overflow-y-auto sidebar-scroll px-4 pb-4 space-y-6">
-
-            <!-- Group: Getting Started -->
-            <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">Getting
-                    Started</h3>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
-                    Começando</h3>
-                <div class="space-y-1">
-                    <a href="#intro"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors group">
-                        <span data-lang="en">Introduction</span><span data-lang="pt" class="hidden">Introdução</span>
-                    </a>
-                    <a href="#install"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors group">
-                        <span data-lang="en">Installation</span><span data-lang="pt" class="hidden">Instalação</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Group: Core -->
-            <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">Core & IO</h3>
-                <div class="space-y-1">
-                    <a href="#macro-send"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.send</a>
-                    <a href="#macro-reply"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.reply</a>
-                </div>
-            </div>
-
-            <!-- Group: UI -->
-            <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">UI & Embeds</h3>
-                <div class="space-y-1">
-                    <a href="#ui"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.embed</a>
-                    <a href="#ui"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.button</a>
-                    <a href="#ui"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.selectMenu</a>
-                    <a href="#ui"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.modal</a>
-                </div>
-            </div>
-
-            <!-- Group: Economy -->
-            <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">Economy
-                </h3>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
-                    Economia</h3>
-                <div class="space-y-1">
-                    <a href="#economy"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.cash
-                        / s.pay</a>
-                    <a href="#economy"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.work
-                        / s.daily</a>
-                    <a href="#economy"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.bank
-                        / s.rob</a>
-                </div>
-            </div>
-
-            <!-- Group: System -->
-            <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2" data-lang="en">System
-                </h3>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 hidden" data-lang="pt">
-                    Sistema</h3>
-                <div class="space-y-1">
-                    <a href="#system"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.ping
-                        / s.uptime</a>
-                    <a href="#system"
-                        class="block px-2 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors font-mono text-xs">s.ram
-                        / s.cpu</a>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('history-modal').classList.remove('hidden')"
-                class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded text-sm transition-colors border border-gray-700 border-dashed">
-                <span data-lang="en">📜 View Project History</span>
-                <span data-lang="pt" class="hidden">📜 Ver História do Projeto</span>
             </button>
         </div>
+        <div class="flex-1 overflow-y-auto p-6 space-y-8">
+            <div>
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Description</h4>
+                <p id="spec-desc" class="text-gray-300 leading-relaxed">Creates variables.</p>
+            </div>
 
-        <!-- Language Toggle Footer -->
-        <div class="p-4 border-t border-gray-800 bg-black/20">
-            <div class="flex bg-dark-900 rounded-lg p-1 border border-gray-700">
+            <div id="spec-args-container">
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Arguments</h4>
+                <div class="bg-bg-700/50 rounded border border-border-800 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-border-800 bg-bg-800">
+                                <th class="p-3 text-xs font-medium text-gray-400">Idx</th>
+                                <th class="p-3 text-xs font-medium text-gray-400">Name</th>
+                                <th class="p-3 text-xs font-medium text-gray-400">Type</th>
+                                <th class="p-3 text-xs font-medium text-gray-400">Required</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spec-args-body" class="font-mono text-xs">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Example Usage</h4>
+                <pre
+                    class="rounded-lg border border-border-800 bg-[#000] p-4 overflow-x-auto"><code id="spec-code" class="language-typescript">s.embed[title:Hello]</code></pre>
+            </div>
+
+            <div class="bg-blue-500/5 border border-blue-500/10 rounded p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="text-blue-400 font-bold mb-1">Developer Note</h4>
+                        <p id="spec-note" class="text-gray-400 text-xs leading-relaxed">Most macros support nested
+                            execution unless stated otherwise.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- Overlay -->
+    <div id="specs-overlay" onclick="closeSpecs()"
+        class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-40 hidden opacity-0 transition-opacity duration-300">
+    </div>
+
+
+    <!-- Sidebar -->
+    <nav class="w-64 bg-bg-900 border-r border-border-800 flex flex-col h-full flex-shrink-0">
+        <div class="p-5 border-b border-border-800">
+            <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                Seven
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.21</span>
+            </h1>
+        </div>
+
+        <div class="p-3">
+            <input type="text" id="search" placeholder="Search macros..."
+                class="w-full bg-bg-800 border border-border-800 rounded px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-gray-600 transition-colors font-mono">
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-3 py-2 space-y-6 sidebar-scroll">
+            <div class="nav-group">
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2">General</h4>
+                <a href="#intro"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Introduction</a>
+                <a href="#events"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Event
+                    System</a>
+                <a href="#variables"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Variable
+                    System</a>
+            </div>
+
+            <div class="nav-group">
+                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2">Macros</h4>
+                <a href="#section-core"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Core
+                    & IO</a>
+                <a href="#section-ui"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">UI
+                    & Embeds</a>
+                <a href="#section-economy"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Economy</a>
+                <a href="#section-system"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">System
+                    & Info</a>
+                <a href="#section-moderation"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Moderation</a>
+                <a href="#section-logic"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Logic
+                    & Math</a>
+                <a href="#section-string"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">String
+                    Ops</a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-border-800">
+            <div class="flex border border-border-800 rounded overflow-hidden">
                 <button onclick="setLang('en')"
-                    class="flex-1 py-1.5 text-xs font-bold text-center rounded transition-colors lang-btn active-lang"
-                    data-target="en">ENGLISH</button>
+                    class="flex-1 py-1.5 text-[10px] font-bold text-center bg-white/10 text-white lang-btn"
+                    data-target="en">EN</button>
                 <button onclick="setLang('pt')"
-                    class="flex-1 py-1.5 text-xs font-bold text-center rounded transition-colors text-gray-500 hover:text-white lang-btn"
-                    data-target="pt">PORTUGUÊS</button>
+                    class="flex-1 py-1.5 text-[10px] font-bold text-center bg-bg-800 text-gray-500 hover:text-white hover:bg-bg-700 transition-colors lang-btn"
+                    data-target="pt">PT</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 ml-0 md:ml-72 p-6 md:p-12 overflow-y-auto">
-        <div class="max-w-4xl mx-auto space-y-16">
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto bg-bg-900 scroll-smooth">
+        <div class="max-w-5xl mx-auto p-12">
 
-            <!-- Hero -->
-            <section id="intro" class="space-y-6">
-                <div class="space-y-2">
-                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white" data-lang="en">
-                        Build Discord Bots <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-500">Faster.</span>
-                    </h2>
-                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white hidden" data-lang="pt">
-                        Crie Bots de Discord <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-purple-500">Mais
-                            Rápido.</span>
-                    </h2>
-
-                    <p class="text-lg text-gray-400 max-w-2xl" data-lang="en">
-                        Seven-Discord is a high-performance framework built natively for <strong>Bun</strong>. Forget
-                        boilerplate. Use mostly standard Discord features with powerful clean syntax.
-                    </p>
-                    <p class="text-lg text-gray-400 max-w-2xl hidden" data-lang="pt">
-                        Seven-Discord é um framework de alta performance construído nativamente para
-                        <strong>Bun</strong>. Esqueça o boilerplate. Use recursos padrão do Discord com uma sintaxe
-                        limpa e poderosa.
+            <!-- Intro (Hero) -->
+            <section id="intro" class="mb-24 py-10 border-b border-border-800">
+                <div data-lang="en">
+                    <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Build Bots, <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Faster.</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">The high-performance Discord framework
+                        for <strong>Bun</strong>. Write complex logic in single-line macros. Zero boilerplate.</p>
+                </div>
+                <div data-lang="pt" class="hidden">
+                    <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Crie Bots, <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Mais
+                            Rápido.</span></h1>
+                    <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">O framework Discord de alta performance
+                        para <strong>Bun</strong>. Escreva lógica complexa com macros de uma linha. Zero boilerplate.
                     </p>
                 </div>
 
-                <div class="glass-panel p-6 rounded-xl shadow-2xl">
-                    <pre><code class="language-typescript">import { SevenClient } from "seven-discord";
-
-const client = new SevenClient({ 
-    token: "MySuperSecretToken",
-    intents: 3276799 
-});
-
-client.cmd({
-    name: "ping",
-    code: "Pong! 🏓 Latency: s.pingms"
-});
-
-client.start();</code></pre>
-                </div>
-            </section>
-
-            <!-- Macros Section -->
-            <section id="ui" class="space-y-8">
-                <div class="flex items-center gap-4">
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                    <span class="text-sm font-bold text-brand-500 uppercase tracking-widest">UI & Embeds</span>
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-6">
-                    <!-- s.embed -->
-                    <div
-                        class="glass-panel p-6 rounded-xl hover:border-brand-500/50 transition-colors group macro-card">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold font-mono text-brand-400">s.embed</h3>
-                            <span
-                                class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-400 border border-gray-700">UI</span>
+                <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
                         </div>
-                        <p class="text-gray-400 mb-4 text-sm" data-lang="en">Creates a rich embed. Supports nested
-                            macros like s.field and s.author.</p>
-                        <p class="text-gray-400 mb-4 text-sm hidden" data-lang="pt">Cria um embed rico. Suporta macros
-                            aninhados como s.field e s.author.</p>
+                        <pre class="font-mono text-sm text-gray-300"><code>client.cmd({
+    name: <span class="text-green-400">"ping"</span>,
+    code: <span class="text-blue-400">"Pong! 🏓 Latency: s.pingms"</span>
+});</code></pre>
+                    </div>
+                    <div class="card p-6 rounded-xl flex flex-col justify-center">
+                        <h3 class="text-lg font-bold text-white mb-2">Installation</h3>
                         <div
-                            class="bg-black/50 rounded-lg p-3 border border-gray-800 font-mono text-sm text-gray-300 overflow-x-auto">
-                            s.embed[title:Hello World; color:#5865F2; s.field[Name;Value]]
+                            class="flex items-center gap-3 bg-bg-800 border border-border-800 p-3 rounded font-mono text-sm text-gray-300">
+                            <span class="text-blue-500">$</span> npm install seven-discord
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- s.button -->
-                    <div
-                        class="glass-panel p-6 rounded-xl hover:border-brand-500/50 transition-colors group macro-card">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold font-mono text-brand-400">s.button</h3>
-                            <span
-                                class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-400 border border-gray-700">UI</span>
-                        </div>
-                        <p class="text-gray-400 mb-4 text-sm" data-lang="en">Creates an interactive button.</p>
-                        <p class="text-gray-400 mb-4 text-sm hidden" data-lang="pt">Cria um botão interativo.</p>
+            <!-- Event System -->
+            <section id="events" class="mb-24 scroll-mt-20">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Event System
+                </h2>
+                <div class="card p-8 rounded-xl">
+                    <p class="text-gray-400 mb-6 leading-relaxed" data-lang="en">
+                        Seven-Discord allows you to hook into native Discord events directly. Access context via
+                        `s.authorID`, `s.channelID`, etc.
+                    </p>
+                    <p class="text-gray-400 mb-6 leading-relaxed hidden" data-lang="pt">
+                        Seven-Discord permite que você se conecte a eventos nativos do Discord diretamente. Acesse o
+                        contexto via `s.authorID`, `s.channelID`, etc.
+                    </p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <div
-                            class="bg-black/50 rounded-lg p-3 border border-gray-800 font-mono text-sm text-gray-300 overflow-x-auto">
-                            s.button[customId; Label; Primary; false; 😃]
+                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
+                            messageDelete</div>
+                        <div
+                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
+                            channelCreate</div>
+                        <div
+                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
+                            roleUpdate</div>
+                        <div
+                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
+                            interactionCreate</div>
+                    </div>
+
+                    <pre class="bg-[#000] p-4 rounded border border-border-800 overflow-x-auto"><code class="language-typescript text-sm">client.on({
+    name: "messageDelete",
+    code: "s.log[Message deleted by s.authorID in s.channelID]"
+});</code></pre>
+                </div>
+            </section>
+
+            <!-- Variable System -->
+            <section id="variables" class="mb-24 scroll-mt-20">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                        </path>
+                    </svg>
+                    Variable System
+                </h2>
+                <div class="card p-8 rounded-xl">
+                    <p class="text-gray-400 mb-6" data-lang="en">
+                        Manage persistent data easily. Access the raw manager via <code
+                            class="bg-white/10 px-1 py-0.5 rounded text-white">bot.sevenvariables</code>.
+                    </p>
+                    <p class="text-gray-400 mb-6 hidden" data-lang="pt">
+                        Gerencie dados persistentes facilmente. Acesse o gerenciador bruto via <code
+                            class="bg-white/10 px-1 py-0.5 rounded text-white">bot.sevenvariables</code>.
+                    </p>
+
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
+                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value]</code>
+                            <span class="text-xs text-gray-500 uppercase">Global</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
+                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value; guild]</code>
+                            <span class="text-xs text-gray-500 uppercase">Guild Scoped</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
+                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value; user]</code>
+                            <span class="text-xs text-gray-500 uppercase">User Scoped</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="economy" class="space-y-8">
-                <div class="flex items-center gap-4">
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                    <span class="text-sm font-bold text-green-500 uppercase tracking-widest">Economy / Economia</span>
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
-                        <h4 class="font-bold font-mono text-green-400 mb-2">s.cash</h4>
-                        <p class="text-xs text-gray-500 mb-3">View balance / Ver saldo</p>
-                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.cash[userID?]</code>
-                    </div>
-                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
-                        <h4 class="font-bold font-mono text-green-400 mb-2">s.pay</h4>
-                        <p class="text-xs text-gray-500 mb-3">Pay user / Pagar usuário</p>
-                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.pay[amount; userID]</code>
-                    </div>
-                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
-                        <h4 class="font-bold font-mono text-green-400 mb-2">s.work</h4>
-                        <p class="text-xs text-gray-500 mb-3">Work / Trabalhar</p>
-                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.work[min?; max?]</code>
-                    </div>
-                    <div class="glass-panel p-5 rounded-xl hover:border-green-500/30 transition-colors macro-card">
-                        <h4 class="font-bold font-mono text-green-400 mb-2">s.rob</h4>
-                        <p class="text-xs text-gray-500 mb-3">Rob user / Roubar usuário</p>
-                        <code class="block bg-black/30 p-2 rounded text-xs text-gray-300">s.rob[victimID]</code>
-                    </div>
-                </div>
-            </section>
-
-            <section id="system" class="space-y-8">
-                <div class="flex items-center gap-4">
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                    <span class="text-sm font-bold text-purple-500 uppercase tracking-widest">System</span>
-                    <div class="h-px bg-gray-800 flex-1"></div>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
-                        <code class="text-purple-400 font-bold">s.ping</code>
-                        <span class="text-gray-500 text-sm">Returns websocket latency</span>
-                    </div>
-                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
-                        <code class="text-purple-400 font-bold">s.uptime</code>
-                        <span class="text-gray-500 text-sm">Returns bot uptime</span>
-                    </div>
-                    <div class="glass-panel p-4 rounded-lg flex items-center justify-between macro-card">
-                        <code class="text-purple-400 font-bold">s.ram</code>
-                        <span class="text-gray-500 text-sm">RAM Usage</span>
-                    </div>
-                </div>
-            </section>
+            <!-- Macros Sections -->
+            <!-- We will use JS to render these to keep HTML clean and easy to update -->
+            <div id="macros-container"></div>
 
         </div>
     </main>
 
-    <!-- History Modal -->
-    <div id="history-modal"
-        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div
-            class="bg-dark-800 border border-gray-700 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl">
-            <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-dark-900">
-                <h3 class="text-xl font-bold text-white tracking-tight">Project History</h3>
-                <button onclick="document.getElementById('history-modal').classList.add('hidden')"
-                    class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-6 overflow-y-auto space-y-4 text-gray-300 leading-relaxed">
-                <div data-lang="en" class="space-y-4">
-                    <p><strong>Seven-Discord</strong> was born from a frustration with the bloated state of modern
-                        Discord libraries. While libraries like <em>discord.js</em> are powerful, they are heavy and
-                        memory-intensive.</p>
-                    <p>Inspired by <em>Aoi.js</em> (a string-based bot package) but wanting the type-safety and speed of
-                        <strong>Bun</strong>, we created Seven.</p>
-                    <ul class="list-disc pl-5 space-y-2">
-                        <li><strong>v1.0:</strong> A simple proof-of-concept macro interpreter.</li>
-                        <li><strong>v2.0:</strong> Complete rewrite of the logic engine for nested macros.</li>
-                        <li><strong>v2.5 (The Mega Expansion):</strong> Added a full Economy system, extensive System
-                            macros, and completed the verification of all Logic/Math modules.</li>
-                    </ul>
-                </div>
-                <div data-lang="pt" class="hidden space-y-4">
-                    <p><strong>Seven-Discord</strong> nasceu da frustração com o estado inchado das bibliotecas modernas
-                        do Discord. Enquanto bibliotecas como <em>discord.js</em> são poderosas, elas são pesadas e
-                        consomem muita memória.</p>
-                    <p>Inspirado pelo <em>Aoi.js</em> (um pacote de bot baseado em strings), mas querendo a segurança de
-                        tipos e velocidade do <strong>Bun</strong>, criamos o Seven.</p>
-                    <ul class="list-disc pl-5 space-y-2">
-                        <li><strong>v1.0:</strong> Uma prova de conceito simples de interpretador de macros.</li>
-                        <li><strong>v2.0:</strong> Reescrita completa do mecanismo lógico para macros aninhados.</li>
-                        <li><strong>v2.5 (A Mega Expansão):</strong> Adicionado um sistema completo de Economia, macros
-                            de Sistema extensos e verificação completa de módulos Lógicos/Matemáticos.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="p-6 border-t border-gray-700 bg-dark-900 text-right">
-                <button onclick="document.getElementById('history-modal').classList.add('hidden')"
-                    class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded font-medium transition-colors">Close</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        function setLang(lang) {
-            // Content Toggling
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                if (el.getAttribute('data-lang') === lang) {
-                    el.classList.remove('hidden');
-                } else {
-                    el.classList.add('hidden');
-                }
-            });
+        // MACRO DATA SOURCE
+        const macroCategories = [
+            {
+                id: "section-core",
+                title: "Core & IO",
+                macros: [
+                    { name: "s.send", desc: "Send message to channel", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123456789;Hello!]" },
+                    { name: "s.reply", desc: "Reply to trigger", args: [{ name: "content", type: "string" }], code: "s.reply[Hello World]" },
+                    { name: "s.log", desc: "Log to console", args: [{ name: "message", type: "string" }], code: "s.log[Debug info]" },
+                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[money;100;user]" },
+                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[money;user]" }
+                ]
+            },
+            {
+                id: "section-ui",
+                title: "UI & Embeds",
+                macros: [
+                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF; s.field[Name;Value]]" },
+                    { name: "s.button", desc: "Create button", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "Create|Secondary|Destructive" }, { name: "disabled", type: "bool", req: false }, { name: "emoji", type: "string", req: false }], code: "s.button[btn1;Click Me;Primary]" },
+                    { name: "s.row", desc: "Action Row container", args: [{ name: "components", type: "Component[]" }], code: "s.row[s.button[...]]" },
+                    { name: "s.selectMenu", desc: "Dropdown menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "Option[]" }], code: "s.selectMenu[menu1;Pick one; s.option[A;a] s.option[B;b]]" },
+                    { name: "s.modal", desc: "Pop-up form", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "inputs", type: "Input[]" }], code: "s.modal[mod1;Form; s.input[inp1;Name]]" },
+                    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
+                    { name: "s.update", desc: "Update message", args: [{ name: "content", type: "string" }], code: "s.update[New content]" }
+                ]
+            },
+            {
+                id: "section-economy",
+                title: "Economy",
+                macros: [
+                    { name: "s.cash", desc: "Get balance", args: [{ name: "userId", type: "string", req: false }], code: "s.cash[]" },
+                    { name: "s.pay", desc: "Transfer money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.pay[100;@user]" },
+                    { name: "s.give", desc: "Admin give money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.give[1000;@user]" },
+                    { name: "s.take", desc: "Admin take money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.take[500;@user]" },
+                    { name: "s.work", desc: "Earn currency", args: [{ name: "min", type: "number", req: false }, { name: "max", type: "number", req: false }], code: "s.work[50;150]" },
+                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amount", type: "number", req: false }], code: "s.daily[500]" },
+                    { name: "s.rob", desc: "Steal currency", args: [{ name: "userId", type: "string" }], code: "s.rob[@user]" },
+                    { name: "s.gamble", desc: "Bet currency", args: [{ name: "amount", type: "number" }], code: "s.gamble[100]" },
+                    { name: "s.coinflip", desc: "Flip coin", args: [{ name: "side", type: "heads|tails" }, { name: "amount", type: "number" }], code: "s.coinflip[heads;50]" },
+                    { name: "s.bank", desc: "Bank balance", args: [{ name: "userId", type: "string", req: false }], code: "s.bank[]" },
+                    { name: "s.deposit", desc: "Deposit to bank", args: [{ name: "amount", type: "number|all" }], code: "s.deposit[all]" },
+                    { name: "s.withdraw", desc: "Withdraw from bank", args: [{ name: "amount", type: "number|all" }], code: "s.withdraw[100]" }
+                ]
+            },
+            {
+                id: "section-system",
+                title: "System & Info",
+                macros: [
+                    { name: "s.ping", desc: "Websocket Latency", args: [], code: "s.ping" },
+                    { name: "s.uptime", desc: "Bot uptime", args: [], code: "s.uptime" },
+                    { name: "s.ram", desc: "Memory usage", args: [], code: "s.ram" },
+                    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
+                    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
+                    { name: "s.shardId", desc: "Current Shard ID", args: [], code: "s.shardId" },
+                    { name: "s.guildCount", desc: "Total Guilds", args: [], code: "s.guildCount" },
+                    { name: "s.userCount", desc: "Total Users", args: [], code: "s.userCount" },
+                    { name: "s.nodeVersion", desc: "Node JS Version", args: [], code: "s.nodeVersion" },
+                    { name: "s.ownerID", desc: "Bot Owner ID", args: [], code: "s.ownerID" },
+                    { name: "s.clientID", desc: "Bot Client ID", args: [], code: "s.clientID" }
+                ]
+            },
+            {
+                id: "section-moderation",
+                title: "Moderation",
+                macros: [
+                    { name: "s.ban", desc: "Ban user", args: [{ name: "userId", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.ban[@user;Spam]" },
+                    { name: "s.kick", desc: "Kick user", args: [{ name: "userId", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.kick[@user;Bye]" },
+                    { name: "s.mute", desc: "Timeout user", args: [{ name: "userId", type: "string" }, { name: "duration", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.mute[@user;1h;Bad behavior]" },
+                    { name: "s.unmute", desc: "Remove timeout", args: [{ name: "userId", type: "string" }], code: "s.unmute[@user]" },
+                    { name: "s.purge", desc: "Delete messages", args: [{ name: "amount", type: "number" }], code: "s.purge[10]" },
+                    { name: "s.lock", desc: "Lock channel", args: [], code: "s.lock" },
+                    { name: "s.unlock", desc: "Unlock channel", args: [], code: "s.unlock" }
+                ]
+            },
+            {
+                id: "section-logic",
+                title: "Logic",
+                macros: [
+                    { name: "s.if", desc: "Conditional", args: [{ name: "condition", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
+                    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.and[true;false]" },
+                    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.or[true;false]" },
+                    { name: "s.not", desc: "Logical NOT", args: [{ name: "val", type: "bool" }], code: "s.not[true]" },
+                    { name: "s.gt", desc: "Greater Than", args: [{ name: "a", type: "number" }, { name: "b", type: "number" }], code: "s.gt[10;5]" },
+                    { name: "s.lt", desc: "Less Than", args: [{ name: "a", type: "number" }, { name: "b", type: "number" }], code: "s.lt[5;10]" }
+                ]
+            },
+            {
+                id: "section-string",
+                title: "String Ops",
+                macros: [
+                    { name: "s.replace", desc: "Replace text", args: [{ name: "text", type: "string" }, { name: "match", type: "string" }, { name: "replace", type: "string" }], code: "s.replace[Hello World;World;Seven]" },
+                    { name: "s.slice", desc: "Slice string", args: [{ name: "text", type: "string" }, { name: "start", type: "number" }, { name: "end", type: "number", req: false }], code: "s.slice[Hello;0;2]" },
+                    { name: "s.split", desc: "Split string", args: [{ name: "text", type: "string" }, { name: "delimiter", type: "string" }, { name: "index", type: "number" }], code: "s.split[a,b,c;,;0]" },
+                    { name: "s.upper", desc: "To Uppercase", args: [{ name: "text", type: "string" }], code: "s.upper[hello]" }
+                ]
+            }
+        ];
 
-            // Button Styles
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.dataset.target === lang) {
-                    btn.classList.remove('text-gray-500', 'hover:text-white');
-                    btn.classList.add('bg-brand-600', 'text-white');
-                } else {
-                    btn.classList.add('text-gray-500', 'hover:text-white');
-                    btn.classList.remove('bg-brand-600', 'text-white');
-                }
-            });
-        }
+        // RENDERER
+        const container = document.getElementById('macros-container');
 
-        // Search Filter
+        macroCategories.forEach(cat => {
+            const section = document.createElement('section');
+            section.id = cat.id;
+            section.className = "mb-16 scroll-mt-20";
+
+            section.innerHTML = `
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4">${cat.title}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${cat.macros.map(m => `
+                        <div class="card p-5 rounded-lg cursor-pointer group" onclick='openSpecs(${JSON.stringify(m)}, "${cat.title}")'>
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
+                                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
+                            <p class="text-xs text-gray-500 line-clamp-2">${m.desc}</p>
+                            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between">
+                                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
+                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        });
+
+        // SPECS LOGIC
+        const panel = document.getElementById('specs-panel');
+        const overlay = document.getElementById('specs-overlay');
+        const dTitle = document.getElementById('spec-title');
+        const dCat = document.getElementById('spec-category');
+        const dDesc = document.getElementById('spec-desc');
+        const dCode = document.getElementById('spec-code');
+        const dArgsBody = document.getElementById('spec-args-body');
+
+        window.openSpecs = (macro, category) => {
+            dTitle.textContent = macro.name;
+            dCat.textContent = category;
+            dDesc.textContent = macro.desc;
+            dCode.textContent = macro.code;
+
+            // Build Args Table
+            dArgsBody.innerHTML = macro.args.map((arg, i) => `
+                <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50">
+                    <td class="p-3 text-gray-500">${i + 1}</td>
+                    <td class="p-3 text-blue-400 font-bold">${arg.name}</td>
+                    <td class="p-3 text-gray-400">${arg.type}</td>
+                    <td class="p-3">
+                        ${arg.req === false
+                    ? '<span class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700">OPT</span>'
+                    : '<span class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30">REQ</span>'}
+                    </td>
+                </tr>
+            `).join('');
+
+            if (macro.args.length === 0) {
+                dArgsBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-600 italic">No arguments required.</td></tr>`;
+            }
+
+            Prism.highlightElement(dCode);
+
+            panel.classList.add('open');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        };
+
+        window.closeSpecs = () => {
+            panel.classList.remove('open');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        };
+
+        // SEARCH
         document.getElementById('search').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.macro-card').forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(term) ? 'block' : 'none';
+            document.querySelectorAll('.card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const parent = card.parentElement; // grid
+                const section = parent.parentElement; // section
+
+                if (text.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         });
 
-        // Initialize
-        setLang('en');
+        // LANGUAGE
+        window.setLang = (lang) => {
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.style.display = el.getAttribute('data-lang') === lang ? 'block' : 'none';
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.target === lang) {
+                    btn.classList.add('bg-white/10', 'text-white');
+                    btn.classList.remove('bg-bg-800', 'text-gray-500');
+                } else {
+                    btn.classList.remove('bg-white/10', 'text-white');
+                    btn.classList.add('bg-bg-800', 'text-gray-500');
+                }
+            });
+        }
+        setLang('en'); // Init
     </script>
 </body>
 
