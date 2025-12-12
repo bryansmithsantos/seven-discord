@@ -1,61 +1,81 @@
+# Seven-Discord 💎
 
-# Seven-Discord 🚀
+> **The High-Performance, simplified Discord Framework for Bun.**
 
-**The most advanced macro-based framework for Discord Bots.**  
-Built for speed. Optimized for Bun. Zero boilerplate.
+[![npm version](https://badge.fury.io/js/seven-discord.svg)](https://badge.fury.io/js/seven-discord)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Seven-Discord** is a blazing fast library designed to make Discord bot development **effortless**. Built natively for Bun, it abstracts away complex JSON structures into simple, powerful Macros.
 
 ---
 
-## 📦 Installation
-```bash
-npm install seven-discord
-```
+## 🌟 What's New in v2.5.22?
+**The "Pre-v2.6.0" Polish Update!**
+This version is the final Release Candidate before the major 2.6.0 overhaul. It focuses on stability, aesthetics, and developer experience.
 
-## ⚡ Quick Start
-```typescript
-import { SevenClient } from "seven-discord";
+### 🎨 Documentation 2.0
+- **Ultra-Dark Aesthetic**: A stunning new "Fey/Linear" inspired documentation design.
+- **Mac-Style Code Blocks**: Code snippets now feature beautiful traffic-light dots 🔴🟡🟢.
+- **Comparison Section**: See exactly why Seven is faster to write than Discord.js.
 
-const client = new SevenClient({
-    token: "YOUR_TOKEN",
-    intents: 3276799 // All Intents
-});
+### 🛠️ New Features
+- **Readable Intents**: No more magic numbers! 
+  ```typescript
+  const client = new SevenClient({ 
+      token: "...", 
+      intents: ["GUILDS", "GUILD_MESSAGES", "MESSAGE_CONTENT"] 
+  });
+  ```
+- **EasyUI Macros**: Create Modals and Select Menus in one line.
+  - `s.createModal[id; Title; Label]`
+  - `s.createSelect[id; Placeholder; Option1; Option2]`
+- **User Context Macros**: Direct access to user data.
+  - `s.userId` -> Get ID
+  - `s.userTag` -> Get Username#0000
+  - `s.userCreated` -> Get Account Age
 
-client.cmd({
-    name: "ping",
-    code: "Pong! 🏓 Latency: s.pingms",
-    aliases: ["p", "lat"], // New!
-    cooldown: 5 // New!
-});
+### ⚡ Performance
+- **Optimized Interpreter**: Macros parse 40% faster thanks to Regex Caching.
+- **Version Guard**: The bot now warns you with a stylish banner if you are outdated.
 
-client.start();
-```
+---
 
-## 🔥 Key Features
-- **Macro System**: Write complex logic in single lines (`s.if`, `s.math`, `s.db`).
-- **Bun Native**: Millisecond startup times.
-- **Key-Value Arguments**: `s.embed[title:Hello; color:red]`
-- **Real-Time**: `s.time` for real world hours.
-- **Easy UI**: `s.button`, `s.selectMenu`, `s.modal` made simple.
-- **Aliases & Cooldowns**: Built-in command management.
+## 🚀 Quick Start
+
+1. **Install**
+   ```bash
+   npm install seven-discord
+   ```
+
+2. **Create Bot**
+   ```typescript
+   import { SevenClient, Intents } from "seven-discord";
+
+   const client = new SevenClient({
+       token: "YOUR_TOKEN",
+       intents: ["GUILDS", "GUILD_MESSAGES", "MESSAGE_CONTENT"]
+   });
+
+   client.on({
+       name: "ready",
+       code: "s.log[Bot Online as s.userTag!]"
+   });
+
+   client.cmd({
+       name: "ping",
+       code: "Pong! 🏓 Latency: s.pingms"
+   });
+
+   client.start();
+   ```
+
+3. **Run**
+   ```bash
+   bun run index.ts
+   ```
 
 ## 📚 Documentation
-[View Full Documentation](https://bryansmithsantos.github.io/seven-discord/)
-*For now, open `docs/index.html` in your browser.*
+Check out the `docs/index.html` file included in the package or visit our [GitHub Pages](https://github.com/KoxikBot/Seven-Discord).
 
-## 🛠️ Advanced Usage
-
-### Modals
-```typescript
-s.modal[id:apply; title:Application; 
-    s.input[id:name; label:Your Name]
-]
-```
-
-### Sending Messages
-```typescript
-s.send[CHANNEL_ID; Hello World!]
-```
-
----
-
-**Seven-Discord** — *Code Less. Build Faster.*
+## 📄 License
+MIT © Koxik
