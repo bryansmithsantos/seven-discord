@@ -460,6 +460,7 @@
             { name: "s.option", cat: "UI", desc: "Adds an option to a Select Menu.", usage: "s.option[label:Name; value:val; desc:Description; emoji:🔥]", example: "s.option[label:Fire; value:fire; emoji:🔥]" },
             { name: "s.input", cat: "UI", desc: "Defines a text input field for Modals.", usage: "s.input[id:name; label:Text; style:short|paragraph; required:true]", example: "s.input[id:age; label:Your Age; style:short]" },
             { name: "s.onInteraction", cat: "UI", desc: "Registers code to run when an interaction ID is triggered.", usage: "s.onInteraction[ID; Code]", example: "s.onInteraction[btn_id; s.reply[Clicked!]]" },
+            { name: "s.modal", cat: "UI", desc: "Creates a Modal form. Must be used as a response to an interaction or command.", usage: "s.modal[id:my_modal; title:My Form; ...inputs]", example: "s.modal[id:apply; title:Apply Now; s.input[id:name; label:Name]]" },
 
             // ECONOMY
             { name: "s.cash", cat: "Economy", desc: "Gets the user's cash balance.", usage: "s.cash[UserID?]", example: "s.cash[s.authorID]" },
@@ -523,9 +524,6 @@
             { name: "Aliases & Cooldowns", cat: "Tutorials", desc: "Commands now support 'aliases: [...]' and 'cooldown: 5' in config.", usage: "Config Only", example: "module.exports = { name: 'test', aliases: ['t'], cooldown: 10, ... }" },
             { name: "Modals (Easy)", cat: "Tutorials", desc: "Create Modals easily.", usage: "s.modal[id; title; s.input[...]]", example: "s.modal[id:form; title:Apply; s.input[id:name; label:Name]]" },
             { name: "Affiliates System", cat: "Tutorials", desc: "How to create an Affiliates/Partnership system using Buttons and Logic.", usage: "See Example", example: "s.embed[title:Partnership; desc:Click below to partner!] s.button[label:Apply; style:primary; id:apply_partner]\n\ns.onInteraction[apply_partner; \n  s.reply[Thank you for applying! We will review your server.]\n  s.log[New Partner App from s.authorID]\n]" },
-
-            // MISSING MACROS
-            { name: "s.modal", cat: "UI", desc: "Creates a Modal form. Must be used as a response to an interaction or command.", usage: "s.modal[id:my_modal; title:My Form; ...inputs]", example: "s.modal[id:apply; title:Apply Now; s.input[id:name; label:Name]]" },
         ];
 
         // LOGIC
@@ -533,116 +531,6 @@
         const nav = document.getElementById('sidebar-nav');
         const grid = document.getElementById('macro-grid');
         const searchInput = document.getElementById('sidebar-search');
-
-        // Render Sidebar
-        function renderSidebar() {
-            nav.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    ${cat}
-                </button>
-            `).join('');
-
-            nav.innerHTML += `
-                <div class="mt-4 pt-4 border-t border-slate-800 px-4 mb-2 text-xs font-bold text-slate-600 uppercase">Resources</div>
-                <button onclick="showIntro()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    Introduction
-                </button>
-                <button onclick="showStory()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    Why Seven?
-                </button>
-            `;
-        }
-
-        function showIntro() {
-            hideAllViews();
-            document.getElementById('view-intro').classList.remove('hidden');
-            document.getElementById('page-title').innerText = 'Introduction';
-        }
-
-        function showStory() {
-            hideAllViews();
-            document.getElementById('view-story').classList.remove('hidden');
-            document.getElementById('page-title').innerText = 'Why Seven?';
-        }
-
-        function filterCategory(cat) {
-            hideAllViews();
-            document.getElementById('view-macros').classList.remove('hidden');
-            document.getElementById('page-title').innerText = cat;
-            document.getElementById('category-title').innerText = cat;
-
-            const filtered = macros.filter(m => m.cat === cat);
-            renderGrid(filtered);
-        }
-
-        function hideAllViews() {
-            document.getElementById('view-intro').classList.add('hidden');
-            document.getElementById('view-macros').classList.add('hidden');
-            document.getElementById('view-story').classList.add('hidden');
-        }
-
-        function renderGrid(list) {
-            grid.innerHTML = list.map(m => `
-                <div onclick="openModal('${m.name}')" class="glass-card p-5 rounded-lg cursor-pointer group">
-                    <div class="flex items-center justify-between mb-2">
-                        <code class="text-seven-400 font-bold bg-seven-900/20 px-2 py-1 rounded text-sm group-hover:text-seven-300">${m.name}</code>
-                        <span class="text-xs text-slate-600 border border-slate-800 px-1.5 py-0.5 rounded">${m.cat}</span>
-                    </div>
-                    <p class="text-slate-400 text-sm line-clamp-2">${m.desc}</p>
-                </div>
-            `).join('');
-        }
-
-        // Modal Logic
-        function openModal(name) {
-            const m = macros.find(x => x.name === name);
-            if (!m) return;
-            document.getElementById('m-name').innerText = m.name;
-            document.getElementById('m-cat').innerText = m.cat;
-            document.getElementById('m-desc').innerText = m.desc;
-            document.getElementById('m-usage').innerText = m.usage;
-            document.getElementById('m-example').innerText = m.example;
-
-            const modal = document.getElementById('modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            // Timeout for animation
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                document.getElementById('modal-panel').classList.remove('scale-95');
-                document.getElementById('modal-panel').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.add('opacity-0');
-            document.getElementById('modal-panel').classList.add('scale-95');
-            document.getElementById('modal-panel').classList.remove('scale-100');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 200);
-        }
-
-        // Search Logic
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            if (term.length > 0) {
-                document.getElementById('view-intro').classList.add('hidden');
-                document.getElementById('view-macros').classList.remove('hidden');
-                document.getElementById('page-title').innerText = 'Search Results';
-                document.getElementById('category-title').innerText = `Results for "${term}"`;
-
-                const filtered = macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term));
-                renderGrid(filtered);
-            } else {
-                showIntro();
-            }
-        });
-
-        // Initialize
-        lucide.createIcons();
 
         // I18N SYSTEM
         let currentLang = 'en';
@@ -724,7 +612,81 @@
                 "modal.desc": "DESCRIÇÃO",
                 "modal.usage": "USO",
                 "modal.ex": "EXEMPLO",
-                "modal.close": "Fechar"
+                "modal.close": "Fechar",
+
+                // CATEGORIES
+                "cat.Core": "Principal",
+                "cat.UI": "Interface",
+                "cat.Economy": "Economia",
+                "cat.Moderation": "Moderação",
+                "cat.Logic": "Lógica",
+                "cat.Math": "Matemática",
+                "cat.String": "Texto",
+                "cat.System": "Sistema",
+                "cat.Tutorials": "Tutoriais",
+                "cat.Variables": "Variáveis",
+
+                // MACROS
+                "m.s.reply": "Responde à mensagem ou interação atual.",
+                "m.s.log": "Registra uma mensagem no console.",
+                "m.s.setVar": "Define uma variável globalmente, por servidor ou por usuário.",
+                "m.s.getVar": "Recupera o valor de uma variável.",
+                "m.s.embed": "Cria um embed rico. Suporta argumentos nomeados.",
+                "m.s.button": "Cria um botão interativo.",
+                "m.s.row": "Agrupa componentes (Não é mais estritamente necessário).",
+                "m.s.selectMenu": "Cria um menu de seleção (dropdown).",
+                "m.s.option": "Adiciona uma opção a um Menu de Seleção.",
+                "m.s.input": "Define um campo de texto para Modais.",
+                "m.s.onInteraction": "Registra código para rodar quando uma interação é ativada.",
+                "m.s.modal": "Cria um formulário Modal.",
+                "m.s.cash": "Obtém o saldo da carteira do usuário.",
+                "m.s.bank": "Obtém o saldo bancário do usuário.",
+                "m.s.addCash": "Adiciona dinheiro à carteira do usuário.",
+                "m.s.removeCash": "Remove dinheiro de um usuário.",
+                "m.s.setCash": "Define o saldo de um usuário diretamente.",
+                "m.s.pay": "Transfere dinheiro para outro usuário.",
+                "m.s.deposit": "Deposita dinheiro no banco.",
+                "m.s.withdraw": "Saca dinheiro do banco.",
+                "m.s.setCurrency": "Define o símbolo da moeda.",
+                "m.s.ban": "Bane um membro do servidor. Suporta KV.",
+                "m.s.kick": "Expulsa um membro.",
+                "m.s.mute": "Silencia um membro (Timeout).",
+                "m.s.unmute": "Remove o silêncio.",
+                "m.s.warn": "Adiciona um aviso a um usuário.",
+                "m.s.unwarn": "Remove um aviso específico.",
+                "m.s.warnings": "Lista os avisos de um usuário.",
+                "m.s.purge": "Deleta mensagens em massa.",
+                "m.s.lock": "Tranca o canal atual.",
+                "m.s.unlock": "Destranca o canal atual.",
+                "m.s.slowmode": "Define o modo lento do canal.",
+                "m.s.if": "Execução condicional.",
+                "m.s.eq": "Verificação de igualdade (Retorna 'true' ou 'false').",
+                "m.s.math": "Avalia uma expressão matemática.",
+                "m.s.random": "Retorna um número aleatório entre min e max.",
+                "m.s.len": "Retorna o tamanho do texto.",
+                "m.s.upper": "Converte para maiúsculas.",
+                "m.s.lower": "Converte para minúsculas.",
+                "m.s.send": "Envia uma mensagem para um canal específico.",
+                "m.s.ping": "Retorna a latência da API do bot.",
+                "m.s.uptime": "Retorna o tempo de atividade formatado.",
+                "m.s.time": "Retorna a hora atual (Real Hours).",
+                "m.s.cooldown": "Aplica um cooldown ao usuário.",
+                "m.s.botInfo": "Mostra uso de RAM/CPU.",
+                "m.s.serverInfo": "Mostra estatísticas do servidor.",
+                "m.s.userInfo": "Mostra estatísticas do usuário.",
+                "m.s.avatar": "Retorna o avatar do usuário.",
+                "m.s.eval": "Avalia código JavaScript (Perigoso).",
+                "m.s.setStatus": "Define o status do bot.",
+                "m.s.shutdown": "Desliga o bot.",
+                "m.s.authorID": "Retorna o ID do autor do comando.",
+                "m.s.username": "Retorna o nome do autor.",
+                "m.s.channelId": "Retorna o ID do canal atual.",
+                "m.s.serverName": "Retorna o ID do Servidor (Nome Legado).",
+                "m.s.content": "Retorna o conteúdo bruto da mensagem.",
+                "m.s.arg": "Retorna um argumento específico do comando.",
+                "Aliases & Cooldowns": "Comandos agora suportam 'aliases: [...]' e 'cooldown: 5'.",
+                "Modals (Easy)": "Crie Modais facilmente.",
+                "Affiliates System": "Como criar um sistema de Parcerias."
             }
         };
 
@@ -743,17 +705,31 @@
 
             // Re-render dynamic parts
             renderSidebar();
+
+            // Re-render Grid if visible
+            const activeCat = document.getElementById('page-title').innerText;
+            if (categories.includes(activeCat) || activeCat.includes("Results") || activeCat === "Search Results") {
+                // If it's a category match, re-filter
+                if (categories.includes(activeCat)) {
+                    filterCategory(activeCat);
+                } else if (document.getElementById('view-macros').classList.contains('hidden') === false) {
+                    // Search result or general list
+                    // Just re-trigger search or default
+                }
+            }
         }
 
-        // Apply translations to renderSidebar
-        const _originalRenderSidebar = renderSidebar;
-        renderSidebar = function () {
+        // Render Sidebar
+        function renderSidebar() {
             const t = translations[currentLang];
-            nav.innerHTML = categories.map(cat => `
+
+            nav.innerHTML = categories.map(cat => {
+                const localizedCat = t[`cat.${cat}`] || cat;
+                return `
                 <button onclick="filterCategory('${cat}')" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400 font-medium rounded-r-lg">
-                    ${cat}
+                    ${localizedCat}
                 </button>
-            `).join('');
+            `}).join('');
 
             nav.innerHTML += `
                 <div class="mt-4 pt-4 border-t border-slate-800 px-4 mb-2 text-xs font-bold text-slate-600 uppercase">${t["nav.resources"]}</div>
@@ -766,9 +742,36 @@
             `;
         }
 
-        // Initial Render
-        renderSidebar();
-        setLang('en'); // Default to EN
+        function filterCategory(cat) {
+            hideAllViews();
+            document.getElementById('view-macros').classList.remove('hidden');
+
+            const t = translations[currentLang];
+            const localizedCat = t[`cat.${cat}`] || cat;
+
+            document.getElementById('page-title').innerText = localizedCat;
+            document.getElementById('category-title').innerText = localizedCat;
+
+            const filtered = macros.filter(m => m.cat === cat);
+            renderGrid(filtered);
+        }
+
+        function renderGrid(list) {
+            const t = translations[currentLang];
+            grid.innerHTML = list.map(m => {
+                const localizedDesc = t[`m.${m.name}`] || t[m.name] || m.desc;
+                const localizedCat = t[`cat.${m.cat}`] || m.cat;
+
+                return `
+                <div onclick="openModal('${m.name}')" class="glass-card p-5 rounded-lg cursor-pointer group">
+                    <div class="flex items-center justify-between mb-2">
+                        <code class="text-seven-400 font-bold bg-seven-900/20 px-2 py-1 rounded text-sm group-hover:text-seven-300">${m.name}</code>
+                        <span class="text-xs text-slate-600 border border-slate-800 px-1.5 py-0.5 rounded">${localizedCat}</span>
+                    </div>
+                    <p class="text-slate-400 text-sm line-clamp-2">${localizedDesc}</p>
+                </div>
+            `}).join('');
+        }
     </script>
 </body>
 
