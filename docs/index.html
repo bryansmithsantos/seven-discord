@@ -5,63 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seven-Discord | Documentação</title>
-    <meta name="description" content="O framework de macros mais avançado para Discord Bots.">
+    <meta name="description" content="Framework de macros para Discord Bots">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        seven: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
-                        dark: { 900: '#0f172a', 950: '#020617' }
-                    },
-                    fontFamily: { sans: ['Inter'], mono: ['JetBrains Mono'] }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            background: #0a0a0f;
-            color: #e2e8f0;
+        * {
+            box-sizing: border-box;
         }
 
-        .glass {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        body {
+            background: #000;
+            color: #a1a1aa;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar {
+            background: #0a0a0a;
+            border-right: 1px solid #1a1a1a;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1a1a1a;
         }
 
         .card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.2s;
+            background: #0f0f0f;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            transition: border-color 0.2s;
         }
 
         .card:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-            transform: translateY(-2px);
+            border-color: #333;
         }
 
-        .sidebar-link {
-            border-left: 2px solid transparent;
-            transition: all 0.15s;
+        .nav-link {
+            color: #71717a;
+            transition: color 0.15s;
         }
 
-        .sidebar-link:hover {
-            background: rgba(56, 189, 248, 0.1);
-            border-left-color: #0ea5e9;
-            color: #38bdf8;
+        .nav-link:hover {
+            color: #fff;
         }
 
-        .code {
-            font-family: 'JetBrains Mono';
-            background: #0f172a;
-            padding: 0.75rem 1rem;
+        .nav-link.active {
+            color: #fff;
+        }
+
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
             border-radius: 8px;
-            border: 1px solid #1e293b;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .param {
+            background: #18181b;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        .type-string {
+            color: #22c55e;
+        }
+
+        .type-number {
+            color: #3b82f6;
+        }
+
+        .type-bool {
+            color: #f59e0b;
         }
 
         .hidden {
@@ -73,8 +92,30 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #334155;
+            background: #27272a;
             border-radius: 3px;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #000;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 8px;
+            transition: opacity 0.15s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: #18181b;
+            color: #fff;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: 1px solid #27272a;
         }
     </style>
 </head>
@@ -82,281 +123,779 @@
 <body class="antialiased flex h-screen overflow-hidden">
 
     <!-- Sidebar -->
-    <aside class="w-64 glass border-r border-slate-800 flex flex-col">
-        <div class="p-5 border-b border-slate-800 flex items-center gap-3">
-            <img src="logo-semfundo.png" alt="Seven" class="w-9 h-9">
+    <aside class="sidebar w-60 flex flex-col flex-shrink-0">
+        <div class="p-5 border-b border-zinc-900 flex items-center gap-3">
+            <img src="logo-semfundo.png" alt="Seven" class="h-8">
             <div>
-                <span class="font-semibold text-white">Seven-Discord</span>
-                <span class="ml-1.5 text-[10px] bg-seven-500/20 text-seven-400 px-1.5 py-0.5 rounded">v2.5.18</span>
+                <span class="text-white font-semibold text-sm">Seven-Discord</span>
+                <span class="ml-1 text-[10px] text-zinc-500">v2.5.18</span>
             </div>
         </div>
 
         <div class="p-3">
             <div class="relative">
-                <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
                 <input type="text" id="search" placeholder="Buscar..."
-                    class="w-full bg-slate-900/50 border border-slate-800 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-seven-500">
+                    class="w-full bg-zinc-900 border border-zinc-800 rounded-lg py-2 px-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-700">
             </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto px-2 pb-4" id="nav"></nav>
+        <nav class="flex-1 overflow-y-auto px-3 py-2" id="nav"></nav>
 
-        <div class="p-4 border-t border-slate-800">
-            <a href="https://discord.gg/qpRjsjrXcx" target="_blank"
-                class="flex items-center gap-2 text-slate-400 hover:text-white text-sm">
+        <div class="p-4 border-t border-zinc-900">
+            <a href="https://discord.gg/qpRjsjrXcx" target="_blank" class="nav-link text-sm flex items-center gap-2">
                 <i data-lucide="message-circle" class="w-4 h-4"></i> Suporte
             </a>
         </div>
     </aside>
 
     <!-- Main -->
-    <main class="flex-1 flex flex-col">
-        <header class="h-14 glass border-b border-slate-800 flex items-center justify-between px-6">
-            <div class="text-sm text-slate-400">
-                <span class="opacity-60">Docs</span> / <span class="text-seven-400" id="page-title">Início</span>
+    <main class="flex-1 flex flex-col min-w-0">
+        <header class="header h-14 flex items-center justify-between px-6 sticky top-0 z-10">
+            <div class="text-sm">
+                <span class="text-zinc-600">Docs /</span>
+                <span class="text-white ml-1" id="page-title">Início</span>
             </div>
-            <div class="flex gap-3">
-                <button onclick="setLang('en')" id="btn-en"
-                    class="text-xs px-2 py-1 rounded text-slate-500 hover:text-white">EN</button>
-                <button onclick="setLang('pt')" id="btn-pt"
-                    class="text-xs px-2 py-1 rounded bg-seven-500/20 text-seven-400">PT</button>
-                <a href="https://npmjs.com/package/seven-discord" target="_blank"
-                    class="text-slate-400 hover:text-white"><i data-lucide="package" class="w-4 h-4"></i></a>
-                <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
-                    class="text-slate-400 hover:text-white"><i data-lucide="github" class="w-4 h-4"></i></a>
+            <div class="flex items-center gap-4">
+                <a href="https://npmjs.com/package/seven-discord" target="_blank" class="nav-link"><i
+                        data-lucide="package" class="w-4 h-4"></i></a>
+                <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank" class="nav-link"><i
+                        data-lucide="github" class="w-4 h-4"></i></a>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8" id="content">
+        <div class="flex-1 overflow-y-auto">
             <!-- Intro -->
-            <div id="view-intro" class="max-w-4xl mx-auto space-y-12">
-                <div class="text-center py-12 space-y-6">
-                    <img src="logo-semfundo.png" alt="Seven-Discord" class="w-28 h-28 mx-auto">
-                    <h1 class="text-4xl font-bold text-white">Seven-Discord</h1>
-                    <p class="text-lg text-slate-400 max-w-xl mx-auto">O framework de macros mais rápido e simples para
-                        criar bots no Discord. Feito para Bun.</p>
-                    <div class="flex justify-center gap-3">
-                        <button onclick="filterCategory('Core')"
-                            class="bg-seven-500 hover:bg-seven-600 text-white px-5 py-2.5 rounded-lg font-medium">Começar</button>
-                        <button onclick="document.getElementById('search').focus()"
-                            class="glass hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg">Buscar Macros</button>
-                    </div>
-                </div>
+            <div id="view-intro" class="max-w-3xl mx-auto px-6 py-20">
+                <div class="text-center space-y-8">
+                    <img src="logo-semfundo.png" alt="Seven-Discord" class="h-16 mx-auto">
 
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="card p-5 rounded-xl">
-                        <i data-lucide="zap" class="w-6 h-6 text-seven-400 mb-3"></i>
-                        <h3 class="font-semibold text-white mb-1">Ultra Rápido</h3>
-                        <p class="text-sm text-slate-400">Otimizado para Bun. Sem overhead.</p>
-                    </div>
-                    <div class="card p-5 rounded-xl">
-                        <i data-lucide="box" class="w-6 h-6 text-purple-400 mb-3"></i>
-                        <h3 class="font-semibold text-white mb-1">Sistema de Macros</h3>
-                        <p class="text-sm text-slate-400">Lógica complexa em uma linha.</p>
-                    </div>
-                    <div class="card p-5 rounded-xl">
-                        <i data-lucide="check-circle" class="w-6 h-6 text-green-400 mb-3"></i>
-                        <h3 class="font-semibold text-white mb-1">Bot Verificado</h3>
-                        <p class="text-sm text-slate-400">Slash, Botões, Modais prontos.</p>
-                    </div>
-                </div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                        O framework de macros<br>mais rápido do Discord.
+                    </h1>
 
-                <div class="card p-6 rounded-xl">
-                    <h3 class="font-semibold text-white mb-4 flex items-center gap-2"><i data-lucide="terminal"
-                            class="w-5 h-5 text-seven-400"></i> Quick Start</h3>
-                    <div class="code text-sm text-slate-300">
-                        <pre><span class="text-slate-500"># Instalar</span>
-bun add seven-discord
-
-<span class="text-slate-500"># Criar projeto</span>
-bunx seven-discord --init --name meu-bot
-
-<span class="text-slate-500"># Rodar</span>
-bun run dev</pre>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Macros -->
-            <div id="view-macros" class="max-w-5xl mx-auto hidden">
-                <div class="flex items-center gap-3 mb-6">
-                    <button onclick="showIntro()" class="text-slate-400 hover:text-white"><i data-lucide="arrow-left"
-                            class="w-5 h-5"></i></button>
-                    <h2 class="text-2xl font-bold text-white" id="category-title">Macros</h2>
-                </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3" id="grid"></div>
-            </div>
-
-            <!-- Story -->
-            <div id="view-story" class="max-w-3xl mx-auto hidden py-10 space-y-8">
-                <div class="text-center space-y-4">
-                    <span class="text-seven-400 text-xs uppercase tracking-widest">A Origem</span>
-                    <h2 class="text-3xl font-bold text-white">Por que Seven?</h2>
-                    <p class="text-slate-400 leading-relaxed">
-                        Por muito tempo, criar bots era sinônimo de boilerplate infinito.
-                        O Seven nasceu da frustração com a complexidade desnecessária.
-                        Uma linha de código deveria fazer uma coisa. Simples assim.
+                    <p class="text-lg text-zinc-400 max-w-xl mx-auto">
+                        Crie bots complexos com linhas simples. Sem boilerplate, sem classes, sem dor de cabeça.
                     </p>
+
+                    <div class="flex justify-center gap-3">
+                        <button onclick="filterCategory('Core')" class="btn-primary">Começar</button>
+                        <button onclick="document.getElementById('search').focus()" class="btn-secondary">Buscar
+                            Macros</button>
+                    </div>
                 </div>
+
+                <!-- Quick Start -->
+                <div class="mt-20 card p-6">
+                    <h3 class="text-white font-semibold mb-4">Instalação</h3>
+                    <div class="code-block p-4 text-sm">
+                        <pre><span class="text-zinc-500"># Instalar</span>
+<span class="text-white">bun add seven-discord</span>
+
+<span class="text-zinc-500"># Inicializar projeto</span>
+<span class="text-white">bunx seven-discord --init</span>
+
+<span class="text-zinc-500"># Rodar</span>
+<span class="text-white">bun run dev</span></pre>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="mt-12 grid md:grid-cols-3 gap-4">
+                    <div class="card p-5">
+                        <div class="text-white mb-2 text-sm font-medium">⚡ Bun Native</div>
+                        <p class="text-sm">Otimizado para Bun. Startup em milissegundos.</p>
+                    </div>
+                    <div class="card p-5">
+                        <div class="text-white mb-2 text-sm font-medium">📦 Zero Deps</div>
+                        <p class="text-sm">Sem dependências externas. Leve e rápido.</p>
+                    </div>
+                    <div class="card p-5">
+                        <div class="text-white mb-2 text-sm font-medium">🎯 Type-Safe</div>
+                        <p class="text-sm">TypeScript nativo. Erros em tempo de dev.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Macro Detail View -->
+            <div id="view-macro" class="max-w-3xl mx-auto px-6 py-10 hidden">
+                <button onclick="goBack()" class="nav-link text-sm mb-6 flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
+                </button>
+
+                <div class="space-y-8">
+                    <div>
+                        <code class="text-2xl text-white font-mono font-bold" id="macro-name">s.reply</code>
+                        <p class="text-zinc-500 text-sm mt-1" id="macro-cat">Core</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-medium mb-2">Descrição</h3>
+                        <p id="macro-desc">Descrição detalhada aqui.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-medium mb-3">Parâmetros</h3>
+                        <div class="code-block" id="macro-params">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-medium mb-2">Sintaxe</h3>
+                        <div class="code-block p-4 text-sm text-emerald-400" id="macro-syntax"></div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-medium mb-2">Exemplos</h3>
+                        <div class="space-y-3" id="macro-examples">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category List View -->
+            <div id="view-list" class="max-w-3xl mx-auto px-6 py-10 hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <button onclick="showIntro()" class="nav-link"><i data-lucide="arrow-left"
+                            class="w-5 h-5"></i></button>
+                    <h2 class="text-xl font-bold text-white" id="list-title">Macros</h2>
+                </div>
+                <div class="space-y-2" id="macro-list"></div>
             </div>
         </div>
     </main>
 
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 z-50 bg-black/70 hidden items-center justify-center p-4">
-        <div class="glass w-full max-w-lg rounded-2xl">
-            <div class="flex justify-between items-center p-5 border-b border-slate-800">
-                <div>
-                    <h3 class="text-xl font-mono text-seven-400" id="m-name">s.name</h3>
-                    <p class="text-xs text-slate-500 uppercase" id="m-cat">Cat</p>
-                </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x"
-                        class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <div>
-                    <label class="text-xs text-slate-500 uppercase">Descrição</label>
-                    <p class="text-slate-300 mt-1" id="m-desc"></p>
-                </div>
-                <div>
-                    <label class="text-xs text-slate-500 uppercase">Uso</label>
-                    <div class="code text-sm text-seven-300 mt-1" id="m-usage"></div>
-                </div>
-                <div>
-                    <label class="text-xs text-slate-500 uppercase">Exemplo</label>
-                    <div class="code text-sm text-green-300 mt-1" id="m-example"></div>
-                </div>
-            </div>
-            <div class="p-4 border-t border-slate-800 text-right">
-                <button onclick="closeModal()" class="text-sm text-slate-400 hover:text-white">Fechar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
+        // ========== DETAILED MACRO DATA ==========
         const macros = [
-            { name: "s.reply", cat: "Core", desc: "Responde à mensagem.", usage: "s.reply[Content]", example: "s.reply[Olá!]" },
-            { name: "s.log", cat: "Core", desc: "Log no console.", usage: "s.log[Msg]", example: "s.log[Debug]" },
-            { name: "s.setVar", cat: "Core", desc: "Define variável.", usage: "s.setVar[nome;valor;tipo?]", example: "s.setVar[xp;0;user]" },
-            { name: "s.getVar", cat: "Core", desc: "Pega variável.", usage: "s.getVar[nome;tipo?]", example: "s.getVar[xp;user]" },
-            { name: "s.send", cat: "Core", desc: "Envia para canal.", usage: "s.send[canalID;msg]", example: "s.send[123;Oi]" },
-            { name: "s.embed", cat: "UI", desc: "Cria embed.", usage: "s.embed[title:X;desc:Y]", example: "s.embed[title:Olá]" },
-            { name: "s.button", cat: "UI", desc: "Cria botão.", usage: "s.button[label:X;id:Y]", example: "s.button[label:Clique;id:btn1]" },
-            { name: "s.row", cat: "UI", desc: "Agrupa componentes.", usage: "s.row[...]", example: "s.row[s.button[A] s.button[B]]" },
-            { name: "s.selectMenu", cat: "UI", desc: "Menu dropdown.", usage: "s.selectMenu[id:X;...]", example: "s.selectMenu[id:menu]" },
-            { name: "s.modal", cat: "UI", desc: "Formulário modal.", usage: "s.modal[id:X;title:Y]", example: "s.modal[id:form;title:Dados]" },
-            { name: "s.input", cat: "UI", desc: "Campo de texto.", usage: "s.input[id:X;label:Y]", example: "s.input[id:nome;label:Nome]" },
-            { name: "s.onInteraction", cat: "UI", desc: "Handler de interação.", usage: "s.onInteraction[id;code]", example: "s.onInteraction[btn1;s.reply[Clicou!]]" },
-            { name: "s.cash", cat: "Economy", desc: "Saldo carteira.", usage: "s.cash[userID?]", example: "s.cash" },
-            { name: "s.bank", cat: "Economy", desc: "Saldo banco.", usage: "s.bank[userID?]", example: "s.bank" },
-            { name: "s.addCash", cat: "Economy", desc: "Adiciona dinheiro.", usage: "s.addCash[qtd;user]", example: "s.addCash[100;s.authorID]" },
-            { name: "s.removeCash", cat: "Economy", desc: "Remove dinheiro.", usage: "s.removeCash[qtd;user]", example: "s.removeCash[50;s.authorID]" },
-            { name: "s.deposit", cat: "Economy", desc: "Deposita.", usage: "s.deposit[qtd|all]", example: "s.deposit[all]" },
-            { name: "s.withdraw", cat: "Economy", desc: "Saca.", usage: "s.withdraw[qtd|all]", example: "s.withdraw[100]" },
-            { name: "s.ban", cat: "Moderation", desc: "Bane usuário.", usage: "s.ban[user:ID;reason:X]", example: "s.ban[user:123;reason:Spam]" },
-            { name: "s.kick", cat: "Moderation", desc: "Expulsa usuário.", usage: "s.kick[user:ID]", example: "s.kick[user:123]" },
-            { name: "s.mute", cat: "Moderation", desc: "Silencia.", usage: "s.mute[user:ID;time:Xm]", example: "s.mute[user:123;time:10m]" },
-            { name: "s.unmute", cat: "Moderation", desc: "Remove silêncio.", usage: "s.unmute[userID]", example: "s.unmute[123]" },
-            { name: "s.warn", cat: "Moderation", desc: "Avisa usuário.", usage: "s.warn[userID;reason]", example: "s.warn[123;Regra 1]" },
-            { name: "s.purge", cat: "Moderation", desc: "Deleta mensagens.", usage: "s.purge[qtd]", example: "s.purge[50]" },
-            { name: "s.lock", cat: "Moderation", desc: "Tranca canal.", usage: "s.lock", example: "s.lock" },
-            { name: "s.unlock", cat: "Moderation", desc: "Destranca canal.", usage: "s.unlock", example: "s.unlock" },
-            { name: "s.if", cat: "Logic", desc: "Condicional.", usage: "s.if[cond;true;false]", example: "s.if[s.eq[1;1];Sim;Não]" },
-            { name: "s.eq", cat: "Logic", desc: "Igualdade.", usage: "s.eq[A;B]", example: "s.eq[1;1]" },
-            { name: "s.math", cat: "Math", desc: "Calcula.", usage: "s.math[expr]", example: "s.math[10*2]" },
-            { name: "s.random", cat: "Math", desc: "Número aleatório.", usage: "s.random[min;max]", example: "s.random[1;100]" },
-            { name: "s.len", cat: "String", desc: "Tamanho texto.", usage: "s.len[txt]", example: "s.len[Olá]" },
-            { name: "s.upper", cat: "String", desc: "Maiúsculas.", usage: "s.upper[txt]", example: "s.upper[oi]" },
-            { name: "s.lower", cat: "String", desc: "Minúsculas.", usage: "s.lower[txt]", example: "s.lower[OI]" },
-            { name: "s.ping", cat: "System", desc: "Latência.", usage: "s.ping", example: "s.ping" },
-            { name: "s.uptime", cat: "System", desc: "Tempo online.", usage: "s.uptime", example: "s.uptime" },
-            { name: "s.time", cat: "System", desc: "Hora atual.", usage: "s.time[zone?]", example: "s.time[America/Sao_Paulo]" },
-            { name: "s.cooldown", cat: "System", desc: "Cooldown.", usage: "s.cooldown[seg;msg?]", example: "s.cooldown[10;Aguarde!]" },
-            { name: "s.botInfo", cat: "System", desc: "Info do bot.", usage: "s.botInfo", example: "s.botInfo" },
-            { name: "s.avatar", cat: "System", desc: "Avatar user.", usage: "s.avatar[user:ID]", example: "s.avatar" },
-            { name: "s.eval", cat: "System", desc: "Executa JS.", usage: "s.eval[code]", example: "s.eval[2+2]" },
-            { name: "s.authorID", cat: "Variables", desc: "ID do autor.", usage: "s.authorID", example: "s.authorID" },
-            { name: "s.username", cat: "Variables", desc: "Nome do autor.", usage: "s.username", example: "s.username" },
-            { name: "s.channelId", cat: "Variables", desc: "ID do canal.", usage: "s.channelId", example: "s.channelId" },
-            { name: "s.content", cat: "Variables", desc: "Conteúdo msg.", usage: "s.content", example: "s.content" },
-            { name: "s.arg", cat: "Variables", desc: "Argumento.", usage: "s.arg[N]", example: "s.arg[1]" },
+            // === CORE ===
+            {
+                name: "s.reply",
+                cat: "Core",
+                desc: "Envia uma resposta para o canal onde o comando foi executado. Funciona tanto com mensagens normais quanto com interações (slash commands, botões).",
+                params: [
+                    { name: "content", type: "string", required: true, desc: "Texto da mensagem a ser enviada" }
+                ],
+                syntax: "s.reply[content]",
+                examples: [
+                    { code: "s.reply[Olá, mundo!]", desc: "Resposta simples" },
+                    { code: "s.reply[Bem-vindo, s.username!]", desc: "Usando variáveis" },
+                    { code: "s.reply[Você ganhou s.random[1;100] moedas!]", desc: "Com macros aninhadas" }
+                ]
+            },
+            {
+                name: "s.send",
+                cat: "Core",
+                desc: "Envia uma mensagem para um canal específico pelo ID. Útil para logs, notificações em outros canais, etc.",
+                params: [
+                    { name: "channelId", type: "string", required: true, desc: "ID do canal de destino" },
+                    { name: "content", type: "string", required: true, desc: "Mensagem a ser enviada" }
+                ],
+                syntax: "s.send[channelId;content]",
+                examples: [
+                    { code: "s.send[123456789;Nova compra realizada!]", desc: "Enviar para canal de logs" },
+                    { code: "s.send[s.channelId;Teste]", desc: "Enviar para canal atual" }
+                ]
+            },
+            {
+                name: "s.log",
+                cat: "Core",
+                desc: "Imprime uma mensagem no console do bot. Útil para debug e monitoramento.",
+                params: [
+                    { name: "message", type: "string", required: true, desc: "Mensagem para o console" }
+                ],
+                syntax: "s.log[message]",
+                examples: [
+                    { code: "s.log[Comando executado por s.username]", desc: "Log de execução" },
+                    { code: "s.log[Erro: usuário não encontrado]", desc: "Log de erro" }
+                ]
+            },
+            {
+                name: "s.setVar",
+                cat: "Core",
+                desc: "Define uma variável persistente. Pode ser global, por servidor (guild), ou por usuário.",
+                params: [
+                    { name: "name", type: "string", required: true, desc: "Nome da variável" },
+                    { name: "value", type: "any", required: true, desc: "Valor a ser salvo" },
+                    { name: "type", type: "string", required: false, desc: "Escopo: global | guild | user" },
+                    { name: "id", type: "string", required: false, desc: "ID do alvo (guild/user)" }
+                ],
+                syntax: "s.setVar[name;value;type?;id?]",
+                examples: [
+                    { code: "s.setVar[level;1;user;s.authorID]", desc: "Salvar level do usuário" },
+                    { code: "s.setVar[prefix;!;guild;s.guildId]", desc: "Definir prefix do servidor" },
+                    { code: "s.setVar[globalCount;100]", desc: "Variável global" }
+                ]
+            },
+            {
+                name: "s.getVar",
+                cat: "Core",
+                desc: "Recupera o valor de uma variável salva anteriormente.",
+                params: [
+                    { name: "name", type: "string", required: true, desc: "Nome da variável" },
+                    { name: "type", type: "string", required: false, desc: "Escopo: global | guild | user" },
+                    { name: "id", type: "string", required: false, desc: "ID do alvo" }
+                ],
+                syntax: "s.getVar[name;type?;id?]",
+                examples: [
+                    { code: "s.reply[Seu level é s.getVar[level;user;s.authorID]]", desc: "Mostrar level" },
+                    { code: "s.if[s.eq[s.getVar[vip;user;s.authorID];true];VIP;Normal]", desc: "Verificar status" }
+                ]
+            },
+
+            // === UI ===
+            {
+                name: "s.embed",
+                cat: "UI",
+                desc: "Cria um embed (mensagem rica) com título, descrição, cor, campos, imagem, thumbnail, footer e mais. Usa argumentos nomeados no formato key:value.",
+                params: [
+                    { name: "title", type: "string", required: false, desc: "Título do embed" },
+                    { name: "desc", type: "string", required: false, desc: "Descrição principal" },
+                    { name: "color", type: "string", required: false, desc: "Cor em hex (#5865F2) ou nome (red, blue)" },
+                    { name: "image", type: "string", required: false, desc: "URL da imagem principal" },
+                    { name: "thumbnail", type: "string", required: false, desc: "URL da thumbnail" },
+                    { name: "footer", type: "string", required: false, desc: "Texto do footer" },
+                    { name: "author", type: "string", required: false, desc: "Nome do autor" }
+                ],
+                syntax: "s.embed[title:X;desc:Y;color:Z;...]",
+                examples: [
+                    { code: "s.embed[title:Bem-vindo!;desc:Olá s.username;color:#5865F2]", desc: "Embed básico" },
+                    { code: "s.embed[title:Perfil;desc:Level s.getVar[level;user;s.authorID];thumbnail:s.avatar;color:gold]", desc: "Embed de perfil" },
+                    { code: "s.embed[title:Erro;desc:Comando inválido;color:red;footer:Use !help]", desc: "Embed de erro" }
+                ]
+            },
+            {
+                name: "s.button",
+                cat: "UI",
+                desc: "Cria um botão interativo. Pode ser de vários estilos e opcionalmente redirecionar para URL.",
+                params: [
+                    { name: "label", type: "string", required: true, desc: "Texto do botão" },
+                    { name: "id", type: "string", required: false, desc: "ID para identificar clique (não usar com url)" },
+                    { name: "style", type: "string", required: false, desc: "primary | secondary | success | danger | link" },
+                    { name: "url", type: "string", required: false, desc: "URL para redirecionar (style:link)" },
+                    { name: "emoji", type: "string", required: false, desc: "Emoji no botão" },
+                    { name: "disabled", type: "boolean", required: false, desc: "Desabilitar botão" }
+                ],
+                syntax: "s.button[label:X;id:Y;style:Z;...]",
+                examples: [
+                    { code: "s.button[label:Confirmar;id:confirm_btn;style:success]", desc: "Botão de confirmação" },
+                    { code: "s.button[label:Acessar Site;url:https://example.com;style:link]", desc: "Botão de link" },
+                    { code: "s.button[label:Deletar;id:delete;style:danger;emoji:🗑️]", desc: "Botão com emoji" }
+                ]
+            },
+            {
+                name: "s.selectMenu",
+                cat: "UI",
+                desc: "Cria um menu dropdown com múltiplas opções. O usuário pode selecionar uma ou mais opções.",
+                params: [
+                    { name: "id", type: "string", required: true, desc: "ID único do menu" },
+                    { name: "placeholder", type: "string", required: false, desc: "Texto quando nada selecionado" },
+                    { name: "min", type: "number", required: false, desc: "Mínimo de seleções (default: 1)" },
+                    { name: "max", type: "number", required: false, desc: "Máximo de seleções (default: 1)" }
+                ],
+                syntax: "s.selectMenu[id:X;placeholder:Y;...options]",
+                examples: [
+                    { code: "s.selectMenu[id:color_menu;placeholder:Escolha uma cor;s.option[label:Vermelho;value:red] s.option[label:Azul;value:blue]]", desc: "Menu de cores" },
+                    { code: "s.selectMenu[id:roles;placeholder:Selecione cargos;min:1;max:3;s.option[label:Gamer;value:gamer] s.option[label:Dev;value:dev]]", desc: "Menu multi-select" }
+                ]
+            },
+            {
+                name: "s.option",
+                cat: "UI",
+                desc: "Define uma opção para um selectMenu. Deve ser usado dentro de s.selectMenu.",
+                params: [
+                    { name: "label", type: "string", required: true, desc: "Texto visível da opção" },
+                    { name: "value", type: "string", required: true, desc: "Valor enviado quando selecionado" },
+                    { name: "desc", type: "string", required: false, desc: "Descrição da opção" },
+                    { name: "emoji", type: "string", required: false, desc: "Emoji da opção" },
+                    { name: "default", type: "boolean", required: false, desc: "Se é a opção padrão" }
+                ],
+                syntax: "s.option[label:X;value:Y;desc:Z;...]",
+                examples: [
+                    { code: "s.option[label:Brasil;value:br;emoji:🇧🇷;desc:Servidor brasileiro]", desc: "Opção completa" }
+                ]
+            },
+            {
+                name: "s.modal",
+                cat: "UI",
+                desc: "Cria um formulário modal (popup) com campos de texto. Só pode ser usado como resposta a uma interação.",
+                params: [
+                    { name: "id", type: "string", required: true, desc: "ID único do modal" },
+                    { name: "title", type: "string", required: true, desc: "Título do modal" }
+                ],
+                syntax: "s.modal[id:X;title:Y;...inputs]",
+                examples: [
+                    { code: "s.modal[id:report_form;title:Reportar Bug;s.input[id:desc;label:Descreva o bug;style:paragraph]]", desc: "Modal de report" },
+                    { code: "s.modal[id:apply;title:Candidatura;s.input[id:name;label:Seu nome] s.input[id:exp;label:Experiência;style:paragraph]]", desc: "Modal de candidatura" }
+                ]
+            },
+            {
+                name: "s.input",
+                cat: "UI",
+                desc: "Define um campo de texto dentro de um modal.",
+                params: [
+                    { name: "id", type: "string", required: true, desc: "ID do campo" },
+                    { name: "label", type: "string", required: true, desc: "Label do campo" },
+                    { name: "style", type: "string", required: false, desc: "short (1 linha) | paragraph (múltiplas)" },
+                    { name: "placeholder", type: "string", required: false, desc: "Texto de exemplo" },
+                    { name: "required", type: "boolean", required: false, desc: "Se é obrigatório" },
+                    { name: "min", type: "number", required: false, desc: "Mínimo de caracteres" },
+                    { name: "max", type: "number", required: false, desc: "Máximo de caracteres" }
+                ],
+                syntax: "s.input[id:X;label:Y;style:Z;...]",
+                examples: [
+                    { code: "s.input[id:email;label:Seu email;placeholder:exemplo@email.com;required:true]", desc: "Campo de email" }
+                ]
+            },
+            {
+                name: "s.onInteraction",
+                cat: "UI",
+                desc: "Registra um handler para quando um botão/menu/modal com o ID especificado for acionado.",
+                params: [
+                    { name: "id", type: "string", required: true, desc: "ID do componente" },
+                    { name: "code", type: "string", required: true, desc: "Código a executar" }
+                ],
+                syntax: "s.onInteraction[id;code]",
+                examples: [
+                    { code: "s.onInteraction[confirm_btn;s.reply[Confirmado!]]", desc: "Handler de botão" },
+                    { code: "s.onInteraction[color_menu;s.reply[Você escolheu: s.value]]", desc: "Handler de menu" }
+                ]
+            },
+
+            // === ECONOMY ===
+            {
+                name: "s.cash",
+                cat: "Economy",
+                desc: "Retorna o saldo da carteira do usuário.",
+                params: [
+                    { name: "userId", type: "string", required: false, desc: "ID do usuário (default: autor)" }
+                ],
+                syntax: "s.cash[userId?]",
+                examples: [
+                    { code: "s.reply[Sua carteira: R$ s.cash]", desc: "Ver próprio saldo" },
+                    { code: "s.reply[Saldo de <@s.arg[1]>: R$ s.cash[s.arg[1]]]", desc: "Ver saldo de outro" }
+                ]
+            },
+            {
+                name: "s.bank",
+                cat: "Economy",
+                desc: "Retorna o saldo bancário do usuário.",
+                params: [
+                    { name: "userId", type: "string", required: false, desc: "ID do usuário" }
+                ],
+                syntax: "s.bank[userId?]",
+                examples: [
+                    { code: "s.reply[Banco: R$ s.bank]", desc: "Ver saldo do banco" }
+                ]
+            },
+            {
+                name: "s.addCash",
+                cat: "Economy",
+                desc: "Adiciona dinheiro à carteira de um usuário.",
+                params: [
+                    { name: "amount", type: "number", required: true, desc: "Quantia a adicionar" },
+                    { name: "userId", type: "string", required: true, desc: "ID do usuário" }
+                ],
+                syntax: "s.addCash[amount;userId]",
+                examples: [
+                    { code: "s.addCash[100;s.authorID] s.reply[+R$ 100!]", desc: "Dar dinheiro" },
+                    { code: "s.addCash[s.random[50;200];s.authorID]", desc: "Valor aleatório" }
+                ]
+            },
+            {
+                name: "s.removeCash",
+                cat: "Economy",
+                desc: "Remove dinheiro da carteira de um usuário.",
+                params: [
+                    { name: "amount", type: "number", required: true, desc: "Quantia a remover" },
+                    { name: "userId", type: "string", required: true, desc: "ID do usuário" }
+                ],
+                syntax: "s.removeCash[amount;userId]",
+                examples: [
+                    { code: "s.removeCash[50;s.authorID] s.reply[Você pagou R$ 50]", desc: "Cobrar" }
+                ]
+            },
+            {
+                name: "s.deposit",
+                cat: "Economy",
+                desc: "Deposita dinheiro da carteira para o banco.",
+                params: [
+                    { name: "amount", type: "string", required: true, desc: "Valor ou 'all'" }
+                ],
+                syntax: "s.deposit[amount]",
+                examples: [
+                    { code: "s.deposit[all] s.reply[Depositado!]", desc: "Depositar tudo" },
+                    { code: "s.deposit[1000] s.reply[R$ 1000 depositado]", desc: "Valor específico" }
+                ]
+            },
+            {
+                name: "s.withdraw",
+                cat: "Economy",
+                desc: "Saca dinheiro do banco para a carteira.",
+                params: [
+                    { name: "amount", type: "string", required: true, desc: "Valor ou 'all'" }
+                ],
+                syntax: "s.withdraw[amount]",
+                examples: [
+                    { code: "s.withdraw[500] s.reply[Sacou R$ 500]", desc: "Sacar" }
+                ]
+            },
+
+            // === MODERATION ===
+            {
+                name: "s.ban",
+                cat: "Moderation",
+                desc: "Bane um usuário do servidor.",
+                params: [
+                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
+                    { name: "reason", type: "string", required: false, desc: "Motivo do ban" },
+                    { name: "days", type: "number", required: false, desc: "Dias de mensagens para deletar (0-7)" }
+                ],
+                syntax: "s.ban[user:X;reason:Y;days:Z]",
+                examples: [
+                    { code: "s.ban[user:s.arg[1];reason:Spam;days:1]", desc: "Banir com motivo" }
+                ]
+            },
+            {
+                name: "s.kick",
+                cat: "Moderation",
+                desc: "Expulsa um usuário do servidor.",
+                params: [
+                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
+                    { name: "reason", type: "string", required: false, desc: "Motivo" }
+                ],
+                syntax: "s.kick[user:X;reason:Y]",
+                examples: [
+                    { code: "s.kick[user:s.arg[1];reason:Aviso final]", desc: "Expulsar" }
+                ]
+            },
+            {
+                name: "s.mute",
+                cat: "Moderation",
+                desc: "Silencia um usuário por um tempo (timeout).",
+                params: [
+                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
+                    { name: "time", type: "string", required: true, desc: "Duração (ex: 10m, 1h, 1d)" },
+                    { name: "reason", type: "string", required: false, desc: "Motivo" }
+                ],
+                syntax: "s.mute[user:X;time:Y;reason:Z]",
+                examples: [
+                    { code: "s.mute[user:s.arg[1];time:30m;reason:Flood]", desc: "Mute de 30 min" }
+                ]
+            },
+            {
+                name: "s.purge",
+                cat: "Moderation",
+                desc: "Deleta múltiplas mensagens do canal.",
+                params: [
+                    { name: "amount", type: "number", required: true, desc: "Quantidade (1-100)" }
+                ],
+                syntax: "s.purge[amount]",
+                examples: [
+                    { code: "s.purge[50] s.reply[50 mensagens deletadas!]", desc: "Limpar chat" }
+                ]
+            },
+            {
+                name: "s.warn",
+                cat: "Moderation",
+                desc: "Adiciona um aviso ao usuário.",
+                params: [
+                    { name: "userId", type: "string", required: true, desc: "ID do usuário" },
+                    { name: "reason", type: "string", required: true, desc: "Motivo do aviso" }
+                ],
+                syntax: "s.warn[userId;reason]",
+                examples: [
+                    { code: "s.warn[s.arg[1];Linguagem inadequada] s.reply[Usuário avisado!]", desc: "Dar warn" }
+                ]
+            },
+
+            // === LOGIC ===
+            {
+                name: "s.if",
+                cat: "Logic",
+                desc: "Executa código condicionalmente. Se a condição for true, executa o primeiro bloco, senão o segundo.",
+                params: [
+                    { name: "condition", type: "string", required: true, desc: "Condição (true/false)" },
+                    { name: "then", type: "string", required: true, desc: "Código se true" },
+                    { name: "else", type: "string", required: false, desc: "Código se false" }
+                ],
+                syntax: "s.if[condition;then;else?]",
+                examples: [
+                    { code: "s.if[s.eq[s.authorID;123456];Você é admin!;Sem permissão]", desc: "Verificar admin" },
+                    { code: "s.if[s.eq[s.cash;0];Você está falido!]", desc: "Sem else" }
+                ]
+            },
+            {
+                name: "s.eq",
+                cat: "Logic",
+                desc: "Compara dois valores. Retorna 'true' se iguais, 'false' se diferentes.",
+                params: [
+                    { name: "a", type: "any", required: true, desc: "Primeiro valor" },
+                    { name: "b", type: "any", required: true, desc: "Segundo valor" }
+                ],
+                syntax: "s.eq[a;b]",
+                examples: [
+                    { code: "s.eq[s.arg[1];sim]", desc: "Verificar resposta" },
+                    { code: "s.if[s.eq[s.getVar[vip;user;s.authorID];true];VIP;Normal]", desc: "Verificar VIP" }
+                ]
+            },
+
+            // === MATH ===
+            {
+                name: "s.math",
+                cat: "Math",
+                desc: "Avalia uma expressão matemática. Suporta +, -, *, /, %, parênteses.",
+                params: [
+                    { name: "expression", type: "string", required: true, desc: "Expressão matemática" }
+                ],
+                syntax: "s.math[expression]",
+                examples: [
+                    { code: "s.math[s.cash * 1.1]", desc: "Calcular 10% de juros" },
+                    { code: "s.math[(100 + 50) * 2]", desc: "Com parênteses" }
+                ]
+            },
+            {
+                name: "s.random",
+                cat: "Math",
+                desc: "Gera um número inteiro aleatório entre min e max (inclusivo).",
+                params: [
+                    { name: "min", type: "number", required: true, desc: "Valor mínimo" },
+                    { name: "max", type: "number", required: true, desc: "Valor máximo" }
+                ],
+                syntax: "s.random[min;max]",
+                examples: [
+                    { code: "s.random[1;6]", desc: "Dado de 6 lados" },
+                    { code: "s.addCash[s.random[10;100];s.authorID]", desc: "Recompensa aleatória" }
+                ]
+            },
+
+            // === SYSTEM ===
+            {
+                name: "s.ping",
+                cat: "System",
+                desc: "Retorna a latência da API do Discord em milissegundos.",
+                params: [],
+                syntax: "s.ping",
+                examples: [
+                    { code: "s.reply[🏓 Pong! s.ping ms]", desc: "Comando de ping" }
+                ]
+            },
+            {
+                name: "s.uptime",
+                cat: "System",
+                desc: "Retorna o tempo que o bot está online formatado.",
+                params: [],
+                syntax: "s.uptime",
+                examples: [
+                    { code: "s.reply[Online há: s.uptime]", desc: "Mostrar uptime" }
+                ]
+            },
+            {
+                name: "s.cooldown",
+                cat: "System",
+                desc: "Aplica um cooldown ao comando para o usuário.",
+                params: [
+                    { name: "seconds", type: "number", required: true, desc: "Tempo em segundos" },
+                    { name: "message", type: "string", required: false, desc: "Mensagem de cooldown" }
+                ],
+                syntax: "s.cooldown[seconds;message?]",
+                examples: [
+                    { code: "s.cooldown[60;Aguarde 1 minuto!]", desc: "Cooldown de 1 min" }
+                ]
+            },
+            {
+                name: "s.avatar",
+                cat: "System",
+                desc: "Retorna a URL do avatar de um usuário.",
+                params: [
+                    { name: "user", type: "string", required: false, desc: "ID do usuário" }
+                ],
+                syntax: "s.avatar[user?]",
+                examples: [
+                    { code: "s.embed[title:Avatar;image:s.avatar]", desc: "Mostrar próprio avatar" },
+                    { code: "s.embed[title:Avatar;image:s.avatar[s.arg[1]]]", desc: "Avatar de outro" }
+                ]
+            },
+
+            // === VARIABLES ===
+            {
+                name: "s.authorID",
+                cat: "Variables",
+                desc: "Retorna o ID do usuário que executou o comando.",
+                params: [],
+                syntax: "s.authorID",
+                examples: [
+                    { code: "s.reply[Seu ID: s.authorID]", desc: "Mostrar ID" }
+                ]
+            },
+            {
+                name: "s.username",
+                cat: "Variables",
+                desc: "Retorna o nome de usuário de quem executou o comando.",
+                params: [],
+                syntax: "s.username",
+                examples: [
+                    { code: "s.reply[Olá, s.username!]", desc: "Saudação" }
+                ]
+            },
+            {
+                name: "s.channelId",
+                cat: "Variables",
+                desc: "Retorna o ID do canal onde o comando foi executado.",
+                params: [],
+                syntax: "s.channelId",
+                examples: [
+                    { code: "s.log[Comando executado no canal s.channelId]", desc: "Log de canal" }
+                ]
+            },
+            {
+                name: "s.content",
+                cat: "Variables",
+                desc: "Retorna o conteúdo completo da mensagem do usuário.",
+                params: [],
+                syntax: "s.content",
+                examples: [
+                    { code: "s.log[Mensagem: s.content]", desc: "Logar mensagem" }
+                ]
+            },
+            {
+                name: "s.arg",
+                cat: "Variables",
+                desc: "Retorna um argumento específico da mensagem. Índice começa em 1.",
+                params: [
+                    { name: "index", type: "number", required: true, desc: "Posição do argumento (1, 2, 3...)" }
+                ],
+                syntax: "s.arg[index]",
+                examples: [
+                    { code: "s.reply[Primeiro argumento: s.arg[1]]", desc: "Pegar arg 1" },
+                    { code: "s.ban[user:s.arg[1];reason:s.arg[2]]", desc: "Ban com args" }
+                ]
+            }
         ];
 
-        const categories = [...new Set(macros.map(m => m.cat))].sort();
-        const catNames = { Core: "Principal", UI: "Interface", Economy: "Economia", Moderation: "Moderação", Logic: "Lógica", Math: "Matemática", String: "Texto", System: "Sistema", Variables: "Variáveis" };
-        let lang = 'pt';
+        const categories = [...new Set(macros.map(m => m.cat))];
+        const catOrder = ['Core', 'UI', 'Economy', 'Moderation', 'Logic', 'Math', 'System', 'Variables'];
+        const catNames = { Core: 'Principal', UI: 'Interface', Economy: 'Economia', Moderation: 'Moderação', Logic: 'Lógica', Math: 'Matemática', System: 'Sistema', Variables: 'Variáveis' };
+
+        let currentCat = null;
 
         function renderNav() {
             const nav = document.getElementById('nav');
-            nav.innerHTML = categories.map(c => `<button onclick="filterCategory('${c}')" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400">${catNames[c] || c}</button>`).join('');
-            nav.innerHTML += `<div class="mt-4 pt-3 border-t border-slate-800 px-4 text-xs text-slate-600 uppercase">Recursos</div>
-                <button onclick="showIntro()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400">Início</button>
-                <button onclick="showStory()" class="sidebar-link w-full text-left px-4 py-2 text-sm text-slate-400">Por que Seven?</button>`;
+            nav.innerHTML = catOrder.map(c =>
+                `<button onclick="filterCategory('${c}')" class="nav-link w-full text-left px-3 py-2 text-sm rounded">${catNames[c] || c}</button>`
+            ).join('') + `
+                <div class="border-t border-zinc-900 mt-4 pt-4 px-3 text-xs text-zinc-600 uppercase">Geral</div>
+                <button onclick="showIntro()" class="nav-link w-full text-left px-3 py-2 text-sm rounded">Início</button>
+            `;
         }
 
         function hideAll() {
             document.getElementById('view-intro').classList.add('hidden');
-            document.getElementById('view-macros').classList.add('hidden');
-            document.getElementById('view-story').classList.add('hidden');
+            document.getElementById('view-macro').classList.add('hidden');
+            document.getElementById('view-list').classList.add('hidden');
         }
 
-        function showIntro() { hideAll(); document.getElementById('view-intro').classList.remove('hidden'); document.getElementById('page-title').innerText = 'Início'; }
-        function showStory() { hideAll(); document.getElementById('view-story').classList.remove('hidden'); document.getElementById('page-title').innerText = 'Por que Seven?'; }
+        function showIntro() {
+            hideAll();
+            document.getElementById('view-intro').classList.remove('hidden');
+            document.getElementById('page-title').innerText = 'Início';
+            currentCat = null;
+        }
 
         function filterCategory(cat) {
             hideAll();
-            document.getElementById('view-macros').classList.remove('hidden');
+            currentCat = cat;
+            document.getElementById('view-list').classList.remove('hidden');
             document.getElementById('page-title').innerText = catNames[cat] || cat;
-            document.getElementById('category-title').innerText = catNames[cat] || cat;
-            renderGrid(macros.filter(m => m.cat === cat));
+            document.getElementById('list-title').innerText = catNames[cat] || cat;
+
+            const list = macros.filter(m => m.cat === cat);
+            document.getElementById('macro-list').innerHTML = list.map(m => `
+                <button onclick="showMacro('${m.name}')" class="card w-full text-left p-4 flex justify-between items-center">
+                    <div>
+                        <code class="text-white font-mono text-sm">${m.name}</code>
+                        <p class="text-zinc-500 text-xs mt-1">${m.desc.substring(0, 60)}...</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                </button>
+            `).join('');
+            lucide.createIcons();
         }
 
-        function renderGrid(list) {
-            document.getElementById('grid').innerHTML = list.map(m => `
-                <div onclick="openModal('${m.name}')" class="card p-4 rounded-xl">
-                    <code class="text-seven-400 text-sm font-medium">${m.name}</code>
-                    <p class="text-slate-400 text-xs mt-1 line-clamp-2">${m.desc}</p>
+        function showMacro(name) {
+            const m = macros.find(x => x.name === name);
+            if (!m) return;
+
+            hideAll();
+            document.getElementById('view-macro').classList.remove('hidden');
+            document.getElementById('page-title').innerText = m.name;
+            document.getElementById('macro-name').innerText = m.name;
+            document.getElementById('macro-cat').innerText = catNames[m.cat] || m.cat;
+            document.getElementById('macro-desc').innerText = m.desc;
+            document.getElementById('macro-syntax').innerText = m.syntax;
+
+            // Params
+            if (m.params.length > 0) {
+                document.getElementById('macro-params').innerHTML = `
+                    <table class="w-full text-sm">
+                        <thead class="text-zinc-500 text-xs uppercase">
+                            <tr><td class="p-3">Nome</td><td class="p-3">Tipo</td><td class="p-3">Obrigatório</td><td class="p-3">Descrição</td></tr>
+                        </thead>
+                        <tbody>
+                            ${m.params.map(p => `
+                                <tr class="border-t border-zinc-900">
+                                    <td class="p-3 text-white font-mono">${p.name}</td>
+                                    <td class="p-3"><span class="param type-${p.type}">${p.type}</span></td>
+                                    <td class="p-3">${p.required ? '<span class="text-rose-400">sim</span>' : '<span class="text-zinc-500">não</span>'}</td>
+                                    <td class="p-3">${p.desc}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                document.getElementById('macro-params').innerHTML = '<p class="p-4 text-zinc-500 text-sm">Nenhum parâmetro</p>';
+            }
+
+            // Examples
+            document.getElementById('macro-examples').innerHTML = m.examples.map(e => `
+                <div class="code-block p-4">
+                    <p class="text-zinc-500 text-xs mb-2">${e.desc}</p>
+                    <code class="text-emerald-400 text-sm">${e.code}</code>
                 </div>
             `).join('');
         }
 
-        function openModal(name) {
-            const m = macros.find(x => x.name === name);
-            if (!m) return;
-            document.getElementById('m-name').innerText = m.name;
-            document.getElementById('m-cat').innerText = catNames[m.cat] || m.cat;
-            document.getElementById('m-desc').innerText = m.desc;
-            document.getElementById('m-usage').innerText = m.usage;
-            document.getElementById('m-example').innerText = m.example;
-            const modal = document.getElementById('modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        function goBack() {
+            if (currentCat) filterCategory(currentCat);
+            else showIntro();
         }
 
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function setLang(l) {
-            lang = l;
-            document.getElementById('btn-en').className = l === 'en' ? 'text-xs px-2 py-1 rounded bg-seven-500/20 text-seven-400' : 'text-xs px-2 py-1 rounded text-slate-500 hover:text-white';
-            document.getElementById('btn-pt').className = l === 'pt' ? 'text-xs px-2 py-1 rounded bg-seven-500/20 text-seven-400' : 'text-xs px-2 py-1 rounded text-slate-500 hover:text-white';
-        }
-
+        // Search
         document.getElementById('search').addEventListener('input', e => {
             const term = e.target.value.toLowerCase();
-            if (term) {
+            if (term.length >= 2) {
                 hideAll();
-                document.getElementById('view-macros').classList.remove('hidden');
+                document.getElementById('view-list').classList.remove('hidden');
                 document.getElementById('page-title').innerText = 'Busca';
-                document.getElementById('category-title').innerText = `Resultados: "${term}"`;
-                renderGrid(macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term)));
-            } else showIntro();
-        });
+                document.getElementById('list-title').innerText = `Resultados para "${term}"`;
 
-        document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+                const filtered = macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term));
+                document.getElementById('macro-list').innerHTML = filtered.map(m => `
+                    <button onclick="showMacro('${m.name}')" class="card w-full text-left p-4 flex justify-between items-center">
+                        <div>
+                            <code class="text-white font-mono text-sm">${m.name}</code>
+                            <p class="text-zinc-500 text-xs mt-1">${m.desc.substring(0, 60)}...</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
+                    </button>
+                `).join('');
+                lucide.createIcons();
+            } else if (term.length === 0) {
+                showIntro();
+            }
+        });
 
         lucide.createIcons();
         renderNav();
