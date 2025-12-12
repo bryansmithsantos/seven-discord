@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.5.21</title>
+    <title>Seven-Discord v2.6.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -67,7 +67,40 @@
             transform: translateX(0);
         }
 
-        /* Scrollbars */
+        /* Mac Code Block */
+        .mac-window {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mac-header {
+            background: #1a1a1a;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid #333;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background: #ff5f56;
+        }
+
+        .dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .dot.green {
+            background: #27c93f;
+        }
+
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -89,7 +122,7 @@
 
 <body class="flex h-screen overflow-hidden text-sm">
 
-    <!-- Specs Panel (Side Drawer) -->
+    <!-- Specs Panel -->
     <aside id="specs-panel"
         class="spec-panel fixed inset-y-0 right-0 w-full md:w-[480px] bg-[#080808] border-l border-border-800 z-50 flex flex-col shadow-2xl">
         <div class="p-6 border-b border-border-800 flex justify-between items-center bg-[#080808]">
@@ -109,7 +142,7 @@
         <div class="flex-1 overflow-y-auto p-6 space-y-8">
             <div>
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Description</h4>
-                <p id="spec-desc" class="text-gray-300 leading-relaxed">Creates variables.</p>
+                <p id="spec-desc" class="text-gray-300 leading-relaxed">...</p>
             </div>
 
             <div id="spec-args-container">
@@ -118,41 +151,31 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b border-border-800 bg-bg-800">
-                                <th class="p-3 text-xs font-medium text-gray-400">Idx</th>
+                                <th class="p-3 text-xs font-medium text-gray-400">#</th>
                                 <th class="p-3 text-xs font-medium text-gray-400">Name</th>
                                 <th class="p-3 text-xs font-medium text-gray-400">Type</th>
-                                <th class="p-3 text-xs font-medium text-gray-400">Required</th>
+                                <th class="p-3 text-xs font-medium text-gray-400">Req</th>
                             </tr>
                         </thead>
-                        <tbody id="spec-args-body" class="font-mono text-xs">
-                            <!-- Dynamic content -->
-                        </tbody>
+                        <tbody id="spec-args-body" class="font-mono text-xs"></tbody>
                     </table>
                 </div>
             </div>
 
             <div>
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Example Usage</h4>
-                <pre
-                    class="rounded-lg border border-border-800 bg-[#000] p-4 overflow-x-auto"><code id="spec-code" class="language-typescript">s.embed[title:Hello]</code></pre>
-            </div>
-
-            <div class="bg-blue-500/5 border border-blue-500/10 rounded p-4">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div>
-                        <h4 class="text-blue-400 font-bold mb-1">Developer Note</h4>
-                        <p id="spec-note" class="text-gray-400 text-xs leading-relaxed">Most macros support nested
-                            execution unless stated otherwise.</p>
+                <div class="mac-window">
+                    <div class="mac-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
                     </div>
+                    <pre
+                        class="p-4 bg-[#050505] overflow-x-auto m-0"><code id="spec-code" class="language-typescript">s.embed[title:Hello]</code></pre>
                 </div>
             </div>
         </div>
     </aside>
-    <!-- Overlay -->
     <div id="specs-overlay" onclick="closeSpecs()"
         class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-40 hidden opacity-0 transition-opacity duration-300">
     </div>
@@ -164,12 +187,12 @@
             <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                 Seven
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.21</span>
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.6</span>
             </h1>
         </div>
 
         <div class="p-3">
-            <input type="text" id="search" placeholder="Search macros..."
+            <input type="text" id="search" placeholder="Filter..."
                 class="w-full bg-bg-800 border border-border-800 rounded px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-gray-600 transition-colors font-mono">
         </div>
 
@@ -177,12 +200,13 @@
             <div class="nav-group">
                 <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2">General</h4>
                 <a href="#intro"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Introduction</a>
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Start
+                    Here</a>
+                <a href="#history"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Comparison
+                    (vs DJS)</a>
                 <a href="#events"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Event
-                    System</a>
-                <a href="#variables"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Variable
                     System</a>
             </div>
 
@@ -191,14 +215,16 @@
                 <a href="#section-core"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Core
                     & IO</a>
+                <a href="#section-user"
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">User
+                    Context</a>
                 <a href="#section-ui"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">UI
                     & Embeds</a>
                 <a href="#section-economy"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Economy</a>
                 <a href="#section-system"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">System
-                    & Info</a>
+                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">System</a>
                 <a href="#section-moderation"
                     class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Moderation</a>
                 <a href="#section-logic"
@@ -226,41 +252,61 @@
     <main class="flex-1 overflow-y-auto bg-bg-900 scroll-smooth">
         <div class="max-w-5xl mx-auto p-12">
 
-            <!-- Intro (Hero) -->
+            <!-- Intro -->
             <section id="intro" class="mb-24 py-10 border-b border-border-800">
                 <div data-lang="en">
                     <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Build Bots, <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Faster.</span>
                     </h1>
                     <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">The high-performance Discord framework
-                        for <strong>Bun</strong>. Write complex logic in single-line macros. Zero boilerplate.</p>
+                        for <strong>Bun</strong>.</p>
                 </div>
                 <div data-lang="pt" class="hidden">
                     <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Crie Bots, <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Mais
                             Rápido.</span></h1>
                     <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">O framework Discord de alta performance
-                        para <strong>Bun</strong>. Escreva lógica complexa com macros de uma linha. Zero boilerplate.
-                    </p>
+                        para <strong>Bun</strong>.</p>
                 </div>
+            </section>
 
-                <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card p-6 rounded-xl">
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <pre class="font-mono text-sm text-gray-300"><code>client.cmd({
-    name: <span class="text-green-400">"ping"</span>,
-    code: <span class="text-blue-400">"Pong! 🏓 Latency: s.pingms"</span>
+            <!-- History / Comparison -->
+            <section id="history" class="mb-24 scroll-mt-20">
+                <h2 class="text-2xl font-bold text-white mb-6">Seven vs Discord.js</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    <!-- DJS -->
+                    <div>
+                        <h3 class="text-xs font-bold text-red-500 uppercase tracking-widest mb-3">Discord.js (Verbose)
+                        </h3>
+                        <div class="mac-window opacity-75">
+                            <div class="mac-header">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <pre class="p-4 overflow-x-auto text-[10px] m-0"><code class="language-javascript">client.on('messageCreate', async message => {
+  if (message.content === '!ping') {
+     const latency = Date.now() - message.createdTimestamp;
+     await message.reply(`Pong! ${latency}ms`);
+  }
 });</code></pre>
+                        </div>
                     </div>
-                    <div class="card p-6 rounded-xl flex flex-col justify-center">
-                        <h3 class="text-lg font-bold text-white mb-2">Installation</h3>
-                        <div
-                            class="flex items-center gap-3 bg-bg-800 border border-border-800 p-3 rounded font-mono text-sm text-gray-300">
-                            <span class="text-blue-500">$</span> npm install seven-discord
+
+                    <!-- Seven -->
+                    <div>
+                        <h3 class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-3">Seven (Logic)</h3>
+                        <div class="mac-window border-blue-500/30 shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]">
+                            <div class="mac-header">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <pre class="p-4 overflow-x-auto text-[10px] m-0"><code class="language-typescript">client.cmd({
+    name: "ping",
+    code: "Pong! s.pingms"
+});</code></pre>
                         </div>
                     </div>
                 </div>
@@ -268,84 +314,32 @@
 
             <!-- Event System -->
             <section id="events" class="mb-24 scroll-mt-20">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    Event System
-                </h2>
+                <h2 class="text-2xl font-bold text-white mb-6">Event System</h2>
                 <div class="card p-8 rounded-xl">
                     <p class="text-gray-400 mb-6 leading-relaxed" data-lang="en">
-                        Seven-Discord allows you to hook into native Discord events directly. Access context via
-                        `s.authorID`, `s.channelID`, etc.
+                        Hook into native Discord events directly.
                     </p>
                     <p class="text-gray-400 mb-6 leading-relaxed hidden" data-lang="pt">
-                        Seven-Discord permite que você se conecte a eventos nativos do Discord diretamente. Acesse o
-                        contexto via `s.authorID`, `s.channelID`, etc.
+                        Conecte-se a eventos nativos do Discord diretamente.
                     </p>
-
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div
-                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
-                            messageDelete</div>
-                        <div
-                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
-                            channelCreate</div>
-                        <div
-                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
-                            roleUpdate</div>
-                        <div
-                            class="bg-bg-800 p-3 rounded border border-border-800 text-center text-xs font-mono text-gray-300">
-                            interactionCreate</div>
-                    </div>
-
-                    <pre class="bg-[#000] p-4 rounded border border-border-800 overflow-x-auto"><code class="language-typescript text-sm">client.on({
+                    <div class="mac-window">
+                        <div class="mac-header">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <pre class="p-4 m-0"><code class="language-typescript text-sm">client.on({
     name: "messageDelete",
     code: "s.log[Message deleted by s.authorID in s.channelID]"
-});</code></pre>
-                </div>
-            </section>
+});
 
-            <!-- Variable System -->
-            <section id="variables" class="mb-24 scroll-mt-20">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
-                        </path>
-                    </svg>
-                    Variable System
-                </h2>
-                <div class="card p-8 rounded-xl">
-                    <p class="text-gray-400 mb-6" data-lang="en">
-                        Manage persistent data easily. Access the raw manager via <code
-                            class="bg-white/10 px-1 py-0.5 rounded text-white">bot.sevenvariables</code>.
-                    </p>
-                    <p class="text-gray-400 mb-6 hidden" data-lang="pt">
-                        Gerencie dados persistentes facilmente. Acesse o gerenciador bruto via <code
-                            class="bg-white/10 px-1 py-0.5 rounded text-white">bot.sevenvariables</code>.
-                    </p>
-
-                    <div class="flex flex-col gap-4">
-                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
-                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value]</code>
-                            <span class="text-xs text-gray-500 uppercase">Global</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
-                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value; guild]</code>
-                            <span class="text-xs text-gray-500 uppercase">Guild Scoped</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-bg-800 rounded border border-border-800">
-                            <code class="text-blue-400 font-bold font-mono">s.setVar[key; value; user]</code>
-                            <span class="text-xs text-gray-500 uppercase">User Scoped</span>
-                        </div>
+// Custom Ready Handler
+client.setReady("s.log[Bot is online!]");</code></pre>
                     </div>
                 </div>
             </section>
 
             <!-- Macros Sections -->
-            <!-- We will use JS to render these to keep HTML clean and easy to update -->
             <div id="macros-container"></div>
 
         </div>
@@ -355,97 +349,85 @@
         // MACRO DATA SOURCE
         const macroCategories = [
             {
-                id: "section-core",
-                title: "Core & IO",
+                id: "section-core", title: "Core & IO",
                 macros: [
-                    { name: "s.send", desc: "Send message to channel", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123456789;Hello!]" },
-                    { name: "s.reply", desc: "Reply to trigger", args: [{ name: "content", type: "string" }], code: "s.reply[Hello World]" },
-                    { name: "s.log", desc: "Log to console", args: [{ name: "message", type: "string" }], code: "s.log[Debug info]" },
-                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[money;100;user]" },
-                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[money;user]" }
+                    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123;Hello]" },
+                    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
+                    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
+                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
+                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[xp;user]" }
                 ]
             },
             {
-                id: "section-ui",
-                title: "UI & Embeds",
+                id: "section-user", title: "User Context",
                 macros: [
-                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF; s.field[Name;Value]]" },
-                    { name: "s.button", desc: "Create button", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "Create|Secondary|Destructive" }, { name: "disabled", type: "bool", req: false }, { name: "emoji", type: "string", req: false }], code: "s.button[btn1;Click Me;Primary]" },
-                    { name: "s.row", desc: "Action Row container", args: [{ name: "components", type: "Component[]" }], code: "s.row[s.button[...]]" },
-                    { name: "s.selectMenu", desc: "Dropdown menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "Option[]" }], code: "s.selectMenu[menu1;Pick one; s.option[A;a] s.option[B;b]]" },
-                    { name: "s.modal", desc: "Pop-up form", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "inputs", type: "Input[]" }], code: "s.modal[mod1;Form; s.input[inp1;Name]]" },
+                    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code: "s.userId[@user]" },
+                    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag" },
+                    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code: "s.embed[image:s.userAvatar]" },
+                    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }], code: "s.userCreated" },
+                    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot" }
+                ]
+            },
+            {
+                id: "section-ui", title: "UI & Embeds",
+                macros: [
+                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF]" },
+                    { name: "s.button", desc: "Create button", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "style" }, { name: "disabled", type: "bool", req: false }], code: "s.button[btn1;Click Me;Primary]" },
+                    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
+                    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
                     { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
-                    { name: "s.update", desc: "Update message", args: [{ name: "content", type: "string" }], code: "s.update[New content]" }
+                    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New content]" }
                 ]
             },
             {
-                id: "section-economy",
-                title: "Economy",
+                id: "section-economy", title: "Economy",
                 macros: [
-                    { name: "s.cash", desc: "Get balance", args: [{ name: "userId", type: "string", req: false }], code: "s.cash[]" },
-                    { name: "s.pay", desc: "Transfer money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.pay[100;@user]" },
-                    { name: "s.give", desc: "Admin give money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.give[1000;@user]" },
-                    { name: "s.take", desc: "Admin take money", args: [{ name: "amount", type: "number" }, { name: "userId", type: "string" }], code: "s.take[500;@user]" },
-                    { name: "s.work", desc: "Earn currency", args: [{ name: "min", type: "number", req: false }, { name: "max", type: "number", req: false }], code: "s.work[50;150]" },
-                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amount", type: "number", req: false }], code: "s.daily[500]" },
-                    { name: "s.rob", desc: "Steal currency", args: [{ name: "userId", type: "string" }], code: "s.rob[@user]" },
-                    { name: "s.gamble", desc: "Bet currency", args: [{ name: "amount", type: "number" }], code: "s.gamble[100]" },
-                    { name: "s.coinflip", desc: "Flip coin", args: [{ name: "side", type: "heads|tails" }, { name: "amount", type: "number" }], code: "s.coinflip[heads;50]" },
-                    { name: "s.bank", desc: "Bank balance", args: [{ name: "userId", type: "string", req: false }], code: "s.bank[]" },
-                    { name: "s.deposit", desc: "Deposit to bank", args: [{ name: "amount", type: "number|all" }], code: "s.deposit[all]" },
-                    { name: "s.withdraw", desc: "Withdraw from bank", args: [{ name: "amount", type: "number|all" }], code: "s.withdraw[100]" }
+                    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
+                    { name: "s.pay", desc: "Transfer money", args: [{ name: "amt", type: "number" }, { name: "user", type: "string" }], code: "s.pay[100;@user]" },
+                    { name: "s.work", desc: "Work for money", args: [{ name: "min", type: "number", req: false }, { name: "max", type: "number", req: false }], code: "s.work[50;100]" },
+                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]" },
+                    { name: "s.bank", desc: "Bank balance", args: [], code: "s.bank" },
+                    { name: "s.deposit", desc: "Deposit money", args: [{ name: "amt", type: "number|all" }], code: "s.deposit[all]" },
+                    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "amt", type: "number|all" }], code: "s.withdraw[100]" }
                 ]
             },
             {
-                id: "section-system",
-                title: "System & Info",
+                id: "section-system", title: "System",
                 macros: [
-                    { name: "s.ping", desc: "Websocket Latency", args: [], code: "s.ping" },
-                    { name: "s.uptime", desc: "Bot uptime", args: [], code: "s.uptime" },
-                    { name: "s.ram", desc: "Memory usage", args: [], code: "s.ram" },
+                    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
+                    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
+                    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
                     { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
                     { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
-                    { name: "s.shardId", desc: "Current Shard ID", args: [], code: "s.shardId" },
-                    { name: "s.guildCount", desc: "Total Guilds", args: [], code: "s.guildCount" },
-                    { name: "s.userCount", desc: "Total Users", args: [], code: "s.userCount" },
-                    { name: "s.nodeVersion", desc: "Node JS Version", args: [], code: "s.nodeVersion" },
-                    { name: "s.ownerID", desc: "Bot Owner ID", args: [], code: "s.ownerID" },
-                    { name: "s.clientID", desc: "Bot Client ID", args: [], code: "s.clientID" }
+                    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
+                    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" }
                 ]
             },
             {
-                id: "section-moderation",
-                title: "Moderation",
+                id: "section-moderation", title: "Moderation",
                 macros: [
-                    { name: "s.ban", desc: "Ban user", args: [{ name: "userId", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.ban[@user;Spam]" },
-                    { name: "s.kick", desc: "Kick user", args: [{ name: "userId", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.kick[@user;Bye]" },
-                    { name: "s.mute", desc: "Timeout user", args: [{ name: "userId", type: "string" }, { name: "duration", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.mute[@user;1h;Bad behavior]" },
-                    { name: "s.unmute", desc: "Remove timeout", args: [{ name: "userId", type: "string" }], code: "s.unmute[@user]" },
-                    { name: "s.purge", desc: "Delete messages", args: [{ name: "amount", type: "number" }], code: "s.purge[10]" },
-                    { name: "s.lock", desc: "Lock channel", args: [], code: "s.lock" },
-                    { name: "s.unlock", desc: "Unlock channel", args: [], code: "s.unlock" }
+                    { name: "s.ban", desc: "Ban user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.ban[@user;Spam]" },
+                    { name: "s.kick", desc: "Kick user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.kick[@user;Bye]" },
+                    { name: "s.mute", desc: "Timeout user", args: [{ name: "user", type: "string" }, { name: "dur", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.mute[@user;1h]" },
+                    { name: "s.purge", desc: "Delete msgs", args: [{ name: "amt", type: "number" }], code: "s.purge[10]" }
                 ]
             },
             {
-                id: "section-logic",
-                title: "Logic",
+                id: "section-logic", title: "Logic & Math",
                 macros: [
-                    { name: "s.if", desc: "Conditional", args: [{ name: "condition", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
+                    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
                     { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.and[true;false]" },
                     { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.or[true;false]" },
-                    { name: "s.not", desc: "Logical NOT", args: [{ name: "val", type: "bool" }], code: "s.not[true]" },
-                    { name: "s.gt", desc: "Greater Than", args: [{ name: "a", type: "number" }, { name: "b", type: "number" }], code: "s.gt[10;5]" },
-                    { name: "s.lt", desc: "Less Than", args: [{ name: "a", type: "number" }, { name: "b", type: "number" }], code: "s.lt[5;10]" }
+                    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
+                    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number" }], code: "s.randomInt[1;100]" }
                 ]
             },
             {
-                id: "section-string",
-                title: "String Ops",
+                id: "section-string", title: "String Ops",
                 macros: [
-                    { name: "s.replace", desc: "Replace text", args: [{ name: "text", type: "string" }, { name: "match", type: "string" }, { name: "replace", type: "string" }], code: "s.replace[Hello World;World;Seven]" },
-                    { name: "s.slice", desc: "Slice string", args: [{ name: "text", type: "string" }, { name: "start", type: "number" }, { name: "end", type: "number", req: false }], code: "s.slice[Hello;0;2]" },
-                    { name: "s.split", desc: "Split string", args: [{ name: "text", type: "string" }, { name: "delimiter", type: "string" }, { name: "index", type: "number" }], code: "s.split[a,b,c;,;0]" },
-                    { name: "s.upper", desc: "To Uppercase", args: [{ name: "text", type: "string" }], code: "s.upper[hello]" }
+                    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
+                    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
+                    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
                 ]
             }
         ];
@@ -470,7 +452,7 @@
                             <p class="text-xs text-gray-500 line-clamp-2">${m.desc}</p>
                             <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between">
                                 <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
-                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5</span>
+                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.6</span>
                             </div>
                         </div>
                     `).join('')}
@@ -494,7 +476,6 @@
             dDesc.textContent = macro.desc;
             dCode.textContent = macro.code;
 
-            // Build Args Table
             dArgsBody.innerHTML = macro.args.map((arg, i) => `
                 <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50">
                     <td class="p-3 text-gray-500">${i + 1}</td>
@@ -530,9 +511,6 @@
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('.card').forEach(card => {
                 const text = card.textContent.toLowerCase();
-                const parent = card.parentElement; // grid
-                const section = parent.parentElement; // section
-
                 if (text.includes(term)) {
                     card.style.display = 'block';
                 } else {
@@ -556,7 +534,7 @@
                 }
             });
         }
-        setLang('en'); // Init
+        setLang('en');
     </script>
 </body>
 

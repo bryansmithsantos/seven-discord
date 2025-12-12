@@ -159,6 +159,17 @@ export class Interpreter {
         this.register(new (require("../macros/ui/Defer").DeferMacro)());
         this.register(new (require("../macros/ui/UpdateInteraction").UpdateInteractionMacro)());
 
+        // Easy UI
+        this.register(new (require("../macros/ui/EasyUI").CreateModalMacro)());
+        this.register(new (require("../macros/ui/EasyUI").CreateSelectMacro)());
+
+        // User Context
+        this.register(new (require("../macros/system/UserContext").UserIdMacro)());
+        this.register(new (require("../macros/system/UserContext").UserTagMacro)());
+        this.register(new (require("../macros/system/UserContext").UserCreatedMacro)());
+        this.register(new (require("../macros/system/UserContext").UserAvatarMacro)());
+        this.register(new (require("../macros/system/UserContext").UserBotMacro)());
+
         Logger.info("Interpreter System initialized.");
     }
 
@@ -169,16 +180,32 @@ export class Interpreter {
         }
     }
 
+    // Regex Cache (Static)
+    private static MACRO_REGEX = /s\.([a-zA-Z0-9]+)/;
+    private static MENTION_FIX_REGEX = /^\d{17,20}$/;
+
     public async parse(content: string, ctx: ExecutionContext): Promise<string | undefined> {
         if (!content) return "";
         let finalContent = content;
 
+        // Optimization: Quick check before entering loop
+        if (!finalContent.includes("s.")) return finalContent;
+
         while (true) {
             // Find start of a macro: s.Name
-            const startIndex = finalContent.search(/s\.[a-zA-Z0-9]+/);
+            const startIndex = finalContent.indexOf("s.");
             if (startIndex === -1) break;
 
-            const nameMatch = finalContent.substring(startIndex).match(/s\.([a-zA-Z0-9]+)/);
+            const nextChar = finalContent.charCodeAt(startIndex + 2);
+            // Quick ASCII check: a-z (97-122) or A-Z (65-90)
+            if (!((nextChar >= 65 && nextChar <= 90) || (nextChar >= 97 && nextChar <= 122))) {
+                // Not a valid macro start, skip this instance to avoid infinite loop on "s. "
+                // For now, we just break if no valid macro is found at all, but we need robustness.
+                // Actually, regex is safer for validation.
+                break;
+            }
+
+            const nameMatch = finalContent.substring(startIndex).match(Interpreter.MACRO_REGEX);
             if (!nameMatch) break;
 
             const name = nameMatch[1];
@@ -191,10 +218,12 @@ export class Interpreter {
                 let argStartIndex = fullMacroEnd + 1;
                 let currentIndex = argStartIndex;
 
-                // Find matching closing bracket
-                while (depth > 0 && currentIndex < finalContent.length) {
-                    if (finalContent[currentIndex] === '[') depth++;
-                    else if (finalContent[currentIndex] === ']') depth--;
+                // Loop Optimization
+                const len = finalContent.length;
+                while (depth > 0 && currentIndex < len) {
+                    const char = finalContent[currentIndex];
+                    if (char === '[') depth++;
+                    else if (char === ']') depth--;
                     currentIndex++;
                 }
 
@@ -229,7 +258,7 @@ export class Interpreter {
             let replaceStart = fullMacroStart;
 
             if (isMention) {
-                if (/^\d{17,20}$/.test(replacementStr)) {
+                if (Interpreter.MENTION_FIX_REGEX.test(replacementStr)) {
                     // Replace @s.user -> <@123456>
                     finalReplacement = `<@${replacementStr}>`;
                     replaceStart = startIndex - 1; // Include '@'

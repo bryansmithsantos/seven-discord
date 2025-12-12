@@ -178,63 +178,196 @@ export class SevenClient {
         return this;
     }
 
-    /**
-     * Start the bot.
-     */
+/**
+ * Start the bot.
+/**
+ * SevenClient
+ * The main entry point for the library.
+ * Integrates Gateway, REST, and the Macro Interpreter.
+ */
 
-    /**
-     * Set the bot's status and presence.
-     * @param status "online" | "dnd" | "idle" | "invisible"
-     * @param name Activity Name (e.g. "Playing Minecraft")
-     * @param type Activity Type (0 = Playing, 1 = Streaming, 2 = Listening, 3 = Watching)
-     */
-    public setStatus(status: string = "online", name: string = "Seven-Discord", type: number = 0): void {
-        this.gateway.setPresence(status, name, type);
+import { GatewayManager } from "../gateway/GatewayManager";
+import { CommandConfig, EventConfig, Command } from "../structures/Command";
+import { Logger } from "../util/Logger";
+import { RESTManager } from "../rest/RESTManager";
+import { Interpreter } from "../parser/Interpreter";
+import { VariableManager } from "../managers/VariableManager";
+import { Database } from "../core/Database";
+import { EconomyManager } from "../managers/EconomyManager";
+import { InteractionManager } from "../managers/InteractionManager";
+import { SlashManager, SlashCommandOptions } from "../managers/SlashManager";
+
+import { readdirSync } from "fs";
+import { join } from "path";
+
+export interface SevenClientOptions {
+    token: string;
+    prefix?: string;
+    intents?: number | string[];
+}
+
+export class SevenClient {
+    public gateway: GatewayManager;
+    public rest: RESTManager;
+    public token: string;
+    public prefix: string;
+
+    // Core Managers
+    public commands: Map<string, Command> = new Map();
+    public cooldowns: Map<string, number> = new Map(); // Key: userID-cmdName, Value: Expiration Timestamp
+    public db: Database;
+    public variables: VariableManager;
+    public economy: EconomyManager;
+    public interactions: InteractionManager;
+    public slash: SlashManager;
+    public interpreter: Interpreter;
+
+    public user: any = null; // Store bot user info
+    public sessionId: string | null = null;
+
+    public get sevenvariables() {
+        return this.variables;
     }
 
-    public async start(): Promise<void> {
-        console.clear();
-        const currentVersion = require("../../package.json").version || "Dev";
 
-        // Check for updates
-        let updateMsg = "";
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s Timeout
+    constructor(options: SevenClientOptions) {
+        this.token = options.token;
+        this.prefix = options.prefix || "!";
+        this.rest = new RESTManager(this.token);
 
-            const res = await fetch("https://registry.npmjs.org/seven-discord/latest", { signal: controller.signal });
-            clearTimeout(timeoutId);
+        // Initialize Core Systems
+        this.db = new Database();
+        this.variables = new VariableManager(this.db);
+        this.economy = new EconomyManager(this.variables);
+        this.interactions = new InteractionManager(this.variables);
+        this.slash = new SlashManager(this); // Init Slash
+        this.interpreter = new Interpreter(this);
 
-            const data = await res.json() as any;
-            if (data.version && data.version !== currentVersion) {
-                updateMsg = `
-   \x1b[33m[!] UPDATE AVAILABLE: v${data.version}\x1b[0m
-   \x1b[90mRun 'npm update seven-discord' to upgrade.\x1b[0m`;
-            }
-        } catch (e) {
-            // Silent Fail
+        // Gateway Init
+        this.gateway = new GatewayManager(this.token);
+
+        // Resolve Intents
+        if (options.intents) {
+            this.gateway.intents = this.resolveIntents(options.intents);
+        } else {
+            // Default: Guilds + Messages + MessageContent
+            // 512 + 1 + 32768 = 33281 (Approx, using raw for now)
+            this.gateway.intents = 3276799; // All intents (for simplicity in v2) or safe default
         }
 
-        // Premium Banner
-        console.log(`\x1b[36m
-   ███████╗███████╗██╗   ██╗███████╗███╗   ██╗
-   ██╔════╝██╔════╝██║   ██║██╔════╝████╗  ██║
-   ███████╗█████╗  ██║   ██║█████╗  ██╔██╗ ██║
-   ╚════██║██╔══╝  ╚██╗ ██╔╝██╔══╝  ██║╚██╗██║
-   ███████║███████╗ ╚████╔╝ ███████╗██║ ╚████║
-   ╚══════╝╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝ \x1b[0m
-   \x1b[90m----------------------------------------\x1b[0m
-   \x1b[37mTarget    \x1b[0m:: \x1b[32mBun Native\x1b[0m
-   \x1b[37mVersion   \x1b[0m:: \x1b[35mv${currentVersion}\x1b[0m
-   \x1b[37mCommands  \x1b[0m:: \x1b[34m${this.commands.size}\x1b[0m
-   \x1b[37mParams    \x1b[0m:: [Prefix: '${this.prefix}']
-   \x1b[90m----------------------------------------\x1b[0m${updateMsg}
-        `);
-
-        Logger.info("Initializing Gateway Connection...");
-        this.gateway.connect();
+        // Load Event Handlers
+        this.registerInternalListeners();
     }
 
+    /**
+     * Resolve intents input to bitfield.
+     */
+    private resolveIntents(intents: number | string[]): number {
+        if (typeof intents === "number") return intents;
+        // Simple mapping for now, assuming user passes raw numbers or we add a map later
+        // For v2.3 simplicity, we assume they pass a bitfield number if advanced, or we default to ALL.
+        return 3276799; // Placeholder for full intent string parsing
+    }
+
+    /**
+     * Load commands from a directory recursively.
+     * @param dir The directory to load from
+     */
+    public loadCommands(dir: string): void {
+        const fullPath = join(process.cwd(), dir);
+        if (!require("fs").existsSync(fullPath)) {
+            Logger.warn(`Command directory not found: ${dir}`);
+            return;
+        }
+
+        const files = this.getFiles(fullPath);
+        for (const file of files) {
+            const cmd = require(file);
+            // Support default export or named export
+            const config = cmd.default || cmd;
+
+            if (config?.name && config?.code) {
+                this.cmd(config);
+                Logger.load("command", config.name);
+            }
+        }
+    }
+
+    private getFiles(dir: string): string[] {
+        let results: string[] = [];
+        const list = readdirSync(dir);
+        for (const file of list) {
+            const filePath = join(dir, file);
+            const stat = require("fs").statSync(filePath);
+            if (stat && stat.isDirectory()) {
+                results = results.concat(this.getFiles(filePath));
+            } else {
+                if (file.endsWith(".ts") || file.endsWith(".js")) {
+                    results.push(filePath);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Register a command using the Object-Config flow.
+     */
+    public cmd(config: CommandConfig): SevenClient {
+        const cmdIndex = new Command(config);
+
+        // Register Main Name
+        this.commands.set(config.name.toLowerCase(), cmdIndex);
+        Logger.debug(`Registered command: ${config.name}`);
+
+        // Register Aliases
+        if (config.aliases && config.aliases.length > 0) {
+            for (const alias of config.aliases) {
+                this.commands.set(alias.toLowerCase(), cmdIndex);
+                Logger.debug(`Registered alias: ${alias} -> ${config.name}`);
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Register a slash command.
+     */
+    public cmdSlash(config: SlashCommandOptions): SevenClient {
+        Logger.debug(`Registered slash command: ${config.name}`);
+        this.slash.register(config);
+        // Add to internal slash sync queue if needed, or rely on manual sync? 
+        // For simplicity, we sync on Ready?
+        // Actually, user needs to know how to sync.
+        return this;
+    }
+
+    public eventCommands: Map<string, EventConfig[]> = new Map();
+
+    /**
+     * Register an event listener.
+     */
+    public on(config: EventConfig): SevenClient {
+        Logger.debug(`Registered event: ${config.event}`);
+
+        const key = config.event.toLowerCase();
+        if (!this.eventCommands.has(key)) {
+            this.eventCommands.set(key, []);
+        }
+        this.eventCommands.get(key)?.push(config);
+
+        return this;
+    }
+
+/**
+ * Start the bot.
+ */
+
+/**
+ * Set the bot's status and presence.
+ * @param status "online" | "dnd" | "idle" | "invisible"
+ * @param name Activity Name (e.g. "Playing Minecraft")
     private registerInternalListeners(): void {
         this.loadEvents();
     }
@@ -265,16 +398,11 @@ export class SevenClient {
 
         // Global Dispatch Handler
         this.gateway.on("dispatch", (packet) => {
-            // Internal Ready Handling (One-time setup)
             if (packet.t === "READY") {
                 this.sessionId = packet.d.session_id;
                 this.user = packet.d.user;
-                // Sync Slash on Ready
-                // Sync Slash on Ready (Fire and Forget to avoid blocking/rate limits warnings affecting boot)
                 this.slash.sync().catch(e => { });
             }
-
-            // Route to specific event handlers
             for (const event of events) {
                 if (packet.t === event.name) {
                     event.execute(this, packet.d);
