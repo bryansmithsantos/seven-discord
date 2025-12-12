@@ -24,7 +24,13 @@
         "discord",
         "bot",
         "bun",
-        "seven-discord"
+        "seven-discord",
+        "framework",
+        "macros",
+        "low-code",
+        "bun-framework",
+        "discord-api",
+        "typescript"
     ],
     "author": "Ez",
     "license": "ISC",
