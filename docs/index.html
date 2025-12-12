@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord | Documentação</title>
-    <meta name="description" content="Framework de macros para Discord Bots">
+    <title>Seven-Discord | Docs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
         rel="stylesheet">
     <style>
         * {
@@ -23,98 +24,85 @@
         }
 
         .sidebar {
-            background: rgba(5, 5, 5, 0.85);
+            background: rgba(8, 8, 8, 0.95);
             backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-header {
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-search {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .sidebar-search:focus {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(56, 189, 248, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .sidebar-section {
             color: #3f3f46;
             font-size: 10px;
             font-weight: 600;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
         .sidebar-item {
             color: #52525b;
-            border-radius: 6px;
-            transition: all 0.15s;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .sidebar-item:hover {
-            color: #e4e4e7;
-            background: rgba(255, 255, 255, 0.05);
+            color: #fafafa;
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #1a1a1a;
+        .sidebar-item.active {
+            color: #fafafa;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .sidebar-item i {
+            width: 18px;
+            height: 18px;
         }
 
         .card {
-            background: #0f0f0f;
-            border: 1px solid #1a1a1a;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .card:hover {
-            border-color: #333;
-        }
-
-        .nav-link {
-            color: #71717a;
-            transition: color 0.15s;
-        }
-
-        .nav-link:hover {
-            color: #fff;
-        }
-
-        .nav-link.active {
-            color: #fff;
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         .code-block {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
+            background: #0c0c0c;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
         }
 
-        .param {
-            background: #18181b;
+        .code-block pre {
+            margin: 0;
+            padding: 16px;
+            font-size: 13px;
+        }
+
+        .tag {
+            padding: 2px 8px;
             border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 500;
         }
 
-        .type-string {
+        .tag-string {
+            background: rgba(34, 197, 94, 0.15);
             color: #22c55e;
         }
 
-        .type-number {
+        .tag-number {
+            background: rgba(59, 130, 246, 0.15);
             color: #3b82f6;
         }
 
-        .type-bool {
+        .tag-boolean {
+            background: rgba(245, 158, 11, 0.15);
             color: #f59e0b;
         }
 
@@ -131,813 +119,306 @@
             border-radius: 3px;
         }
 
-        .btn-primary {
-            background: #fff;
-            color: #000;
-            font-weight: 500;
-            padding: 10px 24px;
-            border-radius: 8px;
-            transition: opacity 0.15s;
+        .animate-in {
+            animation: fadeIn 0.2s ease-out;
         }
 
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
 
-        .btn-secondary {
-            background: #18181b;
-            color: #fff;
-            font-weight: 500;
-            padding: 10px 24px;
-            border-radius: 8px;
-            border: 1px solid #27272a;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 
 <body class="antialiased flex h-screen overflow-hidden">
-
     <!-- Sidebar -->
     <aside class="sidebar w-64 flex flex-col flex-shrink-0">
-        <div class="sidebar-header p-5 flex items-center gap-3">
-            <img src="logo-semfundo.png" alt="Seven" class="h-9">
+        <div class="p-5 flex items-center gap-3 border-b border-white/5">
+            <img src="logo-semfundo.png" alt="Seven" class="h-10">
             <div>
-                <div class="text-white font-semibold text-sm">Seven-Discord</div>
+                <div class="text-white font-semibold">Seven-Discord</div>
                 <div class="text-[10px] text-zinc-600">v2.5.18</div>
             </div>
         </div>
-
-        <div class="p-4">
-            <input type="text" id="search" placeholder="Buscar macros..."
-                class="sidebar-search w-full rounded-lg py-2.5 px-4 text-sm text-white placeholder:text-zinc-600 focus:outline-none">
+        <div class="p-4"><input type="text" id="search" placeholder="Buscar..."
+                class="w-full bg-white/3 border border-white/5 rounded-lg py-2.5 px-4 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-sky-500/50">
         </div>
-
-        <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1" id="nav"></nav>
-
-        <div class="p-4 border-t border-white/5">
-            <a href="https://discord.gg/qpRjsjrXcx" target="_blank"
-                class="sidebar-item flex items-center gap-2 px-3 py-2 text-sm">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> Suporte
-            </a>
+        <nav class="flex-1 overflow-y-auto px-3 py-2" id="nav"></nav>
+        <div class="p-4 border-t border-white/5 space-y-1">
+            <a href="https://discord.gg/qpRjsjrXcx" target="_blank" class="sidebar-item px-3 py-2 text-sm"><i
+                    data-lucide="message-circle"></i> Suporte</a>
             <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
-                class="sidebar-item flex items-center gap-2 px-3 py-2 text-sm mt-1">
-                <i data-lucide="github" class="w-4 h-4"></i> GitHub
-            </a>
+                class="sidebar-item px-3 py-2 text-sm"><i data-lucide="github"></i> GitHub</a>
         </div>
     </aside>
 
     <!-- Main -->
-    <main class="flex-1 flex flex-col min-w-0">
-        <header class="header h-14 flex items-center justify-between px-6 sticky top-0 z-10">
-            <div class="text-sm">
-                <span class="text-zinc-600">Docs /</span>
-                <span class="text-white ml-1" id="page-title">Início</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <a href="https://npmjs.com/package/seven-discord" target="_blank" class="nav-link"><i
-                        data-lucide="package" class="w-4 h-4"></i></a>
-                <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank" class="nav-link"><i
-                        data-lucide="github" class="w-4 h-4"></i></a>
-            </div>
+    <main class="flex-1 flex flex-col">
+        <header
+            class="h-14 flex items-center justify-between px-6 border-b border-white/5 bg-black/50 backdrop-blur sticky top-0 z-10">
+            <div class="text-sm"><span class="text-zinc-600">Docs /</span> <span class="text-white"
+                    id="title">Início</span></div>
+            <div class="flex gap-3"><a href="https://npmjs.com/package/seven-discord" target="_blank"
+                    class="text-zinc-500 hover:text-white"><i data-lucide="package" class="w-4 h-4"></i></a></div>
         </header>
-
-        <div class="flex-1 overflow-y-auto">
-            <!-- Intro -->
-            <div id="view-intro" class="max-w-3xl mx-auto px-6 py-20">
-                <div class="text-center space-y-8">
-                    <img src="logo-semfundo.png" alt="Seven-Discord" class="h-16 mx-auto">
-
-                    <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight">
-                        O framework de macros<br>mais rápido do Discord.
-                    </h1>
-
-                    <p class="text-lg text-zinc-400 max-w-xl mx-auto">
-                        Crie bots complexos com linhas simples. Sem boilerplate, sem classes, sem dor de cabeça.
-                    </p>
-
-                    <div class="flex justify-center gap-3">
-                        <button onclick="filterCategory('Core')" class="btn-primary">Começar</button>
-                        <button onclick="document.getElementById('search').focus()" class="btn-secondary">Buscar
-                            Macros</button>
-                    </div>
-                </div>
-
-                <!-- Quick Start -->
-                <div class="mt-20 card p-6">
-                    <h3 class="text-white font-semibold mb-4">Instalação</h3>
-                    <div class="code-block p-4 text-sm">
-                        <pre><span class="text-zinc-500"># Instalar</span>
-<span class="text-white">bun add seven-discord</span>
-
-<span class="text-zinc-500"># Inicializar projeto</span>
-<span class="text-white">bunx seven-discord --init</span>
-
-<span class="text-zinc-500"># Rodar</span>
-<span class="text-white">bun run dev</span></pre>
-                    </div>
-                </div>
-
-                <!-- Features -->
-                <div class="mt-12 grid md:grid-cols-3 gap-4">
-                    <div class="card p-5">
-                        <div class="text-white mb-2 text-sm font-medium">⚡ Bun Native</div>
-                        <p class="text-sm">Otimizado para Bun. Startup em milissegundos.</p>
-                    </div>
-                    <div class="card p-5">
-                        <div class="text-white mb-2 text-sm font-medium">📦 Zero Deps</div>
-                        <p class="text-sm">Sem dependências externas. Leve e rápido.</p>
-                    </div>
-                    <div class="card p-5">
-                        <div class="text-white mb-2 text-sm font-medium">🎯 Type-Safe</div>
-                        <p class="text-sm">TypeScript nativo. Erros em tempo de dev.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Macro Detail View -->
-            <div id="view-macro" class="max-w-3xl mx-auto px-6 py-10 hidden">
-                <button onclick="goBack()" class="nav-link text-sm mb-6 flex items-center gap-1">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
-                </button>
-
-                <div class="space-y-8">
-                    <div>
-                        <code class="text-2xl text-white font-mono font-bold" id="macro-name">s.reply</code>
-                        <p class="text-zinc-500 text-sm mt-1" id="macro-cat">Core</p>
-                    </div>
-
-                    <div>
-                        <h3 class="text-white font-medium mb-2">Descrição</h3>
-                        <p id="macro-desc">Descrição detalhada aqui.</p>
-                    </div>
-
-                    <div>
-                        <h3 class="text-white font-medium mb-3">Parâmetros</h3>
-                        <div class="code-block" id="macro-params">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-white font-medium mb-2">Sintaxe</h3>
-                        <div class="code-block p-4 text-sm text-emerald-400" id="macro-syntax"></div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-white font-medium mb-2">Exemplos</h3>
-                        <div class="space-y-3" id="macro-examples">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category List View -->
-            <div id="view-list" class="max-w-3xl mx-auto px-6 py-10 hidden">
-                <div class="flex items-center gap-3 mb-6">
-                    <button onclick="showIntro()" class="nav-link"><i data-lucide="arrow-left"
-                            class="w-5 h-5"></i></button>
-                    <h2 class="text-xl font-bold text-white" id="list-title">Macros</h2>
-                </div>
-                <div class="space-y-2" id="macro-list"></div>
-            </div>
-        </div>
+        <div class="flex-1 overflow-y-auto" id="content"></div>
     </main>
 
     <script>
-        // ========== DETAILED MACRO DATA ==========
-        const macros = [
-            // === CORE ===
-            {
-                name: "s.reply",
-                cat: "Core",
-                desc: "Envia uma resposta para o canal onde o comando foi executado. Funciona tanto com mensagens normais quanto com interações (slash commands, botões).",
-                params: [
-                    { name: "content", type: "string", required: true, desc: "Texto da mensagem a ser enviada" }
-                ],
-                syntax: "s.reply[content]",
-                examples: [
-                    { code: "s.reply[Olá, mundo!]", desc: "Resposta simples" },
-                    { code: "s.reply[Bem-vindo, s.username!]", desc: "Usando variáveis" },
-                    { code: "s.reply[Você ganhou s.random[1;100] moedas!]", desc: "Com macros aninhadas" }
-                ]
-            },
-            {
-                name: "s.send",
-                cat: "Core",
-                desc: "Envia uma mensagem para um canal específico pelo ID. Útil para logs, notificações em outros canais, etc.",
-                params: [
-                    { name: "channelId", type: "string", required: true, desc: "ID do canal de destino" },
-                    { name: "content", type: "string", required: true, desc: "Mensagem a ser enviada" }
-                ],
-                syntax: "s.send[channelId;content]",
-                examples: [
-                    { code: "s.send[123456789;Nova compra realizada!]", desc: "Enviar para canal de logs" },
-                    { code: "s.send[s.channelId;Teste]", desc: "Enviar para canal atual" }
-                ]
-            },
-            {
-                name: "s.log",
-                cat: "Core",
-                desc: "Imprime uma mensagem no console do bot. Útil para debug e monitoramento.",
-                params: [
-                    { name: "message", type: "string", required: true, desc: "Mensagem para o console" }
-                ],
-                syntax: "s.log[message]",
-                examples: [
-                    { code: "s.log[Comando executado por s.username]", desc: "Log de execução" },
-                    { code: "s.log[Erro: usuário não encontrado]", desc: "Log de erro" }
-                ]
-            },
-            {
-                name: "s.setVar",
-                cat: "Core",
-                desc: "Define uma variável persistente. Pode ser global, por servidor (guild), ou por usuário.",
-                params: [
-                    { name: "name", type: "string", required: true, desc: "Nome da variável" },
-                    { name: "value", type: "any", required: true, desc: "Valor a ser salvo" },
-                    { name: "type", type: "string", required: false, desc: "Escopo: global | guild | user" },
-                    { name: "id", type: "string", required: false, desc: "ID do alvo (guild/user)" }
-                ],
-                syntax: "s.setVar[name;value;type?;id?]",
-                examples: [
-                    { code: "s.setVar[level;1;user;s.authorID]", desc: "Salvar level do usuário" },
-                    { code: "s.setVar[prefix;!;guild;s.guildId]", desc: "Definir prefix do servidor" },
-                    { code: "s.setVar[globalCount;100]", desc: "Variável global" }
-                ]
-            },
-            {
-                name: "s.getVar",
-                cat: "Core",
-                desc: "Recupera o valor de uma variável salva anteriormente.",
-                params: [
-                    { name: "name", type: "string", required: true, desc: "Nome da variável" },
-                    { name: "type", type: "string", required: false, desc: "Escopo: global | guild | user" },
-                    { name: "id", type: "string", required: false, desc: "ID do alvo" }
-                ],
-                syntax: "s.getVar[name;type?;id?]",
-                examples: [
-                    { code: "s.reply[Seu level é s.getVar[level;user;s.authorID]]", desc: "Mostrar level" },
-                    { code: "s.if[s.eq[s.getVar[vip;user;s.authorID];true];VIP;Normal]", desc: "Verificar status" }
-                ]
-            },
-
-            // === UI ===
-            {
-                name: "s.embed",
-                cat: "UI",
-                desc: "Cria um embed (mensagem rica) com título, descrição, cor, campos, imagem, thumbnail, footer e mais. Usa argumentos nomeados no formato key:value.",
-                params: [
-                    { name: "title", type: "string", required: false, desc: "Título do embed" },
-                    { name: "desc", type: "string", required: false, desc: "Descrição principal" },
-                    { name: "color", type: "string", required: false, desc: "Cor em hex (#5865F2) ou nome (red, blue)" },
-                    { name: "image", type: "string", required: false, desc: "URL da imagem principal" },
-                    { name: "thumbnail", type: "string", required: false, desc: "URL da thumbnail" },
-                    { name: "footer", type: "string", required: false, desc: "Texto do footer" },
-                    { name: "author", type: "string", required: false, desc: "Nome do autor" }
-                ],
-                syntax: "s.embed[title:X;desc:Y;color:Z;...]",
-                examples: [
-                    { code: "s.embed[title:Bem-vindo!;desc:Olá s.username;color:#5865F2]", desc: "Embed básico" },
-                    { code: "s.embed[title:Perfil;desc:Level s.getVar[level;user;s.authorID];thumbnail:s.avatar;color:gold]", desc: "Embed de perfil" },
-                    { code: "s.embed[title:Erro;desc:Comando inválido;color:red;footer:Use !help]", desc: "Embed de erro" }
-                ]
-            },
-            {
-                name: "s.button",
-                cat: "UI",
-                desc: "Cria um botão interativo. Pode ser de vários estilos e opcionalmente redirecionar para URL.",
-                params: [
-                    { name: "label", type: "string", required: true, desc: "Texto do botão" },
-                    { name: "id", type: "string", required: false, desc: "ID para identificar clique (não usar com url)" },
-                    { name: "style", type: "string", required: false, desc: "primary | secondary | success | danger | link" },
-                    { name: "url", type: "string", required: false, desc: "URL para redirecionar (style:link)" },
-                    { name: "emoji", type: "string", required: false, desc: "Emoji no botão" },
-                    { name: "disabled", type: "boolean", required: false, desc: "Desabilitar botão" }
-                ],
-                syntax: "s.button[label:X;id:Y;style:Z;...]",
-                examples: [
-                    { code: "s.button[label:Confirmar;id:confirm_btn;style:success]", desc: "Botão de confirmação" },
-                    { code: "s.button[label:Acessar Site;url:https://example.com;style:link]", desc: "Botão de link" },
-                    { code: "s.button[label:Deletar;id:delete;style:danger;emoji:🗑️]", desc: "Botão com emoji" }
-                ]
-            },
-            {
-                name: "s.selectMenu",
-                cat: "UI",
-                desc: "Cria um menu dropdown com múltiplas opções. O usuário pode selecionar uma ou mais opções.",
-                params: [
-                    { name: "id", type: "string", required: true, desc: "ID único do menu" },
-                    { name: "placeholder", type: "string", required: false, desc: "Texto quando nada selecionado" },
-                    { name: "min", type: "number", required: false, desc: "Mínimo de seleções (default: 1)" },
-                    { name: "max", type: "number", required: false, desc: "Máximo de seleções (default: 1)" }
-                ],
-                syntax: "s.selectMenu[id:X;placeholder:Y;...options]",
-                examples: [
-                    { code: "s.selectMenu[id:color_menu;placeholder:Escolha uma cor;s.option[label:Vermelho;value:red] s.option[label:Azul;value:blue]]", desc: "Menu de cores" },
-                    { code: "s.selectMenu[id:roles;placeholder:Selecione cargos;min:1;max:3;s.option[label:Gamer;value:gamer] s.option[label:Dev;value:dev]]", desc: "Menu multi-select" }
-                ]
-            },
-            {
-                name: "s.option",
-                cat: "UI",
-                desc: "Define uma opção para um selectMenu. Deve ser usado dentro de s.selectMenu.",
-                params: [
-                    { name: "label", type: "string", required: true, desc: "Texto visível da opção" },
-                    { name: "value", type: "string", required: true, desc: "Valor enviado quando selecionado" },
-                    { name: "desc", type: "string", required: false, desc: "Descrição da opção" },
-                    { name: "emoji", type: "string", required: false, desc: "Emoji da opção" },
-                    { name: "default", type: "boolean", required: false, desc: "Se é a opção padrão" }
-                ],
-                syntax: "s.option[label:X;value:Y;desc:Z;...]",
-                examples: [
-                    { code: "s.option[label:Brasil;value:br;emoji:🇧🇷;desc:Servidor brasileiro]", desc: "Opção completa" }
-                ]
-            },
-            {
-                name: "s.modal",
-                cat: "UI",
-                desc: "Cria um formulário modal (popup) com campos de texto. Só pode ser usado como resposta a uma interação.",
-                params: [
-                    { name: "id", type: "string", required: true, desc: "ID único do modal" },
-                    { name: "title", type: "string", required: true, desc: "Título do modal" }
-                ],
-                syntax: "s.modal[id:X;title:Y;...inputs]",
-                examples: [
-                    { code: "s.modal[id:report_form;title:Reportar Bug;s.input[id:desc;label:Descreva o bug;style:paragraph]]", desc: "Modal de report" },
-                    { code: "s.modal[id:apply;title:Candidatura;s.input[id:name;label:Seu nome] s.input[id:exp;label:Experiência;style:paragraph]]", desc: "Modal de candidatura" }
-                ]
-            },
-            {
-                name: "s.input",
-                cat: "UI",
-                desc: "Define um campo de texto dentro de um modal.",
-                params: [
-                    { name: "id", type: "string", required: true, desc: "ID do campo" },
-                    { name: "label", type: "string", required: true, desc: "Label do campo" },
-                    { name: "style", type: "string", required: false, desc: "short (1 linha) | paragraph (múltiplas)" },
-                    { name: "placeholder", type: "string", required: false, desc: "Texto de exemplo" },
-                    { name: "required", type: "boolean", required: false, desc: "Se é obrigatório" },
-                    { name: "min", type: "number", required: false, desc: "Mínimo de caracteres" },
-                    { name: "max", type: "number", required: false, desc: "Máximo de caracteres" }
-                ],
-                syntax: "s.input[id:X;label:Y;style:Z;...]",
-                examples: [
-                    { code: "s.input[id:email;label:Seu email;placeholder:exemplo@email.com;required:true]", desc: "Campo de email" }
-                ]
-            },
-            {
-                name: "s.onInteraction",
-                cat: "UI",
-                desc: "Registra um handler para quando um botão/menu/modal com o ID especificado for acionado.",
-                params: [
-                    { name: "id", type: "string", required: true, desc: "ID do componente" },
-                    { name: "code", type: "string", required: true, desc: "Código a executar" }
-                ],
-                syntax: "s.onInteraction[id;code]",
-                examples: [
-                    { code: "s.onInteraction[confirm_btn;s.reply[Confirmado!]]", desc: "Handler de botão" },
-                    { code: "s.onInteraction[color_menu;s.reply[Você escolheu: s.value]]", desc: "Handler de menu" }
-                ]
-            },
-
-            // === ECONOMY ===
-            {
-                name: "s.cash",
-                cat: "Economy",
-                desc: "Retorna o saldo da carteira do usuário.",
-                params: [
-                    { name: "userId", type: "string", required: false, desc: "ID do usuário (default: autor)" }
-                ],
-                syntax: "s.cash[userId?]",
-                examples: [
-                    { code: "s.reply[Sua carteira: R$ s.cash]", desc: "Ver próprio saldo" },
-                    { code: "s.reply[Saldo de <@s.arg[1]>: R$ s.cash[s.arg[1]]]", desc: "Ver saldo de outro" }
-                ]
-            },
-            {
-                name: "s.bank",
-                cat: "Economy",
-                desc: "Retorna o saldo bancário do usuário.",
-                params: [
-                    { name: "userId", type: "string", required: false, desc: "ID do usuário" }
-                ],
-                syntax: "s.bank[userId?]",
-                examples: [
-                    { code: "s.reply[Banco: R$ s.bank]", desc: "Ver saldo do banco" }
-                ]
-            },
-            {
-                name: "s.addCash",
-                cat: "Economy",
-                desc: "Adiciona dinheiro à carteira de um usuário.",
-                params: [
-                    { name: "amount", type: "number", required: true, desc: "Quantia a adicionar" },
-                    { name: "userId", type: "string", required: true, desc: "ID do usuário" }
-                ],
-                syntax: "s.addCash[amount;userId]",
-                examples: [
-                    { code: "s.addCash[100;s.authorID] s.reply[+R$ 100!]", desc: "Dar dinheiro" },
-                    { code: "s.addCash[s.random[50;200];s.authorID]", desc: "Valor aleatório" }
-                ]
-            },
-            {
-                name: "s.removeCash",
-                cat: "Economy",
-                desc: "Remove dinheiro da carteira de um usuário.",
-                params: [
-                    { name: "amount", type: "number", required: true, desc: "Quantia a remover" },
-                    { name: "userId", type: "string", required: true, desc: "ID do usuário" }
-                ],
-                syntax: "s.removeCash[amount;userId]",
-                examples: [
-                    { code: "s.removeCash[50;s.authorID] s.reply[Você pagou R$ 50]", desc: "Cobrar" }
-                ]
-            },
-            {
-                name: "s.deposit",
-                cat: "Economy",
-                desc: "Deposita dinheiro da carteira para o banco.",
-                params: [
-                    { name: "amount", type: "string", required: true, desc: "Valor ou 'all'" }
-                ],
-                syntax: "s.deposit[amount]",
-                examples: [
-                    { code: "s.deposit[all] s.reply[Depositado!]", desc: "Depositar tudo" },
-                    { code: "s.deposit[1000] s.reply[R$ 1000 depositado]", desc: "Valor específico" }
-                ]
-            },
-            {
-                name: "s.withdraw",
-                cat: "Economy",
-                desc: "Saca dinheiro do banco para a carteira.",
-                params: [
-                    { name: "amount", type: "string", required: true, desc: "Valor ou 'all'" }
-                ],
-                syntax: "s.withdraw[amount]",
-                examples: [
-                    { code: "s.withdraw[500] s.reply[Sacou R$ 500]", desc: "Sacar" }
-                ]
-            },
-
-            // === MODERATION ===
-            {
-                name: "s.ban",
-                cat: "Moderation",
-                desc: "Bane um usuário do servidor.",
-                params: [
-                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
-                    { name: "reason", type: "string", required: false, desc: "Motivo do ban" },
-                    { name: "days", type: "number", required: false, desc: "Dias de mensagens para deletar (0-7)" }
-                ],
-                syntax: "s.ban[user:X;reason:Y;days:Z]",
-                examples: [
-                    { code: "s.ban[user:s.arg[1];reason:Spam;days:1]", desc: "Banir com motivo" }
-                ]
-            },
-            {
-                name: "s.kick",
-                cat: "Moderation",
-                desc: "Expulsa um usuário do servidor.",
-                params: [
-                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
-                    { name: "reason", type: "string", required: false, desc: "Motivo" }
-                ],
-                syntax: "s.kick[user:X;reason:Y]",
-                examples: [
-                    { code: "s.kick[user:s.arg[1];reason:Aviso final]", desc: "Expulsar" }
-                ]
-            },
-            {
-                name: "s.mute",
-                cat: "Moderation",
-                desc: "Silencia um usuário por um tempo (timeout).",
-                params: [
-                    { name: "user", type: "string", required: true, desc: "ID do usuário" },
-                    { name: "time", type: "string", required: true, desc: "Duração (ex: 10m, 1h, 1d)" },
-                    { name: "reason", type: "string", required: false, desc: "Motivo" }
-                ],
-                syntax: "s.mute[user:X;time:Y;reason:Z]",
-                examples: [
-                    { code: "s.mute[user:s.arg[1];time:30m;reason:Flood]", desc: "Mute de 30 min" }
-                ]
-            },
-            {
-                name: "s.purge",
-                cat: "Moderation",
-                desc: "Deleta múltiplas mensagens do canal.",
-                params: [
-                    { name: "amount", type: "number", required: true, desc: "Quantidade (1-100)" }
-                ],
-                syntax: "s.purge[amount]",
-                examples: [
-                    { code: "s.purge[50] s.reply[50 mensagens deletadas!]", desc: "Limpar chat" }
-                ]
-            },
-            {
-                name: "s.warn",
-                cat: "Moderation",
-                desc: "Adiciona um aviso ao usuário.",
-                params: [
-                    { name: "userId", type: "string", required: true, desc: "ID do usuário" },
-                    { name: "reason", type: "string", required: true, desc: "Motivo do aviso" }
-                ],
-                syntax: "s.warn[userId;reason]",
-                examples: [
-                    { code: "s.warn[s.arg[1];Linguagem inadequada] s.reply[Usuário avisado!]", desc: "Dar warn" }
-                ]
-            },
-
-            // === LOGIC ===
-            {
-                name: "s.if",
-                cat: "Logic",
-                desc: "Executa código condicionalmente. Se a condição for true, executa o primeiro bloco, senão o segundo.",
-                params: [
-                    { name: "condition", type: "string", required: true, desc: "Condição (true/false)" },
-                    { name: "then", type: "string", required: true, desc: "Código se true" },
-                    { name: "else", type: "string", required: false, desc: "Código se false" }
-                ],
-                syntax: "s.if[condition;then;else?]",
-                examples: [
-                    { code: "s.if[s.eq[s.authorID;123456];Você é admin!;Sem permissão]", desc: "Verificar admin" },
-                    { code: "s.if[s.eq[s.cash;0];Você está falido!]", desc: "Sem else" }
-                ]
-            },
-            {
-                name: "s.eq",
-                cat: "Logic",
-                desc: "Compara dois valores. Retorna 'true' se iguais, 'false' se diferentes.",
-                params: [
-                    { name: "a", type: "any", required: true, desc: "Primeiro valor" },
-                    { name: "b", type: "any", required: true, desc: "Segundo valor" }
-                ],
-                syntax: "s.eq[a;b]",
-                examples: [
-                    { code: "s.eq[s.arg[1];sim]", desc: "Verificar resposta" },
-                    { code: "s.if[s.eq[s.getVar[vip;user;s.authorID];true];VIP;Normal]", desc: "Verificar VIP" }
-                ]
-            },
-
-            // === MATH ===
-            {
-                name: "s.math",
-                cat: "Math",
-                desc: "Avalia uma expressão matemática. Suporta +, -, *, /, %, parênteses.",
-                params: [
-                    { name: "expression", type: "string", required: true, desc: "Expressão matemática" }
-                ],
-                syntax: "s.math[expression]",
-                examples: [
-                    { code: "s.math[s.cash * 1.1]", desc: "Calcular 10% de juros" },
-                    { code: "s.math[(100 + 50) * 2]", desc: "Com parênteses" }
-                ]
-            },
-            {
-                name: "s.random",
-                cat: "Math",
-                desc: "Gera um número inteiro aleatório entre min e max (inclusivo).",
-                params: [
-                    { name: "min", type: "number", required: true, desc: "Valor mínimo" },
-                    { name: "max", type: "number", required: true, desc: "Valor máximo" }
-                ],
-                syntax: "s.random[min;max]",
-                examples: [
-                    { code: "s.random[1;6]", desc: "Dado de 6 lados" },
-                    { code: "s.addCash[s.random[10;100];s.authorID]", desc: "Recompensa aleatória" }
-                ]
-            },
-
-            // === SYSTEM ===
-            {
-                name: "s.ping",
-                cat: "System",
-                desc: "Retorna a latência da API do Discord em milissegundos.",
-                params: [],
-                syntax: "s.ping",
-                examples: [
-                    { code: "s.reply[🏓 Pong! s.ping ms]", desc: "Comando de ping" }
-                ]
-            },
-            {
-                name: "s.uptime",
-                cat: "System",
-                desc: "Retorna o tempo que o bot está online formatado.",
-                params: [],
-                syntax: "s.uptime",
-                examples: [
-                    { code: "s.reply[Online há: s.uptime]", desc: "Mostrar uptime" }
-                ]
-            },
-            {
-                name: "s.cooldown",
-                cat: "System",
-                desc: "Aplica um cooldown ao comando para o usuário.",
-                params: [
-                    { name: "seconds", type: "number", required: true, desc: "Tempo em segundos" },
-                    { name: "message", type: "string", required: false, desc: "Mensagem de cooldown" }
-                ],
-                syntax: "s.cooldown[seconds;message?]",
-                examples: [
-                    { code: "s.cooldown[60;Aguarde 1 minuto!]", desc: "Cooldown de 1 min" }
-                ]
-            },
-            {
-                name: "s.avatar",
-                cat: "System",
-                desc: "Retorna a URL do avatar de um usuário.",
-                params: [
-                    { name: "user", type: "string", required: false, desc: "ID do usuário" }
-                ],
-                syntax: "s.avatar[user?]",
-                examples: [
-                    { code: "s.embed[title:Avatar;image:s.avatar]", desc: "Mostrar próprio avatar" },
-                    { code: "s.embed[title:Avatar;image:s.avatar[s.arg[1]]]", desc: "Avatar de outro" }
-                ]
-            },
-
-            // === VARIABLES ===
-            {
-                name: "s.authorID",
-                cat: "Variables",
-                desc: "Retorna o ID do usuário que executou o comando.",
-                params: [],
-                syntax: "s.authorID",
-                examples: [
-                    { code: "s.reply[Seu ID: s.authorID]", desc: "Mostrar ID" }
-                ]
-            },
-            {
-                name: "s.username",
-                cat: "Variables",
-                desc: "Retorna o nome de usuário de quem executou o comando.",
-                params: [],
-                syntax: "s.username",
-                examples: [
-                    { code: "s.reply[Olá, s.username!]", desc: "Saudação" }
-                ]
-            },
-            {
-                name: "s.channelId",
-                cat: "Variables",
-                desc: "Retorna o ID do canal onde o comando foi executado.",
-                params: [],
-                syntax: "s.channelId",
-                examples: [
-                    { code: "s.log[Comando executado no canal s.channelId]", desc: "Log de canal" }
-                ]
-            },
-            {
-                name: "s.content",
-                cat: "Variables",
-                desc: "Retorna o conteúdo completo da mensagem do usuário.",
-                params: [],
-                syntax: "s.content",
-                examples: [
-                    { code: "s.log[Mensagem: s.content]", desc: "Logar mensagem" }
-                ]
-            },
-            {
-                name: "s.arg",
-                cat: "Variables",
-                desc: "Retorna um argumento específico da mensagem. Índice começa em 1.",
-                params: [
-                    { name: "index", type: "number", required: true, desc: "Posição do argumento (1, 2, 3...)" }
-                ],
-                syntax: "s.arg[index]",
-                examples: [
-                    { code: "s.reply[Primeiro argumento: s.arg[1]]", desc: "Pegar arg 1" },
-                    { code: "s.ban[user:s.arg[1];reason:s.arg[2]]", desc: "Ban com args" }
-                ]
-            }
+        const MACROS = [
+            { n: "s.reply", c: "Core", d: "Responde à mensagem ou interação atual.", p: [{ n: "content", t: "string", r: true, d: "Texto da resposta" }], s: "s.reply[content]", ex: [{ c: "s.reply[Olá!]", d: "Simples" }, { c: "s.reply[Olá, s.username!]", d: "Com variável" }] },
+            { n: "s.send", c: "Core", d: "Envia mensagem para um canal específico.", p: [{ n: "channelId", t: "string", r: true, d: "ID do canal" }, { n: "content", t: "string", r: true, d: "Mensagem" }], s: "s.send[channelId;content]", ex: [{ c: "s.send[123;Log enviado!]", d: "Enviar para canal" }] },
+            { n: "s.log", c: "Core", d: "Imprime mensagem no console do bot.", p: [{ n: "message", t: "string", r: true, d: "Mensagem" }], s: "s.log[message]", ex: [{ c: "s.log[Debug info]", d: "Log simples" }] },
+            { n: "s.setVar", c: "Core", d: "Define uma variável persistente (global, guild ou user).", p: [{ n: "name", t: "string", r: true, d: "Nome" }, { n: "value", t: "any", r: true, d: "Valor" }, { n: "type", t: "string", r: false, d: "global|guild|user" }, { n: "id", t: "string", r: false, d: "ID do alvo" }], s: "s.setVar[name;value;type?;id?]", ex: [{ c: "s.setVar[level;1;user;s.authorID]", d: "Salvar level" }] },
+            { n: "s.getVar", c: "Core", d: "Recupera valor de uma variável.", p: [{ n: "name", t: "string", r: true, d: "Nome" }, { n: "type", t: "string", r: false, d: "Escopo" }, { n: "id", t: "string", r: false, d: "ID" }], s: "s.getVar[name;type?;id?]", ex: [{ c: "s.getVar[level;user;s.authorID]", d: "Pegar level" }] },
+            { n: "s.embed", c: "UI", d: "Cria embed rico com título, descrição, cor, imagem, etc.", p: [{ n: "title", t: "string", r: false, d: "Título" }, { n: "desc", t: "string", r: false, d: "Descrição" }, { n: "color", t: "string", r: false, d: "Cor hex ou nome" }, { n: "image", t: "string", r: false, d: "URL imagem" }, { n: "thumbnail", t: "string", r: false, d: "URL thumb" }, { n: "footer", t: "string", r: false, d: "Footer" }], s: "s.embed[title:X;desc:Y;color:Z]", ex: [{ c: "s.embed[title:Olá;desc:Bem-vindo;color:#5865F2]", d: "Embed básico" }] },
+            { n: "s.button", c: "UI", d: "Cria botão interativo.", p: [{ n: "label", t: "string", r: true, d: "Texto" }, { n: "id", t: "string", r: false, d: "ID único" }, { n: "style", t: "string", r: false, d: "primary|secondary|success|danger|link" }, { n: "url", t: "string", r: false, d: "URL (se link)" }, { n: "disabled", t: "boolean", r: false, d: "Desabilitado" }], s: "s.button[label:X;id:Y;style:Z]", ex: [{ c: "s.button[label:Confirmar;id:confirm;style:success]", d: "Botão verde" }] },
+            { n: "s.selectMenu", c: "UI", d: "Cria dropdown de seleção.", p: [{ n: "id", t: "string", r: true, d: "ID único" }, { n: "placeholder", t: "string", r: false, d: "Placeholder" }, { n: "min", t: "number", r: false, d: "Mínimo seleções" }, { n: "max", t: "number", r: false, d: "Máximo seleções" }], s: "s.selectMenu[id:X;placeholder:Y;...options]", ex: [{ c: "s.selectMenu[id:menu;s.option[A;a] s.option[B;b]]", d: "Menu simples" }] },
+            { n: "s.option", c: "UI", d: "Opção para selectMenu.", p: [{ n: "label", t: "string", r: true, d: "Texto" }, { n: "value", t: "string", r: true, d: "Valor" }, { n: "desc", t: "string", r: false, d: "Descrição" }, { n: "emoji", t: "string", r: false, d: "Emoji" }], s: "s.option[label:X;value:Y]", ex: [{ c: "s.option[label:Opção 1;value:opt1;emoji:🔥]", d: "Com emoji" }] },
+            { n: "s.modal", c: "UI", d: "Cria formulário modal popup.", p: [{ n: "id", t: "string", r: true, d: "ID" }, { n: "title", t: "string", r: true, d: "Título" }], s: "s.modal[id:X;title:Y;...inputs]", ex: [{ c: "s.modal[id:form;title:Formulário;s.input[id:name;label:Nome]]", d: "Modal simples" }] },
+            { n: "s.input", c: "UI", d: "Campo de texto para modal.", p: [{ n: "id", t: "string", r: true, d: "ID" }, { n: "label", t: "string", r: true, d: "Label" }, { n: "style", t: "string", r: false, d: "short|paragraph" }, { n: "required", t: "boolean", r: false, d: "Obrigatório" }, { n: "placeholder", t: "string", r: false, d: "Placeholder" }], s: "s.input[id:X;label:Y;style:Z]", ex: [{ c: "s.input[id:bio;label:Biografia;style:paragraph]", d: "Campo longo" }] },
+            { n: "s.row", c: "UI", d: "Agrupa componentes em linha.", p: [], s: "s.row[...components]", ex: [{ c: "s.row[s.button[A] s.button[B]]", d: "Dois botões" }] },
+            { n: "s.onInteraction", c: "UI", d: "Handler para quando componente é clicado.", p: [{ n: "id", t: "string", r: true, d: "ID do componente" }, { n: "code", t: "string", r: true, d: "Código a executar" }], s: "s.onInteraction[id;code]", ex: [{ c: "s.onInteraction[confirm;s.reply[Confirmado!]]", d: "Handler de botão" }] },
+            { n: "s.cash", c: "Economy", d: "Retorna saldo da carteira.", p: [{ n: "userId", t: "string", r: false, d: "ID usuário" }], s: "s.cash[userId?]", ex: [{ c: "s.reply[Saldo: R$ s.cash]", d: "Ver saldo" }] },
+            { n: "s.bank", c: "Economy", d: "Retorna saldo do banco.", p: [{ n: "userId", t: "string", r: false, d: "ID" }], s: "s.bank[userId?]", ex: [{ c: "s.reply[Banco: R$ s.bank]", d: "Ver banco" }] },
+            { n: "s.addCash", c: "Economy", d: "Adiciona dinheiro à carteira.", p: [{ n: "amount", t: "number", r: true, d: "Valor" }, { n: "userId", t: "string", r: true, d: "ID" }], s: "s.addCash[amount;userId]", ex: [{ c: "s.addCash[100;s.authorID]", d: "Dar R$100" }] },
+            { n: "s.removeCash", c: "Economy", d: "Remove dinheiro da carteira.", p: [{ n: "amount", t: "number", r: true, d: "Valor" }, { n: "userId", t: "string", r: true, d: "ID" }], s: "s.removeCash[amount;userId]", ex: [{ c: "s.removeCash[50;s.authorID]", d: "Remover R$50" }] },
+            { n: "s.setCash", c: "Economy", d: "Define saldo diretamente.", p: [{ n: "amount", t: "number", r: true, d: "Valor" }, { n: "userId", t: "string", r: true, d: "ID" }], s: "s.setCash[amount;userId]", ex: [{ c: "s.setCash[1000;s.authorID]", d: "Setar R$1000" }] },
+            { n: "s.pay", c: "Economy", d: "Transfere dinheiro para outro usuário.", p: [{ n: "amount", t: "number", r: true, d: "Valor" }, { n: "userId", t: "string", r: true, d: "ID destino" }], s: "s.pay[amount;userId]", ex: [{ c: "s.pay[50;123456789]", d: "Pagar R$50" }] },
+            { n: "s.deposit", c: "Economy", d: "Deposita da carteira para banco.", p: [{ n: "amount", t: "string", r: true, d: "Valor ou 'all'" }], s: "s.deposit[amount]", ex: [{ c: "s.deposit[all]", d: "Depositar tudo" }] },
+            { n: "s.withdraw", c: "Economy", d: "Saca do banco para carteira.", p: [{ n: "amount", t: "string", r: true, d: "Valor ou 'all'" }], s: "s.withdraw[amount]", ex: [{ c: "s.withdraw[500]", d: "Sacar R$500" }] },
+            { n: "s.setCurrency", c: "Economy", d: "Define símbolo da moeda.", p: [{ n: "symbol", t: "string", r: true, d: "Símbolo" }], s: "s.setCurrency[symbol]", ex: [{ c: "s.setCurrency[R$]", d: "Moeda brasileira" }] },
+            { n: "s.ban", c: "Moderation", d: "Bane usuário do servidor.", p: [{ n: "user", t: "string", r: true, d: "ID" }, { n: "reason", t: "string", r: false, d: "Motivo" }, { n: "days", t: "number", r: false, d: "Dias de msgs a deletar" }], s: "s.ban[user:X;reason:Y;days:Z]", ex: [{ c: "s.ban[user:123;reason:Spam]", d: "Banir com motivo" }] },
+            { n: "s.kick", c: "Moderation", d: "Expulsa usuário.", p: [{ n: "user", t: "string", r: true, d: "ID" }, { n: "reason", t: "string", r: false, d: "Motivo" }], s: "s.kick[user:X;reason:Y]", ex: [{ c: "s.kick[user:123]", d: "Expulsar" }] },
+            { n: "s.mute", c: "Moderation", d: "Silencia usuário (timeout).", p: [{ n: "user", t: "string", r: true, d: "ID" }, { n: "time", t: "string", r: true, d: "Duração (10m, 1h, 1d)" }, { n: "reason", t: "string", r: false, d: "Motivo" }], s: "s.mute[user:X;time:Y;reason:Z]", ex: [{ c: "s.mute[user:123;time:30m]", d: "Mute 30min" }] },
+            { n: "s.unmute", c: "Moderation", d: "Remove timeout.", p: [{ n: "userId", t: "string", r: true, d: "ID" }], s: "s.unmute[userId]", ex: [{ c: "s.unmute[123]", d: "Desmutar" }] },
+            { n: "s.warn", c: "Moderation", d: "Adiciona aviso.", p: [{ n: "userId", t: "string", r: true, d: "ID" }, { n: "reason", t: "string", r: true, d: "Motivo" }], s: "s.warn[userId;reason]", ex: [{ c: "s.warn[123;Linguagem]", d: "Avisar" }] },
+            { n: "s.unwarn", c: "Moderation", d: "Remove aviso.", p: [{ n: "userId", t: "string", r: true, d: "ID" }, { n: "warnId", t: "string", r: true, d: "ID do warn" }], s: "s.unwarn[userId;warnId]", ex: [{ c: "s.unwarn[123;1]", d: "Remover warn 1" }] },
+            { n: "s.warnings", c: "Moderation", d: "Lista avisos.", p: [{ n: "userId", t: "string", r: true, d: "ID" }], s: "s.warnings[userId]", ex: [{ c: "s.warnings[123]", d: "Ver warns" }] },
+            { n: "s.purge", c: "Moderation", d: "Deleta mensagens em massa.", p: [{ n: "amount", t: "number", r: true, d: "Quantidade (1-100)" }], s: "s.purge[amount]", ex: [{ c: "s.purge[50]", d: "Deletar 50" }] },
+            { n: "s.lock", c: "Moderation", d: "Tranca canal.", p: [{ n: "reason", t: "string", r: false, d: "Motivo" }], s: "s.lock[reason?]", ex: [{ c: "s.lock[Manutenção]", d: "Trancar" }] },
+            { n: "s.unlock", c: "Moderation", d: "Destranca canal.", p: [], s: "s.unlock", ex: [{ c: "s.unlock", d: "Destrancar" }] },
+            { n: "s.slowmode", c: "Moderation", d: "Define slowmode do canal.", p: [{ n: "seconds", t: "number", r: true, d: "Segundos" }], s: "s.slowmode[seconds]", ex: [{ c: "s.slowmode[10]", d: "10s slowmode" }] },
+            { n: "s.if", c: "Logic", d: "Execução condicional.", p: [{ n: "condition", t: "string", r: true, d: "true/false" }, { n: "then", t: "string", r: true, d: "Se true" }, { n: "else", t: "string", r: false, d: "Se false" }], s: "s.if[condition;then;else?]", ex: [{ c: "s.if[s.eq[s.arg[1];sim];Você disse sim!;Você disse não]", d: "Condicional" }] },
+            { n: "s.eq", c: "Logic", d: "Compara igualdade.", p: [{ n: "a", t: "any", r: true, d: "Valor 1" }, { n: "b", t: "any", r: true, d: "Valor 2" }], s: "s.eq[a;b]", ex: [{ c: "s.eq[1;1]", d: "Retorna 'true'" }] },
+            { n: "s.math", c: "Math", d: "Avalia expressão matemática.", p: [{ n: "expression", t: "string", r: true, d: "Expressão" }], s: "s.math[expression]", ex: [{ c: "s.math[100 * 1.5]", d: "Calcular" }] },
+            { n: "s.random", c: "Math", d: "Número aleatório.", p: [{ n: "min", t: "number", r: true, d: "Mínimo" }, { n: "max", t: "number", r: true, d: "Máximo" }], s: "s.random[min;max]", ex: [{ c: "s.random[1;100]", d: "1 a 100" }] },
+            { n: "s.len", c: "String", d: "Tamanho do texto.", p: [{ n: "text", t: "string", r: true, d: "Texto" }], s: "s.len[text]", ex: [{ c: "s.len[Hello]", d: "Retorna 5" }] },
+            { n: "s.upper", c: "String", d: "Maiúsculas.", p: [{ n: "text", t: "string", r: true, d: "Texto" }], s: "s.upper[text]", ex: [{ c: "s.upper[hello]", d: "HELLO" }] },
+            { n: "s.lower", c: "String", d: "Minúsculas.", p: [{ n: "text", t: "string", r: true, d: "Texto" }], s: "s.lower[text]", ex: [{ c: "s.lower[HELLO]", d: "hello" }] },
+            { n: "s.ping", c: "System", d: "Latência da API.", p: [], s: "s.ping", ex: [{ c: "s.reply[Pong! s.ping ms]", d: "Ping" }] },
+            { n: "s.uptime", c: "System", d: "Tempo online formatado.", p: [], s: "s.uptime", ex: [{ c: "s.reply[Online: s.uptime]", d: "Uptime" }] },
+            { n: "s.time", c: "System", d: "Hora atual.", p: [{ n: "zone", t: "string", r: false, d: "Timezone" }], s: "s.time[zone?]", ex: [{ c: "s.time[America/Sao_Paulo]", d: "Hora BR" }] },
+            { n: "s.cooldown", c: "System", d: "Aplica cooldown.", p: [{ n: "seconds", t: "number", r: true, d: "Segundos" }, { n: "message", t: "string", r: false, d: "Msg de cooldown" }], s: "s.cooldown[seconds;message?]", ex: [{ c: "s.cooldown[60;Aguarde 1 minuto!]", d: "Cooldown 1min" }] },
+            { n: "s.botInfo", c: "System", d: "Info do bot (RAM, CPU).", p: [], s: "s.botInfo", ex: [{ c: "s.botInfo", d: "Mostra info" }] },
+            { n: "s.serverInfo", c: "System", d: "Info do servidor.", p: [], s: "s.serverInfo", ex: [{ c: "s.serverInfo", d: "Mostra info" }] },
+            { n: "s.userInfo", c: "System", d: "Info do usuário.", p: [{ n: "userId", t: "string", r: false, d: "ID" }], s: "s.userInfo[userId?]", ex: [{ c: "s.userInfo", d: "Info própria" }] },
+            { n: "s.avatar", c: "System", d: "URL do avatar.", p: [{ n: "userId", t: "string", r: false, d: "ID" }], s: "s.avatar[userId?]", ex: [{ c: "s.embed[image:s.avatar]", d: "Embed com avatar" }] },
+            { n: "s.eval", c: "System", d: "Executa JavaScript (PERIGOSO).", p: [{ n: "code", t: "string", r: true, d: "Código JS" }], s: "s.eval[code]", ex: [{ c: "s.eval[2+2]", d: "Retorna 4" }] },
+            { n: "s.setStatus", c: "System", d: "Define status do bot.", p: [{ n: "type", t: "string", r: true, d: "playing|watching|listening|competing" }, { n: "name", t: "string", r: true, d: "Texto" }, { n: "status", t: "string", r: false, d: "online|idle|dnd|invisible" }], s: "s.setStatus[type:X;name:Y;status:Z]", ex: [{ c: "s.setStatus[type:watching;name:vocês]", d: "Assistindo vocês" }] },
+            { n: "s.shutdown", c: "System", d: "Desliga o bot.", p: [], s: "s.shutdown", ex: [{ c: "s.shutdown", d: "Desligar" }] },
+            { n: "s.authorID", c: "Variables", d: "ID do autor do comando.", p: [], s: "s.authorID", ex: [{ c: "s.reply[Seu ID: s.authorID]", d: "Mostrar ID" }] },
+            { n: "s.username", c: "Variables", d: "Nome do autor.", p: [], s: "s.username", ex: [{ c: "s.reply[Olá, s.username!]", d: "Saudação" }] },
+            { n: "s.channelId", c: "Variables", d: "ID do canal atual.", p: [], s: "s.channelId", ex: [{ c: "s.log[Canal: s.channelId]", d: "Log canal" }] },
+            { n: "s.content", c: "Variables", d: "Conteúdo da mensagem.", p: [], s: "s.content", ex: [{ c: "s.log[Msg: s.content]", d: "Log mensagem" }] },
+            { n: "s.arg", c: "Variables", d: "Argumento do comando.", p: [{ n: "index", t: "number", r: true, d: "Posição (1,2,3...)" }], s: "s.arg[index]", ex: [{ c: "s.reply[Arg1: s.arg[1]]", d: "Primeiro arg" }] }
         ];
 
-        const categories = [...new Set(macros.map(m => m.cat))];
-        const catOrder = ['Core', 'UI', 'Economy', 'Moderation', 'Logic', 'Math', 'System', 'Variables'];
-        const catNames = { Core: 'Principal', UI: 'Interface', Economy: 'Economia', Moderation: 'Moderação', Logic: 'Lógica', Math: 'Matemática', System: 'Sistema', Variables: 'Variáveis' };
+        const EVENTS = [
+            { n: "ready", d: "Bot conectado e pronto.", ex: "client.on('ready', () => console.log('Bot online!'))" },
+            { n: "messageCreate", d: "Nova mensagem recebida.", ex: "client.on('messageCreate', (msg) => { ... })" },
+            { n: "interactionCreate", d: "Interação (slash, botão, modal).", ex: "client.on('interactionCreate', (int) => { ... })" },
+            { n: "guildMemberAdd", d: "Membro entrou no servidor.", ex: "client.on('guildMemberAdd', (member) => { ... })" },
+            { n: "guildMemberRemove", d: "Membro saiu do servidor.", ex: "client.on('guildMemberRemove', (member) => { ... })" },
+            { n: "guildBanAdd", d: "Usuário banido.", ex: "client.on('guildBanAdd', (ban) => { ... })" },
+            { n: "guildBanRemove", d: "Usuário desbanido.", ex: "client.on('guildBanRemove', (ban) => { ... })" },
+            { n: "messageDelete", d: "Mensagem deletada.", ex: "client.on('messageDelete', (msg) => { ... })" },
+            { n: "messageUpdate", d: "Mensagem editada.", ex: "client.on('messageUpdate', (old, new) => { ... })" },
+            { n: "channelCreate", d: "Canal criado.", ex: "client.on('channelCreate', (ch) => { ... })" },
+            { n: "channelDelete", d: "Canal deletado.", ex: "client.on('channelDelete', (ch) => { ... })" },
+            { n: "channelUpdate", d: "Canal atualizado.", ex: "client.on('channelUpdate', (old, new) => { ... })" },
+            { n: "roleCreate", d: "Cargo criado.", ex: "client.on('roleCreate', (role) => { ... })" },
+            { n: "roleDelete", d: "Cargo deletado.", ex: "client.on('roleDelete', (role) => { ... })" },
+            { n: "roleUpdate", d: "Cargo atualizado.", ex: "client.on('roleUpdate', (old, new) => { ... })" },
+            { n: "guildCreate", d: "Bot entrou em servidor.", ex: "client.on('guildCreate', (guild) => { ... })" },
+            { n: "guildDelete", d: "Bot saiu de servidor.", ex: "client.on('guildDelete', (guild) => { ... })" },
+            { n: "guildUpdate", d: "Servidor atualizado.", ex: "client.on('guildUpdate', (old, new) => { ... })" },
+            { n: "voiceStateUpdate", d: "Mudança de voz.", ex: "client.on('voiceStateUpdate', (old, new) => { ... })" },
+            { n: "userUpdate", d: "Usuário atualizado.", ex: "client.on('userUpdate', (old, new) => { ... })" }
+        ];
 
-        let currentCat = null;
+        const CATS = ['Core', 'UI', 'Economy', 'Moderation', 'Logic', 'Math', 'String', 'System', 'Variables'];
+        const CAT_ICONS = { Core: 'terminal', UI: 'layout', Economy: 'coins', Moderation: 'shield', Logic: 'git-branch', Math: 'calculator', String: 'type', System: 'cpu', Variables: 'variable' };
+        const CAT_NAMES = { Core: 'Principal', UI: 'Interface', Economy: 'Economia', Moderation: 'Moderação', Logic: 'Lógica', Math: 'Matemática', String: 'Texto', System: 'Sistema', Variables: 'Variáveis' };
+        let currentCat = null, currentView = 'intro';
 
         function renderNav() {
-            const nav = document.getElementById('nav');
-            nav.innerHTML = `<div class="sidebar-section px-3 py-2 mb-1">Macros</div>` +
-                catOrder.map(c =>
-                    `<button onclick="filterCategory('${c}')" class="sidebar-item w-full text-left px-3 py-2 text-sm">${catNames[c] || c}</button>`
-                ).join('') + `
-                <div class="sidebar-section px-3 py-2 mt-4 mb-1">Geral</div>
-                <button onclick="showIntro()" class="sidebar-item w-full text-left px-3 py-2 text-sm">Início</button>
-            `;
+            const n = document.getElementById('nav');
+            n.innerHTML = `<div class="sidebar-section px-3 py-2 mb-2">MACROS</div>` +
+                CATS.map(c => `<button onclick="showCat('${c}')" class="sidebar-item w-full text-left px-3 py-2.5 text-sm"><i data-lucide="${CAT_ICONS[c]}"></i>${CAT_NAMES[c]}</button>`).join('') +
+                `<div class="sidebar-section px-3 py-2 mt-4 mb-2">GUIAS</div>
+    <button onclick="showPage('intro')" class="sidebar-item w-full text-left px-3 py-2.5 text-sm"><i data-lucide="home"></i>Início</button>
+    <button onclick="showPage('structure')" class="sidebar-item w-full text-left px-3 py-2.5 text-sm"><i data-lucide="folder-tree"></i>Estrutura</button>
+    <button onclick="showPage('events')" class="sidebar-item w-full text-left px-3 py-2.5 text-sm"><i data-lucide="zap"></i>Eventos</button>
+    <button onclick="showPage('logger')" class="sidebar-item w-full text-left px-3 py-2.5 text-sm"><i data-lucide="file-text"></i>Logger</button>`;
+            lucide.createIcons();
         }
 
-        function hideAll() {
-            document.getElementById('view-intro').classList.add('hidden');
-            document.getElementById('view-macro').classList.add('hidden');
-            document.getElementById('view-list').classList.add('hidden');
+        function showPage(p) {
+            currentView = p; currentCat = null;
+            document.getElementById('title').innerText = { intro: 'Início', structure: 'Estrutura', events: 'Eventos', logger: 'Logger' }[p];
+            const c = document.getElementById('content');
+            if (p === 'intro') c.innerHTML = introHTML();
+            else if (p === 'structure') c.innerHTML = structureHTML();
+            else if (p === 'events') c.innerHTML = eventsHTML();
+            else if (p === 'logger') c.innerHTML = loggerHTML();
+            Prism.highlightAll();
         }
 
-        function showIntro() {
-            hideAll();
-            document.getElementById('view-intro').classList.remove('hidden');
-            document.getElementById('page-title').innerText = 'Início';
-            currentCat = null;
-        }
-
-        function filterCategory(cat) {
-            hideAll();
-            currentCat = cat;
-            document.getElementById('view-list').classList.remove('hidden');
-            document.getElementById('page-title').innerText = catNames[cat] || cat;
-            document.getElementById('list-title').innerText = catNames[cat] || cat;
-
-            const list = macros.filter(m => m.cat === cat);
-            document.getElementById('macro-list').innerHTML = list.map(m => `
-                <button onclick="showMacro('${m.name}')" class="card w-full text-left p-4 flex justify-between items-center">
-                    <div>
-                        <code class="text-white font-mono text-sm">${m.name}</code>
-                        <p class="text-zinc-500 text-xs mt-1">${m.desc.substring(0, 60)}...</p>
-                    </div>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
-                </button>
-            `).join('');
+        function showCat(cat) {
+            currentCat = cat; currentView = 'list';
+            document.getElementById('title').innerText = CAT_NAMES[cat];
+            const list = MACROS.filter(m => m.c === cat);
+            document.getElementById('content').innerHTML = `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+        <div class="flex items-center gap-3 mb-6"><button onclick="showPage('intro')" class="text-zinc-500 hover:text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button><h2 class="text-2xl font-bold text-white">${CAT_NAMES[cat]}</h2></div>
+        <div class="space-y-2">${list.map(m => `<button onclick="showMacro('${m.n}')" class="card w-full text-left p-4 flex justify-between items-center"><div><code class="text-white font-mono">${m.n}</code><p class="text-zinc-500 text-xs mt-1">${m.d}</p></div><i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i></button>`).join('')}</div>
+    </div>`;
             lucide.createIcons();
         }
 
         function showMacro(name) {
-            const m = macros.find(x => x.name === name);
-            if (!m) return;
-
-            hideAll();
-            document.getElementById('view-macro').classList.remove('hidden');
-            document.getElementById('page-title').innerText = m.name;
-            document.getElementById('macro-name').innerText = m.name;
-            document.getElementById('macro-cat').innerText = catNames[m.cat] || m.cat;
-            document.getElementById('macro-desc').innerText = m.desc;
-            document.getElementById('macro-syntax').innerText = m.syntax;
-
-            // Params
-            if (m.params.length > 0) {
-                document.getElementById('macro-params').innerHTML = `
-                    <table class="w-full text-sm">
-                        <thead class="text-zinc-500 text-xs uppercase">
-                            <tr><td class="p-3">Nome</td><td class="p-3">Tipo</td><td class="p-3">Obrigatório</td><td class="p-3">Descrição</td></tr>
-                        </thead>
-                        <tbody>
-                            ${m.params.map(p => `
-                                <tr class="border-t border-zinc-900">
-                                    <td class="p-3 text-white font-mono">${p.name}</td>
-                                    <td class="p-3"><span class="param type-${p.type}">${p.type}</span></td>
-                                    <td class="p-3">${p.required ? '<span class="text-rose-400">sim</span>' : '<span class="text-zinc-500">não</span>'}</td>
-                                    <td class="p-3">${p.desc}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-            } else {
-                document.getElementById('macro-params').innerHTML = '<p class="p-4 text-zinc-500 text-sm">Nenhum parâmetro</p>';
-            }
-
-            // Examples
-            document.getElementById('macro-examples').innerHTML = m.examples.map(e => `
-                <div class="code-block p-4">
-                    <p class="text-zinc-500 text-xs mb-2">${e.desc}</p>
-                    <code class="text-emerald-400 text-sm">${e.code}</code>
-                </div>
-            `).join('');
+            const m = MACROS.find(x => x.n === name); if (!m) return;
+            currentView = 'macro';
+            document.getElementById('title').innerText = m.n;
+            document.getElementById('content').innerHTML = `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+        <button onclick="showCat('${m.c}')" class="text-zinc-500 hover:text-white text-sm mb-6 flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i>Voltar</button>
+        <code class="text-2xl text-white font-mono font-bold">${m.n}</code>
+        <p class="text-zinc-500 text-sm mt-1">${CAT_NAMES[m.c]}</p>
+        <div class="mt-8 space-y-8">
+            <div><h3 class="text-white font-medium mb-2">Descrição</h3><p class="text-zinc-400">${m.d}</p></div>
+            ${m.p.length ? `<div><h3 class="text-white font-medium mb-3">Parâmetros</h3><div class="card overflow-hidden"><table class="w-full text-sm"><thead class="bg-white/3 text-zinc-500 text-xs uppercase"><tr><td class="p-3">Nome</td><td class="p-3">Tipo</td><td class="p-3">Obrigatório</td><td class="p-3">Descrição</td></tr></thead><tbody>${m.p.map(p => `<tr class="border-t border-white/5"><td class="p-3 text-white font-mono">${p.n}</td><td class="p-3"><span class="tag tag-${p.t}">${p.t}</span></td><td class="p-3">${p.r ? '<span class="text-rose-400">sim</span>' : '<span class="text-zinc-600">não</span>'}</td><td class="p-3">${p.d}</td></tr>`).join('')}</tbody></table></div></div>` : '<div><h3 class="text-white font-medium mb-2">Parâmetros</h3><p class="text-zinc-500 text-sm">Nenhum parâmetro</p></div>'}
+            <div><h3 class="text-white font-medium mb-2">Sintaxe</h3><div class="code-block"><pre><code class="language-javascript">${m.s}</code></pre></div></div>
+            <div><h3 class="text-white font-medium mb-3">Exemplos</h3><div class="space-y-3">${m.ex.map(e => `<div class="code-block"><p class="px-4 pt-3 text-zinc-500 text-xs">${e.d}</p><pre><code class="language-javascript">${e.c}</code></pre></div>`).join('')}</div></div>
+        </div>
+    </div>`;
+            lucide.createIcons(); Prism.highlightAll();
         }
 
-        function goBack() {
-            if (currentCat) filterCategory(currentCat);
-            else showIntro();
+        function introHTML() {
+            return `<div class="max-w-3xl mx-auto px-6 py-16 animate-in text-center">
+    <img src="logo-semfundo.png" class="h-20 mx-auto mb-8">
+    <h1 class="text-4xl font-bold text-white mb-4">Seven-Discord</h1>
+    <p class="text-lg text-zinc-400 mb-8 max-w-xl mx-auto">O framework de macros mais rápido para criar bots no Discord. Feito para Bun.</p>
+    <div class="flex justify-center gap-3"><button onclick="showCat('Core')" class="bg-white text-black px-6 py-3 rounded-lg font-medium hover:opacity-90">Começar</button><button onclick="showPage('structure')" class="bg-zinc-900 text-white px-6 py-3 rounded-lg font-medium border border-zinc-800">Estrutura</button></div>
+    <div class="card p-6 mt-12 text-left"><h3 class="text-white font-semibold mb-4 flex items-center gap-2"><i data-lucide="terminal" class="w-5 h-5 text-sky-400"></i>Quick Start</h3><div class="code-block"><pre><code class="language-bash"># Instalar\nbun add seven-discord\n\n# Inicializar\nbunx seven-discord --init\n\n# Rodar\nbun run dev</code></pre></div></div>
+    <div class="grid md:grid-cols-3 gap-4 mt-8 text-left">${[{ i: 'zap', t: 'Ultra Rápido', d: 'Otimizado para Bun.' }, { i: 'box', t: 'Zero Deps', d: 'Sem dependências.' }, { i: 'check', t: 'Verificado', d: 'Slash, Botões, Modais.' }].map(f => `<div class="card p-5"><i data-lucide="${f.i}" class="w-5 h-5 text-sky-400 mb-3"></i><h4 class="text-white font-medium mb-1">${f.t}</h4><p class="text-zinc-500 text-sm">${f.d}</p></div>`).join('')}</div>
+</div>`;
         }
 
-        // Search
+        function structureHTML() {
+            return `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+    <h2 class="text-2xl font-bold text-white mb-6">Estrutura do Projeto</h2>
+    <div class="code-block mb-8"><pre><code class="language-bash">meu-bot/
+├── src/
+│   ├── commands/          # Seus comandos
+│   │   └── ping.ts
+│   ├── events/            # Handlers de eventos
+│   │   └── ready.ts
+│   └── index.ts           # Entry point
+├── package.json
+└── .env                   # TOKEN e configs</code></pre></div>
+    <h3 class="text-white font-medium mb-3">Criando um Comando</h3>
+    <div class="code-block mb-8"><pre><code class="language-javascript">// src/commands/ping.ts
+module.exports = {
+    name: 'ping',
+    aliases: ['p'],        // Aliases opcionais
+    cooldown: 5,           // Cooldown em segundos
+    code: \`
+        s.reply[🏓 Pong! Latência: s.ping ms]
+    \`
+}</code></pre></div>
+    <h3 class="text-white font-medium mb-3">Criando um Evento</h3>
+    <div class="code-block mb-8"><pre><code class="language-javascript">// src/events/ready.ts
+module.exports = {
+    name: 'ready',
+    once: true,            // Executar apenas uma vez
+    code: \`
+        s.log[Bot está online!]
+        s.setStatus[type:watching;name:vocês]
+    \`
+}</code></pre></div>
+    <h3 class="text-white font-medium mb-3">Entry Point</h3>
+    <div class="code-block"><pre><code class="language-javascript">// src/index.ts
+import { SevenClient } from 'seven-discord';
+
+const client = new SevenClient({
+    token: process.env.TOKEN,
+    prefix: '!',
+    intents: ['Guilds', 'GuildMessages', 'MessageContent']
+});
+
+client.start();</code></pre></div>
+</div>`;
+        }
+
+        function eventsHTML() {
+            return `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+    <h2 class="text-2xl font-bold text-white mb-6">Eventos Disponíveis</h2>
+    <p class="text-zinc-400 mb-6">O Seven-Discord suporta todos os eventos do Discord Gateway. Aqui estão os mais usados:</p>
+    <div class="space-y-3">${EVENTS.map(e => `<div class="card p-4"><div class="flex justify-between items-start"><div><code class="text-white font-mono">${e.n}</code><p class="text-zinc-500 text-xs mt-1">${e.d}</p></div></div><div class="code-block mt-3"><pre><code class="language-javascript">${e.ex}</code></pre></div></div>`).join('')}</div>
+</div>`;
+        }
+
+        function loggerHTML() {
+            return `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+    <h2 class="text-2xl font-bold text-white mb-6">Sistema de Logger</h2>
+    <p class="text-zinc-400 mb-6">O Seven-Discord possui um sistema de logging integrado com cores e níveis.</p>
+    <div class="code-block mb-8"><pre><code class="language-javascript">import { Logger } from 'seven-discord';
+
+// Níveis disponíveis
+Logger.info('Informação normal');      // Azul
+Logger.success('Operação concluída');  // Verde
+Logger.warn('Atenção!');               // Amarelo
+Logger.error('Erro crítico!');         // Vermelho
+Logger.debug('Debug info');            // Cinza</code></pre></div>
+    <h3 class="text-white font-medium mb-3">Usando no código de macros</h3>
+    <div class="code-block"><pre><code class="language-javascript">// Dentro de um comando
+module.exports = {
+    name: 'test',
+    code: \`
+        s.log[Comando executado por s.username]
+        s.log[Canal: s.channelId]
+        s.log[Argumentos: s.content]
+    \`
+}</code></pre></div>
+    <div class="card p-5 mt-8">
+        <h4 class="text-white font-medium mb-2">💡 Dica</h4>
+        <p class="text-zinc-400 text-sm">Use s.log para debug durante desenvolvimento. Os logs aparecem no terminal onde o bot está rodando.</p>
+    </div>
+</div>`;
+        }
+
         document.getElementById('search').addEventListener('input', e => {
-            const term = e.target.value.toLowerCase();
-            if (term.length >= 2) {
-                hideAll();
-                document.getElementById('view-list').classList.remove('hidden');
-                document.getElementById('page-title').innerText = 'Busca';
-                document.getElementById('list-title').innerText = `Resultados para "${term}"`;
-
-                const filtered = macros.filter(m => m.name.toLowerCase().includes(term) || m.desc.toLowerCase().includes(term));
-                document.getElementById('macro-list').innerHTML = filtered.map(m => `
-                    <button onclick="showMacro('${m.name}')" class="card w-full text-left p-4 flex justify-between items-center">
-                        <div>
-                            <code class="text-white font-mono text-sm">${m.name}</code>
-                            <p class="text-zinc-500 text-xs mt-1">${m.desc.substring(0, 60)}...</p>
-                        </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i>
-                    </button>
-                `).join('');
+            const t = e.target.value.toLowerCase();
+            if (t.length >= 2) {
+                const f = MACROS.filter(m => m.n.toLowerCase().includes(t) || m.d.toLowerCase().includes(t));
+                document.getElementById('title').innerText = 'Busca';
+                document.getElementById('content').innerHTML = `<div class="max-w-3xl mx-auto px-6 py-10 animate-in">
+            <h2 class="text-xl font-bold text-white mb-6">Resultados para "${t}"</h2>
+            <div class="space-y-2">${f.length ? f.map(m => `<button onclick="showMacro('${m.n}')" class="card w-full text-left p-4 flex justify-between items-center"><div><code class="text-white font-mono">${m.n}</code><p class="text-zinc-500 text-xs mt-1">${m.d}</p></div><i data-lucide="chevron-right" class="w-4 h-4 text-zinc-600"></i></button>`).join('') : '<p class="text-zinc-500">Nenhum resultado.</p>'}</div>
+        </div>`;
                 lucide.createIcons();
-            } else if (term.length === 0) {
-                showIntro();
-            }
+            } else if (t.length === 0) showPage('intro');
         });
 
-        lucide.createIcons();
-        renderNav();
+        lucide.createIcons(); renderNav(); showPage('intro');
     </script>
 </body>
 
