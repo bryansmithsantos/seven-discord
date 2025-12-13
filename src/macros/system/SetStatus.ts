@@ -15,9 +15,27 @@ export class SetStatusMacro extends Macro {
         // Type: playing (0), streaming (1), listening (2), watching (3)
         // Status: online, dnd, idle
 
-        const typeStr = (args[0] || "playing").toLowerCase();
-        const status = (args[1] || "online").toLowerCase();
-        const name = args[2] || "Seven-Discord";
+        let typeStr, status, name;
+
+        const hasKV = args.some(a => a.includes(":"));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            typeStr = map.type || map.activity;
+            status = map.status || map.presence;
+            name = map.name || map.title || map.text || map.content;
+        } else {
+            [typeStr, status, name] = args;
+        }
+
+        typeStr = (typeStr || "playing").toLowerCase();
+        status = (status || "online").toLowerCase();
+        name = name || "Seven-Discord";
 
         let type = 0;
         if (typeStr === "streaming") type = 1;

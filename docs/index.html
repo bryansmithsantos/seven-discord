@@ -81,54 +81,6 @@
     ]
     },
     {
-    id: "section-system", title: "System",
-    macros: [
-    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
-    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
-    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
-    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
-    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
-    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
-    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" }
-    ]
-    },
-    {
-    id: "section-moderation", title: "Moderation",
-    macros: [
-    { name: "s.ban", desc: "Ban user", args: [{ name: "props", type: "key:value" }], code: "s.ban[user:@user;
-    reason:Spam]" },
-    { name: "s.kick", desc: "Kick user", args: [{ name: "props", type: "key:value" }], code: "s.kick[user:@user;
-    reason:Bye]" },
-    { name: "s.mute", desc: "Timeout user", args: [{ name: "props", type: "key:value" }], code: "s.mute[user:@user;
-    time:1h]" },
-    { name: "s.purge", desc: "Delete msg", args: [{ name: "props", type: "key:value" }], code: "s.purge[limit:10]" },
-    { name: "s.lock", desc: "Lock channel", args: [{ name: "props", type: "key:value" }], code:
-    "s.lock[channel:#general]" },
-    { name: "s.unlock", desc: "Unlock channel", args: [{ name: "props", type: "key:value" }], code:
-    "s.unlock[channel:#general]" },
-    { name: "s.slowmode", desc: "Set slowmode", args: [{ name: "props", type: "key:value" }], code:
-    "s.slowmode[time:10s]" },
-    { name: "s.warn", desc: "Warn user", args: [{ name: "props", type: "key:value" }], code: "s.warn[user:@user;
-    reason:Troll]" },
-    { name: "s.unwarn", desc: "Remove warning", args: [{ name: "props", type: "key:value" }], code:
-    "s.unwarn[user:@user; index:1]" }
-    ]
-    },
-    {
-    id: "section-logic", title: "Logic & Math",
-    macros: [
-    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name:
-    "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
-    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code:
-    "s.and[true;false]" },
-    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code:
-    "s.or[true;false]" },
-    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
-    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number"
-    }], code: "s.randomInt[1;100]" }
-    ]
-    },
-    {
     id: "section-string", title: "String Op",
     macros: [
     { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string"
@@ -138,12 +90,35 @@
     ]
     }
     ];
-    // ... existing renderer ...
-    <span
-        class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
-    </div>
-    </div>
-    `).join('')}
+    // RENDERER
+    const container = document.getElementById('macros-container');
+
+    macroCategories.forEach(cat => {
+    const section = document.createElement('section');
+    section.id = cat.id;
+    section.className = "mb-16 scroll-mt-20";
+
+    section.innerHTML = `
+    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4">
+        ${cat.title}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${cat.macros.map(m => `
+        
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
+                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <p class="text-xs text-gray-500 line-clamp-2">${m.desc}</p>
+            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between">
+                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
+                <span
+                    class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
+            </div>
+        </div>
+        `).join('')}
     </div>
     `;
     container.appendChild(section);
