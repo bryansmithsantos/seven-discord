@@ -38,7 +38,30 @@ export class EmbedUrlMacro extends Macro {
 export class EmbedAuthorMacro extends Macro {
     constructor() { super({ name: "author", description: "Sets embed author. Usage: s.author[name; icon?; url?]", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) {
-        return `EMBED_AUTHOR::${args[0]}::${args[1] || ""}::${args[2] || ""}::END`;
+        let name, icon, url;
+        const hasKV = args.some(a => a.includes(":"));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            name = map.name || map.title || map.author;
+            icon = map.icon || map.url || map.avatar || map.image;
+            url = map.link || map.href || map.url; // 'url' is ambiguous here if checking for both, check context usually, but map.url usually icon in author? No Discord API: name, url(link), icon_url. 
+            // Correct mapping:
+            if (map.name) name = map.name;
+            if (map.icon) icon = map.icon;
+            if (map.url) url = map.url; // Assuming url = link to click
+            if (map.link) url = map.link;
+            // Fallback for icon if they used 'avatar'
+            if (map.avatar) icon = map.avatar;
+        } else {
+            [name, icon, url] = args;
+        }
+        return `EMBED_AUTHOR::${name || ""}::${icon || ""}::${url || ""}::END`;
     }
 }
 

@@ -8,7 +8,23 @@ export class GambleMacro extends Macro {
     async execute(ctx: any, ...args: string[]): Promise<string> {
         const user = ctx.author?.id;
         const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;
-        const bet = parseInt(args[0]);
+
+        let betStr;
+        const hasKV = args.some(a => a.includes(":") && !a.match(/^\d+$/));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            betStr = map.amount || map.bet || map.value;
+        } else {
+            [betStr] = args;
+        }
+
+        const bet = parseInt(betStr);
 
         if (!user || isNaN(bet)) return "Error";
 

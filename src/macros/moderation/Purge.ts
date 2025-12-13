@@ -12,7 +12,22 @@ export class PurgeMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        const [amountStr] = args;
+        let amountStr;
+
+        const hasKV = args.some(a => a.includes(":"));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            amountStr = map.amount || map.amt || map.limit || map.cnt;
+        } else {
+            [amountStr] = args;
+        }
+
         let amount = parseInt(amountStr);
         if (isNaN(amount)) return;
 
@@ -21,12 +36,9 @@ export class PurgeMacro extends Macro {
 
         const channelId = ctx.interaction ? ctx.interaction.channel_id : ctx.message.channel_id;
 
-        // Fetch messages first? Or assumes channel logic.
-        // Bulk delete requires list of message IDs.
-        // Only if we provide IDs. But typically purge means "last N messages".
-        // Seven-Discord simplified: Fetch last N and delete them.
-
+        // Fetch messages first to delete
         const messages = await ctx.client.rest.get(`/channels/${channelId}/messages?limit=${amount}`);
+        // ... bulk delete below
         if (!messages || !Array.isArray(messages)) return;
 
         const ids = messages.map((m: any) => m.id);

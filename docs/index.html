@@ -4,643 +4,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.5.22 - The Logic Framework</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-        rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
-                    colors: {
-                        bg: { 900: '#050505', 800: '#0A0A0A', 700: '#111111' },
-                        border: { 800: '#1F1F1F', 700: '#333333' },
-                        accent: { 500: '#3b82f6', 600: '#2563eb' }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #050505;
-            color: #ededed;
-        }
-
-        .glass {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .card {
-            background: #0A0A0A;
-            border: 1px solid #1F1F1F;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .card:hover {
-            border-color: #333333;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .sidebar-item.active {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            border-left: 2px solid #fff;
-        }
-
-        .spec-panel {
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .spec-panel.open {
-            transform: translateX(0);
-        }
-
-        /* Mac Code Block */
-        .mac-window {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .mac-header {
-            background: #1a1a1a;
-            padding: 8px 12px;
-            display: flex;
-            gap: 6px;
-            border-bottom: 1px solid #333;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .dot.red {
-            background: #ff5f56;
-        }
-
-        .dot.yellow {
-            background: #ffbd2e;
-        }
-
-        .dot.green {
-            background: #27c93f;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #444;
-        }
-    </style>
-</head>
-
-<body class="flex h-screen overflow-hidden text-sm">
-
-    <!-- Specs Panel (Drawer) -->
-    <aside id="specs-panel"
-        class="spec-panel fixed inset-y-0 right-0 w-full md:w-[480px] bg-[#080808] border-l border-border-800 z-50 flex flex-col shadow-2xl">
-        <div class="p-6 border-b border-border-800 flex justify-between items-center bg-[#080808]">
-            <div>
-                <h3 id="spec-title" class="text-xl font-bold font-mono text-white tracking-tight">s.embed</h3>
-                <span id="spec-category" class="text-xs uppercase tracking-widest text-gray-500 font-bold mt-1 block">UI
-                    & INTERACTION</span>
-            </div>
-            <button onclick="closeSpecs()"
-                class="hover:bg-white/10 p-2 rounded-full transition-colors text-gray-400 hover:text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
-        <div class="flex-1 overflow-y-auto p-6 space-y-8">
-            <div>
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Description</h4>
-                <p id="spec-desc" class="text-gray-300 leading-relaxed font-sans">...</p>
-            </div>
-            <div id="spec-args-container">
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Arguments</h4>
-                <div class="bg-bg-700/50 rounded border border-border-800 overflow-hidden">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-border-800 bg-bg-800">
-                                <th class="p-3 text-xs font-medium text-gray-400">#</th>
-                                <th class="p-3 text-xs font-medium text-gray-400">Name</th>
-                                <th class="p-3 text-xs font-medium text-gray-400">Type</th>
-                                <th class="p-3 text-xs font-medium text-gray-400">Req</th>
-                            </tr>
-                        </thead>
-                        <tbody id="spec-args-body" class="font-mono text-xs"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div>
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Example Usage</h4>
-                <div class="mac-window">
-                    <div class="mac-header">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                    </div>
-                    <pre
-                        class="p-4 bg-[#050505] overflow-x-auto m-0"><code id="spec-code" class="language-typescript">s.embed[title:Hello]</code></pre>
-                </div>
-            </div>
-        </div>
-    </aside>
-    <div id="specs-overlay" onclick="closeSpecs()"
-        class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-40 hidden opacity-0 transition-opacity duration-300">
+    <title>Seven-Discord v2.5.24 - The Logic Framework</title>
+    <!-- ... skipping head ... -->
+    <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+        Seven
+        <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.24</span>
+    </h1>
+    <!-- ... -->
+    // MACRO DATA SOURCE
+    const macroCategories = [
+    {
+    id: "section-core", title: "Core & IO",
+    macros: [
+    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type:
+    "string" }], code: "s.send[123;Hello]" },
+    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
+    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
+    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, {
+    name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
+    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type:
+    "user|guild", req: false }], code: "s.getVar[xp;user]" }
+    ]
+    },
+    {
+    id: "section-user", title: "User Context",
+    macros: [
+    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code:
+    "s.userId[@user]" },
+    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag"
+    },
+    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code:
+    "s.embed[image:s.userAvatar]" },
+    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }],
+    code: "s.userCreated" },
+    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot"
+    }
+    ]
+    },
+    {
+    id: "section-ui", title: "UI & Embed",
+    macros: [
+    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi;
+    color:#FFF]" },
+    { name: "s.button", desc: "Create button", args: [{ name: "props", type: "key:value" }], code: "s.button[label:Click
+    Me; style:Primary; id:btn1]" },
+    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string"
+    }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
+    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder",
+    type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
+    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
+    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New
+    content]" },
+    { name: "s.author", desc: "Embed Author", args: [{ name: "props", type: "key:value" }], code: "s.author[name:Koxik;
+    icon:link]" }
+    ]
+    },
+    {
+    id: "section-economy", title: "Economy",
+    macros: [
+    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
+    { name: "s.pay", desc: "Transfer money", args: [{ name: "props", type: "key:value" }], code: "s.pay[amount:100;
+    user:@user]" },
+    { name: "s.work", desc: "Work for money", args: [{ name: "props", type: "key:value" }], code: "s.work[min:50;
+    max:100]" },
+    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]"
+    },
+    { name: "s.deposit", desc: "Deposit money", args: [{ name: "props", type: "key:value" }], code:
+    "s.deposit[amount:all]" },
+    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "props", type: "key:value" }], code:
+    "s.withdraw[amount:100]" },
+    { name: "s.rob", desc: "Rob user", args: [{ name: "props", type: "key:value" }], code: "s.rob[user:@victim]" },
+    { name: "s.gamble", desc: "Gamble money", args: [{ name: "props", type: "key:value" }], code: "s.gamble[bet:500]" },
+    { name: "s.coinflip", desc: "Coinflip", args: [{ name: "props", type: "key:value" }], code: "s.coinflip[bet:100;
+    side:heads]" }
+    ]
+    },
+    {
+    id: "section-system", title: "System",
+    macros: [
+    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
+    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
+    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
+    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
+    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
+    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
+    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" }
+    ]
+    },
+    {
+    id: "section-moderation", title: "Moderation",
+    macros: [
+    { name: "s.ban", desc: "Ban user", args: [{ name: "props", type: "key:value" }], code: "s.ban[user:@user;
+    reason:Spam]" },
+    { name: "s.kick", desc: "Kick user", args: [{ name: "props", type: "key:value" }], code: "s.kick[user:@user;
+    reason:Bye]" },
+    { name: "s.mute", desc: "Timeout user", args: [{ name: "props", type: "key:value" }], code: "s.mute[user:@user;
+    time:1h]" },
+    { name: "s.purge", desc: "Delete msg", args: [{ name: "props", type: "key:value" }], code: "s.purge[limit:10]" },
+    { name: "s.lock", desc: "Lock channel", args: [{ name: "props", type: "key:value" }], code:
+    "s.lock[channel:#general]" },
+    { name: "s.unlock", desc: "Unlock channel", args: [{ name: "props", type: "key:value" }], code:
+    "s.unlock[channel:#general]" },
+    { name: "s.slowmode", desc: "Set slowmode", args: [{ name: "props", type: "key:value" }], code:
+    "s.slowmode[time:10s]" },
+    { name: "s.warn", desc: "Warn user", args: [{ name: "props", type: "key:value" }], code: "s.warn[user:@user;
+    reason:Troll]" },
+    { name: "s.unwarn", desc: "Remove warning", args: [{ name: "props", type: "key:value" }], code:
+    "s.unwarn[user:@user; index:1]" }
+    ]
+    },
+    {
+    id: "section-logic", title: "Logic & Math",
+    macros: [
+    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name:
+    "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
+    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code:
+    "s.and[true;false]" },
+    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code:
+    "s.or[true;false]" },
+    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
+    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number"
+    }], code: "s.randomInt[1;100]" }
+    ]
+    },
+    {
+    id: "section-string", title: "String Op",
+    macros: [
+    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string"
+    }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
+    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
+    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
+    ]
+    }
+    ];
+    // ... existing renderer ...
+    <span
+        class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
     </div>
+    </div>
+    `).join('')}
+    </div>
+    `;
+    container.appendChild(section);
+    });
 
-    <!-- Sidebar -->
-    <nav class="w-64 bg-bg-900 border-r border-border-800 flex flex-col h-full flex-shrink-0">
-        <div class="p-5 border-b border-border-800">
-            <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                Seven
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.22</span>
-            </h1>
-        </div>
-        <div class="p-3">
-            <input type="text" id="search" placeholder="Filter..."
-                class="w-full bg-bg-800 border border-border-800 rounded px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-gray-600 transition-colors font-mono">
-        </div>
-        <div class="flex-1 overflow-y-auto px-3 py-2 space-y-6 sidebar-scroll">
-            <div class="nav-group">
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2" data-lang="en">
-                    General</h4>
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2 hidden"
-                    data-lang="pt">Geral</h4>
+    // SPECS LOGIC
+    const panel = document.getElementById('specs-panel');
+    const overlay = document.getElementById('specs-overlay');
+    const dTitle = document.getElementById('spec-title');
+    const dCat = document.getElementById('spec-category');
+    const dDesc = document.getElementById('spec-desc');
+    const dCode = document.getElementById('spec-code');
+    const dArgsBody = document.getElementById('spec-args-body');
 
-                <a href="#intro"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Start
-                    Here</a>
-                <a href="#history"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">The
-                    Story (vs DJS)</a>
-                <a href="#intents"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Intents
-                    System</a>
-                <a href="#events"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Event
-                    System</a>
-            </div>
-            <div class="nav-group">
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2" data-lang="en">
-                    Macros</h4>
-                <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 px-2 hidden"
-                    data-lang="pt">Macros</h4>
+    window.openSpecs = (macro, category) => {
+    dTitle.textContent = macro.name;
+    dCat.textContent = category;
+    dDesc.textContent = macro.desc;
+    dCode.textContent = macro.code;
 
-                <a href="#section-core"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Core
-                    & IO</a>
-                <a href="#section-user"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">User
-                    Context</a>
-                <a href="#section-ui"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">UI
-                    & Embeds</a>
-                <a href="#section-economy"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Economy</a>
-                <a href="#section-system"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">System</a>
-                <a href="#section-moderation"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Moderation</a>
-                <a href="#section-logic"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">Logic
-                    & Math</a>
-                <a href="#section-string"
-                    class="sidebar-item px-2 py-1.5 block text-gray-400 hover:text-white rounded text-sm transition-colors">String
-                    Ops</a>
-            </div>
-        </div>
-        <div class="p-4 border-t border-border-800">
-            <div class="flex border border-border-800 rounded overflow-hidden">
-                <button onclick="setLang('en')"
-                    class="flex-1 py-1.5 text-[10px] font-bold text-center bg-white/10 text-white lang-btn"
-                    data-target="en">EN</button>
-                <button onclick="setLang('pt')"
-                    class="flex-1 py-1.5 text-[10px] font-bold text-center bg-bg-800 text-gray-500 hover:text-white hover:bg-bg-700 transition-colors lang-btn"
-                    data-target="pt">PT</button>
-            </div>
-        </div>
-    </nav>
+    dArgsBody.innerHTML = macro.args.map((arg, i) => `
+    <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50">
+        <td class="p-3 text-gray-500">${i + 1}</td>
+        <td class="p-3 text-blue-400 font-bold">${arg.name}</td>
+        <td class="p-3 text-gray-400">${arg.type}</td>
+        <td class="p-3">
+            ${arg.req === false
+            ? '<span
+                class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700">OPT</span>'
+            : '<span
+                class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30">REQ</span>'}
+        </td>
+    </tr>
+    `).join('');
 
-    <!-- Content -->
-    <main class="flex-1 overflow-y-auto bg-bg-900 scroll-smooth">
-        <div class="max-w-5xl mx-auto p-12">
+    if (macro.args.length === 0) {
+    dArgsBody.innerHTML = `<tr>
+        <td colspan="4" class="p-4 text-center text-gray-600 italic">No arguments required.</td>
+    </tr>`;
+    }
 
-            <!-- Intro -->
-            <section id="intro" class="mb-24 py-10 border-b border-border-800">
-                <div data-lang="en">
-                    <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Build Bots, <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Faster.</span>
-                    </h1>
-                    <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">The high-performance Discord framework
-                        for <strong>Bun</strong>. <br> Stop writing boilerplate. Start writing logic.</p>
-                </div>
-                <div data-lang="pt" class="hidden">
-                    <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6">Crie Bots, <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Mais
-                            Rápido.</span></h1>
-                    <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">O framework Discord de alta performance
-                        para <strong>Bun</strong>. <br> Pare de escrever boilerplate. Comece a escrever lógica.</p>
-                </div>
-            </section>
+    Prism.highlightElement(dCode);
 
-            <!-- History / Story -->
-            <section id="history" class="mb-24 scroll-mt-20">
-                <div data-lang="en">
-                    <h2 class="text-3xl font-bold text-white mb-8">The Story of Seven</h2>
-                    <div class="prose prose-invert text-gray-400 max-w-none space-y-6">
-                        <p>
-                            In the early days of Discord Bot development, we had libraries like Discord.js (DJS) and
-                            Eris. They were powerful, but <b>extremely verbose</b>.
-                            To send a simple embedded message with buttons in DJS v14, you need approximately 40 lines
-                            of code, importing multiple builders, managers, and handling async/await promises manually.
-                        </p>
-                        <p>
-                            <b>Seven-Discord was born from frustration.</b> We wanted the power of a real coding
-                            language (TypeScript) but with the simplicity of "Low-Code" tools like Bot Designer for
-                            Discord (BDFD).
-                            Functionality shouldn't require boilerplate.
-                        </p>
+    panel.classList.add('open');
+    overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+    };
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
-                            <div class="card p-6 rounded-lg border-l-4 border-red-500">
-                                <h3 class="text-white font-bold mb-2">The Old Way (Discord.js)</h3>
-                                <ul class="list-disc pl-5 space-y-2 text-xs">
-                                    <li>Complex Object-Oriented Boilerplate</li>
-                                    <li>Manual Interaction Handling (Collectors)</li>
-                                    <li>Verbose Builders (EmbedBuilder, ActionRowBuilder...)</li>
-                                    <li>Heavy memory usage (Node.js)</li>
-                                </ul>
-                            </div>
-                            <div class="card p-6 rounded-lg border-l-4 border-blue-500">
-                                <h3 class="text-white font-bold mb-2">The Seven Way</h3>
-                                <ul class="list-disc pl-5 space-y-2 text-xs">
-                                    <li><b>Macro System:</b> Logic in single lines (`s.embed[...]`)</li>
-                                    <li><b>Automatic handling:</b> No need to manually ack interactions.</li>
-                                    <li><b>Bun Native:</b> Starts in milliseconds, uses 40% less RAM.</li>
-                                    <li><b>Human Readable:</b> `s.ban[@user]` vs `guild.members.ban(...)`</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    window.closeSpecs = () => {
+    panel.classList.remove('open');
+    overlay.classList.add('opacity-0');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+    };
 
-                <div data-lang="pt" class="hidden">
-                    <h2 class="text-3xl font-bold text-white mb-8">A História do Seven</h2>
-                    <div class="prose prose-invert text-gray-400 max-w-none space-y-6">
-                        <p>
-                            Nos primórdios do desenvolvimento de bots, tínhamos bibliotecas como Discord.js (DJS). Elas
-                            eram poderosas, mas <b>extremamente verbosas</b>.
-                            Para enviar um simples embed com botões no DJS v14, você precisa de aprox. 40 linhas de
-                            código, importando vários builders e gerenciando promises manualmente.
-                        </p>
-                        <p>
-                            <b>Seven-Discord nasceu da frustração.</b> Queríamos o poder de uma linguagem real
-                            (TypeScript) mas com a simplicidade de ferramentas "Low-Code" como o BDFD.
-                            Funcionalidade não deveria exigir boilerplate.
-                        </p>
+    // SEARCH
+    document.getElementById('search').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    if (text.includes(term)) {
+    card.style.display = 'block';
+    } else {
+    card.style.display = 'none';
+    }
+    });
+    });
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
-                            <div class="card p-6 rounded-lg border-l-4 border-red-500">
-                                <h3 class="text-white font-bold mb-2">O Jeito Antigo (Discord.js)</h3>
-                                <ul class="list-disc pl-5 space-y-2 text-xs">
-                                    <li>Boilerplate Orientado a Objetos Complexo</li>
-                                    <li>Manuseio Manual de Interações (Collectors)</li>
-                                    <li>Builders Verbos (EmbedBuilder, ActionRowBuilder...)</li>
-                                    <li>Uso pesado de memória (Node.js)</li>
-                                </ul>
-                            </div>
-                            <div class="card p-6 rounded-lg border-l-4 border-blue-500">
-                                <h3 class="text-white font-bold mb-2">O Jeito Seven</h3>
-                                <ul class="list-disc pl-5 space-y-2 text-xs">
-                                    <li><b>Sistema de Macros:</b> Lógica em uma linha (`s.embed[...]`)</li>
-                                    <li><b>Automático:</b> Sem necessidade de ack manual em interações.</li>
-                                    <li><b>Bun Native:</b> Inicia em milissegundos, 40% menos RAM.</li>
-                                    <li><b>Legível:</b> `s.ban[@user]` vs `guild.members.ban(...)`</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Intents System -->
-            <section id="intents" class="mb-24 scroll-mt-20">
-                <div data-lang="en">
-                    <h2 class="text-2xl font-bold text-white mb-6">Readable Intents System</h2>
-                    <p class="text-gray-400 mb-6">Seven removes "Magic Numbers". Use these readable strings in your
-                        `client` config.</p>
-                </div>
-                <div data-lang="pt" class="hidden">
-                    <h2 class="text-2xl font-bold text-white mb-6">Sistema de Intents Legíveis</h2>
-                    <p class="text-gray-400 mb-6">Seven remove "Números Mágicos". Use estas strings legíveis na config
-                        do seu `client`.</p>
-                </div>
-
-                <div class="card p-0 rounded-lg overflow-hidden border border-border-800">
-                    <table class="w-full text-left">
-                        <thead class="bg-bg-800 text-gray-500 font-mono text-xs uppercase">
-                            <tr>
-                                <th class="p-4">Intent Name</th>
-                                <th class="p-4">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-border-800 text-sm font-mono text-gray-300">
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenGuild</td>
-                                <td class="p-4 text-gray-500">Basic guild data (roles, channels).</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenMembers</td>
-                                <td class="p-4 text-gray-500">Privileged. Detecting user joins/leaves.</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenBans</td>
-                                <td class="p-4 text-gray-500">Detecting bans.</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenMessages</td>
-                                <td class="p-4 text-gray-500">Detecting new messages.</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenMessageContent</td>
-                                <td class="p-4 text-gray-500">Privileged. Reading text content.</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-blue-400">SevenVoice</td>
-                                <td class="p-4 text-gray-500">Voice state updates.</td>
-                            </tr>
-                            <tr class="hover:bg-bg-800/50">
-                                <td class="p-4 text-purple-400 font-bold">SevenAll</td>
-                                <td class="p-4 text-gray-500">Enables EVERYTHING (Dev mode).</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Event System -->
-            <section id="events" class="mb-24 scroll-mt-20">
-                <div data-lang="en">
-                    <h2 class="text-2xl font-bold text-white mb-6">Event System</h2>
-                </div>
-                <div data-lang="pt" class="hidden">
-                    <h2 class="text-2xl font-bold text-white mb-6">Sistema de Eventos</h2>
-                </div>
-
-                <div class="card p-8 rounded-xl">
-                    <div class="mac-window">
-                        <div class="mac-header">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
-                        </div>
-                        <pre class="p-4 m-0"><code class="language-typescript text-sm">client.on({
-    name: "messageDelete",
-    code: "s.log[Message deleted by s.authorID in s.channelID]"
-});
-
-// Custom Ready Handler
-client.setReady("s.log[Bot is online!]");</code></pre>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Macros Sections -->
-            <div id="macros-container"></div>
-
-        </div>
-    </main>
-
-    <script>
-        // MACRO DATA SOURCE
-        const macroCategories = [
-            {
-                id: "section-core", title: "Core & IO",
-                macros: [
-                    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123;Hello]" },
-                    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
-                    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
-                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
-                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[xp;user]" }
-                ]
-            },
-            {
-                id: "section-user", title: "User Context",
-                macros: [
-                    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code: "s.userId[@user]" },
-                    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag" },
-                    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code: "s.embed[image:s.userAvatar]" },
-                    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }], code: "s.userCreated" },
-                    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot" }
-                ]
-            },
-            {
-                id: "section-ui", title: "UI & Embed",
-                macros: [
-                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF]" },
-                    { name: "s.button", desc: "Create button", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "style" }, { name: "disabled", type: "bool", req: false }], code: "s.button[btn1;Click Me;Primary]" },
-                    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
-                    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
-                    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
-                    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New content]" }
-                ]
-            },
-            {
-                id: "section-economy", title: "Economy",
-                macros: [
-                    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
-                    { name: "s.pay", desc: "Transfer money", args: [{ name: "amt", type: "number" }, { name: "user", type: "string" }], code: "s.pay[100;@user]" },
-                    { name: "s.work", desc: "Work for money", args: [{ name: "min", type: "number", req: false }, { name: "max", type: "number", req: false }], code: "s.work[50;100]" },
-                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]" },
-                    { name: "s.bank", desc: "Bank balance", args: [], code: "s.bank" },
-                    { name: "s.deposit", desc: "Deposit money", args: [{ name: "amt", type: "number|all" }], code: "s.deposit[all]" },
-                    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "amt", type: "number|all" }], code: "s.withdraw[100]" }
-                ]
-            },
-            {
-                id: "section-system", title: "System",
-                macros: [
-                    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
-                    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
-                    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
-                    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
-                    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
-                    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
-                    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" }
-                ]
-            },
-            {
-                id: "section-moderation", title: "Moderation",
-                macros: [
-                    { name: "s.ban", desc: "Ban user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.ban[@user;Spam]" },
-                    { name: "s.kick", desc: "Kick user", args: [{ name: "user", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.kick[@user;Bye]" },
-                    { name: "s.mute", desc: "Timeout user", args: [{ name: "user", type: "string" }, { name: "dur", type: "string" }, { name: "reason", type: "string", req: false }], code: "s.mute[@user;1h]" },
-                    { name: "s.purge", desc: "Delete msg", args: [{ name: "amt", type: "number" }], code: "s.purge[10]" }
-                ]
-            },
-            {
-                id: "section-logic", title: "Logic & Math",
-                macros: [
-                    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
-                    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.and[true;false]" },
-                    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.or[true;false]" },
-                    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
-                    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number" }], code: "s.randomInt[1;100]" }
-                ]
-            },
-            {
-                id: "section-string", title: "String Op",
-                macros: [
-                    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
-                    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
-                    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
-                ]
-            }
-        ];
-
-        // RENDERER
-        const container = document.getElementById('macros-container');
-
-        macroCategories.forEach(cat => {
-            const section = document.createElement('section');
-            section.id = cat.id;
-            section.className = "mb-16 scroll-mt-20";
-
-            section.innerHTML = `
-                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4">${cat.title}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    ${cat.macros.map(m => `
-                        <div class="card p-5 rounded-lg cursor-pointer group" onclick='openSpecs(${JSON.stringify(m)}, "${cat.title}")'>
-                            <div class="flex justify-between items-start mb-3">
-                                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
-                                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </div>
-                            <p class="text-xs text-gray-500 line-clamp-2">${m.desc}</p>
-                            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between">
-                                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
-                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.22</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            container.appendChild(section);
-        });
-
-        // SPECS LOGIC
-        const panel = document.getElementById('specs-panel');
-        const overlay = document.getElementById('specs-overlay');
-        const dTitle = document.getElementById('spec-title');
-        const dCat = document.getElementById('spec-category');
-        const dDesc = document.getElementById('spec-desc');
-        const dCode = document.getElementById('spec-code');
-        const dArgsBody = document.getElementById('spec-args-body');
-
-        window.openSpecs = (macro, category) => {
-            dTitle.textContent = macro.name;
-            dCat.textContent = category;
-            dDesc.textContent = macro.desc;
-            dCode.textContent = macro.code;
-
-            dArgsBody.innerHTML = macro.args.map((arg, i) => `
-                <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50">
-                    <td class="p-3 text-gray-500">${i + 1}</td>
-                    <td class="p-3 text-blue-400 font-bold">${arg.name}</td>
-                    <td class="p-3 text-gray-400">${arg.type}</td>
-                    <td class="p-3">
-                        ${arg.req === false
-                    ? '<span class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700">OPT</span>'
-                    : '<span class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30">REQ</span>'}
-                    </td>
-                </tr>
-            `).join('');
-
-            if (macro.args.length === 0) {
-                dArgsBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-600 italic">No arguments required.</td></tr>`;
-            }
-
-            Prism.highlightElement(dCode);
-
-            panel.classList.add('open');
-            overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        };
-
-        window.closeSpecs = () => {
-            panel.classList.remove('open');
-            overlay.classList.add('opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-        };
-
-        // SEARCH
-        document.getElementById('search').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.card').forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(term)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        // LANGUAGE
-        window.setLang = (lang) => {
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                if (el.getAttribute('data-lang') === lang) {
-                    el.classList.remove('hidden');
-                    el.style.display = 'block'; // Ensure block display
-                } else {
-                    el.classList.add('hidden');
-                    el.style.display = 'none';
-                }
-            });
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.dataset.target === lang) {
-                    btn.classList.add('bg-white/10', 'text-white');
-                    btn.classList.remove('bg-bg-800', 'text-gray-500');
-                } else {
-                    btn.classList.remove('bg-white/10', 'text-white');
-                    btn.classList.add('bg-bg-800', 'text-gray-500');
-                }
-            });
-        }
-        setLang('en');
+    // LANGUAGE
+    window.setLang = (lang) => {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+    if (el.getAttribute('data-lang') === lang) {
+    el.classList.remove('hidden');
+    el.style.display = 'block'; // Ensure block display
+    } else {
+    el.classList.add('hidden');
+    el.style.display = 'none';
+    }
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.dataset.target === lang) {
+    btn.classList.add('bg-white/10', 'text-white');
+    btn.classList.remove('bg-bg-800', 'text-gray-500');
+    } else {
+    btn.classList.remove('bg-white/10', 'text-white');
+    btn.classList.add('bg-bg-800', 'text-gray-500');
+    }
+    });
+    }
+    setLang('en');
     </script>
-</body>
+    </body>
 
 </html>

@@ -10,7 +10,23 @@ export class PayMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        const [amountStr, targetId] = args;
+        let amountStr, targetId;
+
+        const hasKV = args.some(a => a.includes(":") && !a.match(/^\d+$/));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            amountStr = map.amount || map.amt || map.value;
+            targetId = map.user || map.target || map.id || map.to;
+        } else {
+            [amountStr, targetId] = args;
+        }
+
         const amount = parseInt(amountStr);
 
         if (isNaN(amount) || !targetId) return "false";

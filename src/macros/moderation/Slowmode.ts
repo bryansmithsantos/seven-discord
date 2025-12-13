@@ -12,11 +12,26 @@ export class SlowmodeMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        const [secondsStr, channelIdStr] = args;
+        let secondsStr, channelId;
+
+        const hasKV = args.some(a => a.includes(":") && !a.match(/^\d+$/));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            secondsStr = map.time || map.seconds || map.sec || map.duration || map.t;
+            channelId = map.channel || map.ch || map.id;
+        } else {
+            [secondsStr, channelId] = args;
+        }
+
         const seconds = parseInt(secondsStr);
         if (isNaN(seconds)) return;
 
-        let channelId = channelIdStr;
         if (!channelId) {
             channelId = ctx.interaction ? ctx.interaction.channel_id : ctx.message.channel_id;
         }

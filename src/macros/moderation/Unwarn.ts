@@ -11,7 +11,23 @@ export class UnwarnMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        const [userId, indexStr] = args;
+        let userId, indexStr;
+
+        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http"));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            userId = map.user || map.target || map.id || map.member;
+            indexStr = map.index || map.i || map.case;
+        } else {
+            [userId, indexStr] = args;
+        }
+
         if (!userId) return;
 
         const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;

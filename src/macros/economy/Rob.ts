@@ -6,7 +6,21 @@ export class RobMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]): Promise<string> {
-        const victim = args[0];
+        let victim;
+        const hasKV = args.some(a => a.includes(":") && !a.startsWith("http")); // Rob usually user id, not http
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            victim = map.user || map.target || map.id || map.victim;
+        } else {
+            [victim] = args;
+        }
+
         const user = ctx.author?.id;
         const guildId = ctx.interaction ? ctx.interaction.guild_id : ctx.message.guild_id;
 

@@ -11,7 +11,22 @@ export class LockMacro extends Macro {
     }
 
     async execute(ctx: any, ...args: string[]) {
-        let [channelId] = args;
+        let channelId;
+
+        const hasKV = args.some(a => a.includes(":"));
+        if (hasKV) {
+            const map: any = {};
+            args.forEach(arg => {
+                const split = arg.indexOf(":");
+                if (split > -1) {
+                    map[arg.substring(0, split).trim().toLowerCase()] = arg.substring(split + 1).trim();
+                }
+            });
+            channelId = map.channel || map.ch || map.id;
+        } else {
+            [channelId] = args;
+        }
+
         if (!channelId) {
             channelId = ctx.interaction ? ctx.interaction.channel_id : ctx.message.channel_id;
         }
