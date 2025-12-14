@@ -4,211 +4,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.5.24 - The Logic Framework</title>
-    <!-- ... skipping head ... -->
-    <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-        Seven
-        <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.24</span>
-    </h1>
-    <!-- ... -->
-    // MACRO DATA SOURCE
-    const macroCategories = [
-    {
-    id: "section-core", title: "Core & IO",
-    macros: [
-    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type:
-    "string" }], code: "s.send[123;Hello]" },
-    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
-    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
-    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, {
-    name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
-    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type:
-    "user|guild", req: false }], code: "s.getVar[xp;user]" }
-    ]
-    },
-    {
-    id: "section-user", title: "User Context",
-    macros: [
-    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code:
-    "s.userId[@user]" },
-    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag"
-    },
-    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code:
-    "s.embed[image:s.userAvatar]" },
-    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }],
-    code: "s.userCreated" },
-    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot"
-    }
-    ]
-    },
-    {
-    id: "section-ui", title: "UI & Embed",
-    macros: [
-    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi;
-    color:#FFF]" },
-    { name: "s.button", desc: "Create button", args: [{ name: "props", type: "key:value" }], code: "s.button[label:Click
-    Me; style:Primary; id:btn1]" },
-    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string"
-    }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
-    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder",
-    type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
-    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
-    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New
-    content]" },
-    { name: "s.author", desc: "Embed Author", args: [{ name: "props", type: "key:value" }], code: "s.author[name:Koxik;
-    icon:link]" }
-    ]
-    },
-    {
-    id: "section-economy", title: "Economy",
-    macros: [
-    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
-    { name: "s.pay", desc: "Transfer money", args: [{ name: "props", type: "key:value" }], code: "s.pay[amount:100;
-    user:@user]" },
-    { name: "s.work", desc: "Work for money", args: [{ name: "props", type: "key:value" }], code: "s.work[min:50;
-    max:100]" },
-    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]"
-    },
-    { name: "s.deposit", desc: "Deposit money", args: [{ name: "props", type: "key:value" }], code:
-    "s.deposit[amount:all]" },
-    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "props", type: "key:value" }], code:
-    "s.withdraw[amount:100]" },
-    { name: "s.rob", desc: "Rob user", args: [{ name: "props", type: "key:value" }], code: "s.rob[user:@victim]" },
-    { name: "s.gamble", desc: "Gamble money", args: [{ name: "props", type: "key:value" }], code: "s.gamble[bet:500]" },
-    { name: "s.coinflip", desc: "Coinflip", args: [{ name: "props", type: "key:value" }], code: "s.coinflip[bet:100;
-    side:heads]" }
-    ]
-    },
-    {
-    id: "section-string", title: "String Op",
-    macros: [
-    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string"
-    }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
-    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
-    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
-    ]
-    }
-    ];
-    // RENDERER
-    const container = document.getElementById('macros-container');
+    <title>Seven-Discord v2.5.26 - The Logic Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
-    macroCategories.forEach(cat => {
-    const section = document.createElement('section');
-    section.id = cat.id;
-    section.className = "mb-16 scroll-mt-20";
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
 
-    section.innerHTML = `
-    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4">
-        ${cat.title}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        ${cat.macros.map(m => `
-        
-            <div class="flex justify-between items-start mb-3">
-                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
-                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </div>
-            <p class="text-xs text-gray-500 line-clamp-2">${m.desc}</p>
-            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between">
-                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
-                <span
-                    class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
+        :root {
+            --bg-900: #0a0a0f;
+            --bg-800: #13131f;
+            --border-800: #2a2a35;
+            --accent-500: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-900);
+            color: #e2e8f0;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .card {
+            background: var(--bg-800);
+            border: 1px solid var(--border-800);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-500);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-900);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .glass-panel {
+            background: rgba(19, 19, 31, 0.95);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-blue-500/30">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 border-b border-border-800 bg-bg-900/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                Seven
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.26</span>
+            </h1>
+            <div class="flex gap-6 text-sm font-medium text-gray-400">
+                <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
+                    class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://www.npmjs.com/package/seven-discord" target="_blank"
+                    class="hover:text-white transition-colors">NPM</a>
             </div>
         </div>
-        `).join('')}
-    </div>
-    `;
-    container.appendChild(section);
-    });
+    </nav>
 
-    // SPECS LOGIC
-    const panel = document.getElementById('specs-panel');
-    const overlay = document.getElementById('specs-overlay');
-    const dTitle = document.getElementById('spec-title');
-    const dCat = document.getElementById('spec-category');
-    const dDesc = document.getElementById('spec-desc');
-    const dCode = document.getElementById('spec-code');
-    const dArgsBody = document.getElementById('spec-args-body');
+    <!-- HERO -->
+    <header class="pt-32 pb-20 px-6 max-w-7xl mx-auto text-center">
+        <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono mb-6 border border-blue-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            Now with Key-Value Arguments
+        </div>
+        <h2
+            class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
+            The Logic Framework<br>for Discord
+        </h2>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Build complex bots with simple macros. Zero boilerplate, fully typed, and designed for readability.
+        </p>
 
-    window.openSpecs = (macro, category) => {
-    dTitle.textContent = macro.name;
-    dCat.textContent = category;
-    dDesc.textContent = macro.desc;
-    dCode.textContent = macro.code;
+        <!-- SEARCH -->
+        <div class="relative max-w-lg mx-auto group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input type="text" id="search"
+                class="block w-full pl-11 pr-4 py-4 bg-bg-800 border border-border-800 rounded-xl text-gray-200 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-xl"
+                placeholder="Search macros (e.g. s.embed, s.ban)...">
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                <span
+                    class="text-xs text-gray-600 font-mono border border-border-800 rounded px-1.5 py-0.5">CTRL+K</span>
+            </div>
+        </div>
+    </header>
 
-    dArgsBody.innerHTML = macro.args.map((arg, i) => `
-    <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50">
-        <td class="p-3 text-gray-500">${i + 1}</td>
-        <td class="p-3 text-blue-400 font-bold">${arg.name}</td>
-        <td class="p-3 text-gray-400">${arg.type}</td>
-        <td class="p-3">
-            ${arg.req === false
-            ? '<span
-                class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700">OPT</span>'
-            : '<span
-                class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30">REQ</span>'}
-        </td>
-    </tr>
-    `).join('');
+    <!-- MAIN GRID -->
+    <main class="max-w-7xl mx-auto px-6 pb-32" id="macros-container">
+        <!-- RENDERED BY JS -->
+    </main>
 
-    if (macro.args.length === 0) {
-    dArgsBody.innerHTML = `<tr>
-        <td colspan="4" class="p-4 text-center text-gray-600 italic">No arguments required.</td>
-    </tr>`;
-    }
+    <!-- FLOATING SPECS PANEL -->
+    <div id="specs-overlay"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"
+        onclick="closeSpecs()"></div>
 
-    Prism.highlightElement(dCode);
+    <aside id="specs-panel"
+        class="fixed top-0 right-0 h-full w-full md:w-[600px] glass-panel z-[70] transform translate-x-full transition-transform duration-300 border-l border-border-800 shadow-2xl flex flex-col">
 
-    panel.classList.add('open');
-    overlay.classList.remove('hidden');
-    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-    };
+        <!-- HEADER -->
+        <div class="p-6 border-b border-border-800 flex justify-between items-start bg-bg-900/50">
+            <div>
+                <span id="spec-category"
+                    class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2 block">Category</span>
+                <h3 id="spec-title" class="text-3xl font-mono font-bold text-white mb-2"></h3>
+                <p id="spec-desc" class="text-gray-400 text-sm leading-relaxed"></p>
+            </div>
+            <button onclick="closeSpecs()"
+                class="p-2 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
 
-    window.closeSpecs = () => {
-    panel.classList.remove('open');
-    overlay.classList.add('opacity-0');
-    setTimeout(() => overlay.classList.add('hidden'), 300);
-    };
+        <!-- CONTENT -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-8">
 
-    // SEARCH
-    document.getElementById('search').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    document.querySelectorAll('.card').forEach(card => {
-    const text = card.textContent.toLowerCase();
-    if (text.includes(term)) {
-    card.style.display = 'block';
-    } else {
-    card.style.display = 'none';
-    }
-    });
-    });
+            <!-- CODE BLOCK -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Usage Example</h4>
+                    <button
+                        class="text-[10px] text-blue-400 hover:text-blue-300 font-mono flex items-center gap-1 group">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        COPY
+                    </button>
+                </div>
+                <div class="rounded-lg overflow-hidden border border-border-800 bg-[#0d0d12]">
+                    <pre><code class="language-javascript" id="spec-code"></code></pre>
+                </div>
+            </div>
 
-    // LANGUAGE
-    window.setLang = (lang) => {
-    document.querySelectorAll('[data-lang]').forEach(el => {
-    if (el.getAttribute('data-lang') === lang) {
-    el.classList.remove('hidden');
-    el.style.display = 'block'; // Ensure block display
-    } else {
-    el.classList.add('hidden');
-    el.style.display = 'none';
-    }
-    });
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-    if (btn.dataset.target === lang) {
-    btn.classList.add('bg-white/10', 'text-white');
-    btn.classList.remove('bg-bg-800', 'text-gray-500');
-    } else {
-    btn.classList.remove('bg-white/10', 'text-white');
-    btn.classList.add('bg-bg-800', 'text-gray-500');
-    }
-    });
-    }
-    setLang('en');
+            <!-- ARGUMENTS TABLE -->
+            <div>
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Arguments</h4>
+                <div class="border border-border-800 rounded-lg overflow-hidden bg-bg-900/30">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-500 uppercase bg-bg-800/50 border-b border-border-800">
+                            <tr>
+                                <th class="p-3 font-medium">#</th>
+                                <th class="p-3 font-medium">Name</th>
+                                <th class="p-3 font-medium">Type</th>
+                                <th class="p-3 font-medium">Req</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spec-args-body" class="font-mono text-xs">
+                            <!-- JS RENDER -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HELP BOX -->
+            <div class="p-4 rounded border border-blue-500/20 bg-blue-500/5">
+                <div class="flex gap-3">
+                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-xs text-blue-200 leading-relaxed">
+                        <p class="mb-1 font-bold text-blue-100">Pro Tip</p>
+                        Most macros now support key-value pairs (e.g., <code
+                            class="bg-blue-500/20 px-1 rounded">user:@koxik</code>) for clearer configuration, but
+                        ordered arguments are still supported for backward compatibility.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <script>
+        // DATA SOURCE
+        const macroCategories = [
+            {
+                id: "section-core", title: "Core & IO",
+                macros: [
+                    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123;Hello]" },
+                    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
+                    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
+                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
+                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[xp;user]" }
+                ]
+            },
+            {
+                id: "section-user", title: "User Context",
+                macros: [
+                    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code: "s.userId[@user]" },
+                    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag" },
+                    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code: "s.embed[image:s.userAvatar]" },
+                    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }], code: "s.userCreated" },
+                    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot" }
+                ]
+            },
+            {
+                id: "section-ui", title: "UI & Embed",
+                macros: [
+                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF]" },
+                    { name: "s.button", desc: "Create button", args: [{ name: "props", type: "key:value" }], code: "s.button[label:Click Me; style:Primary; id:btn1]" },
+                    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
+                    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
+                    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
+                    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New content]" },
+                    { name: "s.author", desc: "Embed Author", args: [{ name: "props", type: "key:value" }], code: "s.author[name:Koxik; icon:link]" }
+                ]
+            },
+            {
+                id: "section-economy", title: "Economy",
+                macros: [
+                    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
+                    { name: "s.pay", desc: "Transfer money", args: [{ name: "props", type: "key:value" }], code: "s.pay[amount:100; user:@user]" },
+                    { name: "s.work", desc: "Work for money", args: [{ name: "props", type: "key:value" }], code: "s.work[min:50; max:100]" },
+                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]" },
+                    { name: "s.deposit", desc: "Deposit money", args: [{ name: "props", type: "key:value" }], code: "s.deposit[amount:all]" },
+                    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "props", type: "key:value" }], code: "s.withdraw[amount:100]" },
+                    { name: "s.rob", desc: "Rob user", args: [{ name: "props", type: "key:value" }], code: "s.rob[user:@victim]" },
+                    { name: "s.gamble", desc: "Gamble money", args: [{ name: "props", type: "key:value" }], code: "s.gamble[bet:500]" },
+                    { name: "s.coinflip", desc: "Coinflip", args: [{ name: "props", type: "key:value" }], code: "s.coinflip[bet:100; side:heads]" }
+                ]
+            },
+            {
+                id: "section-system", title: "System",
+                macros: [
+                    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
+                    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
+                    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
+                    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
+                    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
+                    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
+                    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" },
+                    { name: "s.setStatus", desc: "Set Bot Status", args: [{ name: "props", type: "key:value" }], code: "s.setStatus[type:watching; status:dnd; name:Users]" }
+                ]
+            },
+            {
+                id: "section-moderation", title: "Moderation",
+                macros: [
+                    { name: "s.ban", desc: "Ban user", args: [{ name: "props", type: "key:value" }], code: "s.ban[user:@user; reason:Spam]" },
+                    { name: "s.kick", desc: "Kick user", args: [{ name: "props", type: "key:value" }], code: "s.kick[user:@user; reason:Bye]" },
+                    { name: "s.mute", desc: "Timeout user", args: [{ name: "props", type: "key:value" }], code: "s.mute[user:@user; time:1h]" },
+                    { name: "s.purge", desc: "Delete msg", args: [{ name: "props", type: "key:value" }], code: "s.purge[limit:10]" },
+                    { name: "s.lock", desc: "Lock channel", args: [{ name: "props", type: "key:value" }], code: "s.lock[channel:#general]" },
+                    { name: "s.unlock", desc: "Unlock channel", args: [{ name: "props", type: "key:value" }], code: "s.unlock[channel:#general]" },
+                    { name: "s.slowmode", desc: "Set slowmode", args: [{ name: "props", type: "key:value" }], code: "s.slowmode[time:10s]" },
+                    { name: "s.warn", desc: "Warn user", args: [{ name: "props", type: "key:value" }], code: "s.warn[user:@user; reason:Troll]" },
+                    { name: "s.unwarn", desc: "Remove warning", args: [{ name: "props", type: "key:value" }], code: "s.unwarn[user:@user; index:1]" }
+                ]
+            },
+            {
+                id: "section-logic", title: "Logic & Math",
+                macros: [
+                    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
+                    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.and[true;false]" },
+                    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.or[true;false]" },
+                    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
+                    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number" }], code: "s.randomInt[1;100]" }
+                ]
+            },
+            {
+                id: "section-string", title: "String Op",
+                macros: [
+                    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
+                    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
+                    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
+                ]
+            }
+        ];
+
+        // RENDERER
+        const container = document.getElementById('macros-container');
+
+        macroCategories.forEach(cat => {
+            const section = document.createElement('section');
+            section.id = cat.id;
+            section.className = "mb-16 scroll-mt-20 fade-in";
+
+            section.innerHTML = `
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4 flex items-center justify-between">
+                    ${cat.title}
+                    <span class="text-[10px] bg-bg-800 px-2 py-0.5 rounded text-gray-600">${cat.macros.length}</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${cat.macros.map(m => `
+                        <div class="card p-5 rounded-lg cursor-pointer group relative overflow-hidden" onclick='openSpecs(${JSON.stringify(m)}, "${cat.title}")'>
+                            <div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="flex justify-between items-start mb-3 relative z-10">
+                                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
+                                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                            <p class="text-xs text-gray-500 line-clamp-2 relative z-10">${m.desc}</p>
+                            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between relative z-10">
+                                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
+                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        });
+
+        // SPECS LOGIC
+        const panel = document.getElementById('specs-panel');
+        const overlay = document.getElementById('specs-overlay');
+        const dTitle = document.getElementById('spec-title');
+        const dCat = document.getElementById('spec-category');
+        const dDesc = document.getElementById('spec-desc');
+        const dCode = document.getElementById('spec-code');
+        const dArgsBody = document.getElementById('spec-args-body');
+
+        window.openSpecs = (macro, category) => {
+            dTitle.textContent = macro.name;
+            dCat.textContent = category;
+            dDesc.textContent = macro.desc;
+            dCode.textContent = macro.code;
+
+            dArgsBody.innerHTML = macro.args.map((arg, i) => `
+                <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50 transition-colors">
+                    <td class="p-3 text-gray-500 font-mono">${i + 1}</td>
+                    <td class="p-3 text-blue-400 font-bold font-mono">${arg.name}</td>
+                    <td class="p-3 text-gray-400 font-mono text-[10px]">${arg.type}</td>
+                    <td class="p-3">
+                        ${arg.req === false
+                    ? '<span class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700 font-mono">OPT</span>'
+                    : '<span class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30 font-mono">REQ</span>'}
+                    </td>
+                </tr>
+            `).join('');
+
+            if (macro.args.length === 0) {
+                dArgsBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-600 italic text-xs">No arguments required.</td></tr>`;
+            }
+
+            Prism.highlightElement(dCode);
+
+            panel.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        };
+
+        window.closeSpecs = () => {
+            panel.classList.add('translate-x-full');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        };
+
+        // SEARCH LOGIC
+        document.getElementById('search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const parentSection = card.closest('section');
+
+                if (text.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Hide empty sections
+            document.querySelectorAll('section').forEach(section => {
+                const visibleCards = section.querySelectorAll('.card[style="display: block"]').length;
+                const totalCards = section.querySelectorAll('.card').length;
+                const anyVisible = visibleCards > 0 || (term === '' && totalCards > 0);
+                section.style.display = anyVisible ? 'block' : 'none';
+            });
+        });
+
+        // KEYBOARD SHORTCUTS
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('search').focus();
+            }
+            if (e.key === 'Escape') {
+                closeSpecs();
+            }
+        });
     </script>
-    </body>
+</body>
 
 </html>
