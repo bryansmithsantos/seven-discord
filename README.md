@@ -92,7 +92,7 @@ We completely redesigned our docs. They are now built-in!
 
 ---
 
-## 📦 What's New in v2.5.26?
+## 📦 What's New in v2.5.25?
 *   **Key-Value Arguments**: Now support `s.embed[title:Hello; color:Red]` syntax!
 *   **New Macros**: `s.setStatus`, `s.work`, `s.rob` and more economy features.
 *   **Performance**: Optimized variable parsing for lower memory usage.
