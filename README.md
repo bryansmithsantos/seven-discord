@@ -92,11 +92,20 @@ We completely redesigned our docs. They are now built-in!
 
 ---
 
-## 📦 What's New in v2.5.22?
-*   **Renamed Intents**: `SevenGuild`, `SevenMembers`... (Matches the brand!).
-*   **EasyUI**: Macros to create Modals and Select Menus in one line.
-*   **Logic Upgrade**: Better `If/Else` handling.
-*   **Stability**: Fixes for the Client Core.
+## 📦 What's New in v2.5.26?
+*   **Key-Value Arguments**: Now support `s.embed[title:Hello; color:Red]` syntax!
+*   **New Macros**: `s.setStatus`, `s.work`, `s.rob` and more economy features.
+*   **Performance**: Optimized variable parsing for lower memory usage.
+*   **Docs 2.0**: Completely new dark-mode documentation site.
+
+---
+
+## 🔮 Roadmap to v2.6.0 (The Future)
+We are building the next generation of Seven-Discord.
+*   [ ] **Voice Support**: `s.join`, `s.play` (Simple Music Bots).
+*   [ ] **Advanced Slash**: Subcommands and Autocomplete support.
+*   [ ] **SevenDB**: Native, file-based database (faster than JSON).
+*   [ ] **Plugin System**: Load external macros easily.
 
 ---
 

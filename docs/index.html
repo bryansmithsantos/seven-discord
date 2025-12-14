@@ -14,11 +14,11 @@
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
 
         :root {
-            --bg-900: #0a0a0f;
-            --bg-800: #13131f;
-            --border-800: #2a2a35;
+            --bg-900: #050505;
+            --bg-800: #0a0a0a;
+            --border-800: #1f1f1f;
             --accent-500: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.15);
+            --accent-glow: rgba(59, 130, 246, 0.1);
         }
 
         body {
@@ -33,14 +33,15 @@
 
         .card {
             background: var(--bg-800);
-            border: 1px solid var(--border-800);
+            border: 1px solid transparent;
             transition: all 0.2s ease;
         }
 
         .card:hover {
-            border-color: var(--accent-500);
+            background: #111;
+            border-color: #333;
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
         }
 
         /* Custom Scrollbar */
@@ -316,7 +317,7 @@
             section.className = "mb-16 scroll-mt-20 fade-in";
 
             section.innerHTML = `
-                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 border-b border-border-800 pb-4 flex items-center justify-between">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 pb-4 flex items-center justify-between">
                     ${cat.title}
                     <span class="text-[10px] bg-bg-800 px-2 py-0.5 rounded text-gray-600">${cat.macros.length}</span>
                 </h2>
