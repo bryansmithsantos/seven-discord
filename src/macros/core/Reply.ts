@@ -9,29 +9,6 @@ export class ReplyMacro extends Macro {
             description: "Responds to the message author with optionals embeds/components.",
             category: "core"
         });
-    }
-
-    static parsePayload(content: string) {
-        const payload: any = { content: "" };
-        let processedContent = content;
-
-        // 1. Extract Embeds
-        const embeds = [];
-        // Fixed Regex: Lookahead must include <<COMPONENTS>>
-        const embedRegex = /<<EMBED>>(.*?)(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs;
-        let em;
-        while ((em = embedRegex.exec(processedContent)) !== null) {
-            try {
-                embeds.push(JSON.parse(em[1].trim()));
-            } catch (e) { }
-        }
-        if (embeds.length > 0) payload.embeds = embeds;
-        processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs, "");
-
-        // 2. Extract Hoisted Components (from Embeds)
-        const components: any[] = [];
-        // Fixed Regex: Lookahead for clarity (though usually at end)
-        const hoistedRegex = /<<COMPONENTS>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
         let hm;
         while ((hm = hoistedRegex.exec(processedContent)) !== null) {
             try {

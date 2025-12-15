@@ -122,6 +122,10 @@ export class EmbedMacro extends Macro {
         }
 
         // Return safely with components separated
-        return `<<EMBED>>${JSON.stringify(embed)}<<COMPONENTS>>${JSON.stringify(components)}`;
+        // Transform to Base64 to ensure Safe Transport through Interpreter (no regex/semicolon issues)
+        const payload = JSON.stringify({ embed, components });
+        const b64 = Buffer.from(payload).toString("base64");
+
+        return `<<B64_EMBED>>${b64}::END`;
     }
 }

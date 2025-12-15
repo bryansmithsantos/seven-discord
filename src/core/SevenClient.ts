@@ -211,6 +211,10 @@ export class SevenClient {
         this.gateway.setPresence(status, name, type);
     }
 
+    public setActivity(name: string, type: number = 0, status: string = "online"): void {
+        this.setStatus(status, name, type);
+    }
+
     public async start(): Promise<void> {
         console.clear();
         const currentVersion = require("../../package.json").version || "Dev";
