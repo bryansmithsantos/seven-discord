@@ -1,5 +1,6 @@
 
 import { Macro } from "../Macro";
+import { EmbedParser } from "../../util/EmbedParser";
 // Native JSON build only.
 // Seven-Discord dependency philosophy: Minimal. We build raw JSON objects.
 
@@ -54,54 +55,11 @@ export class EmbedMacro extends Macro {
             } catch (e) { }
         }
 
-        const cleanContent = content.replace(componentRegex, "");
+        const tempContent = content.replace(componentRegex, "");
 
-        // 1. Simple Parser for our custom embed syntax (s.title -> EMBED_TITLE)
-        const titleMatch = cleanContent.match(/EMBED_TITLE::(.*?)::END/s);
-        if (titleMatch) embed.title = titleMatch[1];
-
-        const descMatch = cleanContent.match(/EMBED_DESC::(.*?)::END/s);
-        if (descMatch) embed.description = descMatch[1];
-
-        const colorMatch = cleanContent.match(/EMBED_COLOR::(.*?)::END/s);
-        if (colorMatch) embed.color = parseInt(colorMatch[1].replace("#", ""), 16);
-
-        const imgMatch = cleanContent.match(/EMBED_IMAGE::(.*?)::END/s);
-        if (imgMatch) embed.image = { url: imgMatch[1] };
-
-        const thumbMatch = cleanContent.match(/EMBED_THUMB::(.*?)::END/s);
-        if (thumbMatch) embed.thumbnail = { url: thumbMatch[1] };
-
-        const footerMatch = cleanContent.match(/EMBED_FOOTER::(.*?)::END/s);
-        if (footerMatch) embed.footer = { text: footerMatch[1] };
-
-        const urlMatch = cleanContent.match(/EMBED_URL::(.*?)::END/s);
-        if (urlMatch) embed.url = urlMatch[1];
-
-        const tsMatch = cleanContent.match(/EMBED_TIMESTAMP::(.*?)::END/s);
-        if (tsMatch) embed.timestamp = tsMatch[1] === "now" ? new Date().toISOString() : tsMatch[1];
-
-        const authorMatch = cleanContent.match(/EMBED_AUTHOR::(.*?)::(.*?)::(.*?)::END/s);
-        if (authorMatch) {
-            embed.author = {
-                name: authorMatch[1],
-                icon_url: authorMatch[2] || undefined,
-                url: authorMatch[3] || undefined
-            };
-        }
-
-        // Fields (Global Search)
-        const fieldRegex = /EMBED_FIELD::(.*?)::(.*?)::(.*?)::END/gs;
-        let fMatch;
-        const fields = [];
-        while ((fMatch = fieldRegex.exec(cleanContent)) !== null) {
-            fields.push({
-                name: fMatch[1],
-                value: fMatch[2],
-                inline: fMatch[3] === "true"
-            });
-        }
-        if (fields.length > 0) embed.fields = fields;
+        // Use Shared Parser
+        const { embed: parsedEmbed } = EmbedParser.parse(tempContent);
+        if (parsedEmbed) Object.assign(embed, parsedEmbed);
 
         // 2. Sugar Syntax Parser (KV usage inside s.embed directly)
         // e.g. s.embed[title:Hello; color:red]

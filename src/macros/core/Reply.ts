@@ -1,6 +1,7 @@
 
 import { Macro } from "../Macro";
 import { Logger } from "../../util/Logger";
+import { EmbedParser } from "../../util/EmbedParser";
 
 export class ReplyMacro extends Macro {
     constructor() {
@@ -49,6 +50,14 @@ export class ReplyMacro extends Macro {
             } catch (e) { }
         }
         processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs, "");
+
+        // 1.5 Implicit Embeds (s.title used without s.embed)
+        // If the user forgot s.embed[], we pick up the loose tags here.
+        const { embed: implicitEmbed, cleanContent } = EmbedParser.parse(processedContent);
+        if (implicitEmbed) {
+            embeds.push(implicitEmbed);
+            processedContent = cleanContent; // Remove the tags from content
+        }
 
         if (embeds.length > 0) payload.embeds = embeds;
 
