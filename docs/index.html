@@ -4,392 +4,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.6.0 - The Logic Framework</title>
+    <title>Seven-Discord v2.6.0 | TERA Docs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
         :root {
-            --bg-950: #000000;
-            --bg-900: #050505;
-            --bg-800: #0a0a0a;
-            --border-800: #1a1a1a;
-            --accent-500: #1d4ed8;
-            /* Darker blue */
-            --accent-glow: rgba(29, 78, 216, 0.15);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-body: #050505;
+            --bg-card: #0a0a0a;
+            --border-dim: #1a1a1a;
+            --border-highlight: #333333;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #ffffff;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-900);
-            color: #e2e8f0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
         .font-mono {
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .card {
-            background: var(--bg-800);
-            border: 1px solid transparent;
+        /* Grid Background Pattern */
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* Stealth Card */
+        .stealth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
             transition: all 0.2s ease;
         }
 
-        .card:hover {
-            background: #111;
-            border-color: #333;
+        .stealth-card:hover {
+            border-color: var(--border-highlight);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Spotlight Effect Container */
+        .spotlight-group:hover .spotlight-card::after {
+            opacity: 1;
+        }
+
+        .spotlight-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Typography Highlights */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 5px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--bg-900);
+            background: var(--bg-body);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
+            background: #333;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+            background: #555;
         }
 
-        .glass-panel {
-            background: rgba(19, 19, 31, 0.95);
-            backdrop-filter: blur(12px);
+        /* Dialog/Modal Backdrop */
+        .backdrop-glass {
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(8px);
         }
     </style>
 </head>
 
-<body class="antialiased selection:bg-blue-500/30">
+<body class="selection:bg-white selection:text-black">
+
+    <!-- BACKGROUND GRID -->
+    <div class="fixed inset-0 grid-bg pointer-events-none -z-10 opacity-50"></div>
 
     <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full z-50 border-b border-border-800 bg-bg-900/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                Seven
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.6.0</span>
-            </h1>
-            <div class="flex gap-6 text-sm font-medium text-gray-400">
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#050505]/90 backdrop-blur-md">
+        <div class="max-w-screen-xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
+                    <span class="font-bold text-black text-xs">7</span>
+                </div>
+                <span class="font-mono text-xs text-gray-500 tracking-widest uppercase">TERA UPDATE v2.6.0</span>
+            </div>
+            <div class="flex gap-8 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <a href="#section-core" class="hover:text-white transition-colors">Documentation</a>
                 <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
                     class="hover:text-white transition-colors">GitHub</a>
-                <a href="https://www.npmjs.com/package/seven-discord" target="_blank"
-                    class="hover:text-white transition-colors">NPM</a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <header class="pt-32 pb-20 px-6 max-w-7xl mx-auto text-center">
-        <div
-            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono mb-6 border border-blue-500/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-            Now with Key-Value Arguments
-        </div>
-        <h2
-            class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">
-            The Logic Framework<br>for Discord
-        </h2>
-        <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Build complex bots with simple macros. Zero boilerplate, fully typed, and designed for readability.
-        </p>
+    <!-- HERO SECTION -->
+    <header class="pt-40 pb-20 px-6 max-w-screen-xl mx-auto">
+        <div class="max-w-4xl">
+            <h1 class="text-7xl md:text-8xl font-black tracking-tighter mb-8 text-white leading-[0.9]">
+                THE LOGIC<br>
+                <span class="text-gray-600">FRAMEWORK.</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl font-light mb-12 leading-relaxed">
+                Seven-Discord v2.6.0 introduces native SQLite integration, aggressive JIT compilation, and a developer
+                experience that feels like magic.
+            </p>
 
-        <!-- SEARCH -->
-        <div class="relative max-w-lg mx-auto group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </div>
-            <input type="text" id="search"
-                class="block w-full pl-11 pr-4 py-4 bg-bg-800 border border-border-800 rounded-xl text-gray-200 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-xl"
-                placeholder="Search macros (e.g. s.embed, s.ban)...">
-            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                <span
-                    class="text-xs text-gray-600 font-mono border border-border-800 rounded px-1.5 py-0.5">CTRL+K</span>
+            <!-- COMMAND BAR -->
+            <div class="relative max-w-xl group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-gray-800/20 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-500">
+                </div>
+                <input type="text" id="search"
+                    class="relative w-full bg-[#080808] border border-white/10 rounded-lg py-4 pl-12 pr-4 text-white font-mono placeholder-gray-700 focus:outline-none focus:border-white/30 transition-colors"
+                    placeholder="Search Macros...">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 border border-white/10 rounded px-2 py-1">
+                    <span class="text-[10px] text-gray-500 font-mono">CMD+K</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- MAIN GRID -->
-    <main class="max-w-7xl mx-auto px-6 pb-32" id="macros-container">
-        <!-- RENDERED BY JS -->
+    <!-- MAIN CONTENT -->
+    <main class="max-w-screen-xl mx-auto px-6 pb-40" id="macros-container">
+        <!-- Rendered via JS -->
     </main>
 
-    <!-- FLOATING SPECS PANEL -->
-    <div id="specs-overlay"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"
-        onclick="closeSpecs()"></div>
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-12 text-center text-gray-600 text-sm font-mono tracking-widest uppercase">
+        <p>Seven-Discord &copy; 2025</p>
+        <p class="mt-2">Designed for High Performance</p>
+    </footer>
 
-    <aside id="specs-panel"
-        class="fixed top-0 right-0 h-full w-full md:w-[600px] glass-panel z-[70] transform translate-x-full transition-transform duration-300 border-l border-border-800 shadow-2xl flex flex-col">
+    <!-- MODAL -->
+    <div id="modal-overlay" class="fixed inset-0 backdrop-glass z-[60] hidden opacity-0 transition-opacity duration-200"
+        onclick="closeModal()"></div>
+    <div id="modal-panel"
+        class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl bg-[#090909] border border-white/10 z-[70] hidden opacity-0 scale-95 transition-all duration-200 shadow-2xl">
 
-        <!-- HEADER -->
-        <div class="p-6 border-b border-border-800 flex justify-between items-start bg-bg-900/50">
-            <div>
-                <span id="spec-category"
-                    class="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-2 block">Category</span>
-                <h3 id="spec-title" class="text-3xl font-mono font-bold text-white mb-2"></h3>
-                <p id="spec-desc" class="text-gray-400 text-sm leading-relaxed"></p>
-            </div>
-            <button onclick="closeSpecs()"
-                class="p-2 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-8">
-
-            <!-- CODE BLOCK -->
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Usage Example</h4>
-                    <button
-                        class="text-[10px] text-blue-400 hover:text-blue-300 font-mono flex items-center gap-1 group">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        COPY
-                    </button>
+        <div class="flex flex-col h-[600px]">
+            <!-- Header -->
+            <div class="p-8 border-b border-white/5 flex justify-between items-start bg-[#050505]">
+                <div>
+                    <span id="m-cat"
+                        class="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-3 block border-l-2 border-white pl-3">Category</span>
+                    <h3 id="m-name" class="text-3xl font-bold text-white tracking-tight"></h3>
                 </div>
-                <div class="rounded-lg overflow-hidden border border-border-800 bg-[#0d0d12]">
-                    <pre><code class="language-javascript" id="spec-code"></code></pre>
-                </div>
-            </div>
-
-            <!-- ARGUMENTS TABLE -->
-            <div>
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Arguments</h4>
-                <div class="border border-border-800 rounded-lg overflow-hidden bg-bg-900/30">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-bg-800/50 border-b border-border-800">
-                            <tr>
-                                <th class="p-3 font-medium">#</th>
-                                <th class="p-3 font-medium">Name</th>
-                                <th class="p-3 font-medium">Type</th>
-                                <th class="p-3 font-medium">Req</th>
-                            </tr>
-                        </thead>
-                        <tbody id="spec-args-body" class="font-mono text-xs">
-                            <!-- JS RENDER -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- HELP BOX -->
-            <div class="p-4 rounded border border-blue-500/20 bg-blue-500/5">
-                <div class="flex gap-3">
-                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <button onclick="closeModal()" class="text-gray-500 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <div class="text-xs text-blue-200 leading-relaxed">
-                        <p class="mb-1 font-bold text-blue-100">Pro Tip</p>
-                        Most macros now support key-value pairs (e.g., <code
-                            class="bg-blue-500/20 px-1 rounded">user:@koxik</code>) for clearer configuration, but
-                        ordered arguments are still supported for backward compatibility.
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 overflow-y-auto flex-1 bg-[#0a0a0a]">
+                <p id="m-desc" class="text-gray-400 text-lg mb-8 font-light leading-relaxed"></p>
+
+                <div class="mb-8">
+                    <label
+                        class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-3 block">Implementation</label>
+                    <pre
+                        class="bg-[#050505] border border-white/5 rounded-none p-4 overflow-x-auto"><code class="language-javascript font-mono text-sm" id="m-code"></code></pre>
+                </div>
+
+                <div>
+                    <label
+                        class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-3 block">Interface</label>
+                    <div class="border border-white/5 bg-[#050505]">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="text-[10px] text-gray-500 uppercase font-mono bg-white/5">
+                                <tr>
+                                    <th class="p-3 border-b border-white/5 font-medium">Param</th>
+                                    <th class="p-3 border-b border-white/5 font-medium">Type</th>
+                                    <th class="p-3 border-b border-white/5 text-right font-medium">State</th>
+                                </tr>
+                            </thead>
+                            <tbody id="m-args" class="text-xs font-mono text-gray-300">
+                                <!-- JS RENDER -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
+            <!-- Footer -->
+            <div class="p-4 border-t border-white/5 bg-[#050505] flex justify-end">
+                <button onclick="closeModal()"
+                    class="text-xs text-white bg-white/10 hover:bg-white/20 px-6 py-2 transition-colors uppercase font-bold tracking-wider">Close</button>
+            </div>
         </div>
-    </aside>
+    </div>
 
     <script>
-        // DATA SOURCE
+        // --- DATA ---
         const macroCategories = [
             {
-                id: "section-core", title: "Core & IO",
+                id: "section-db", title: "Native Database",
                 macros: [
-                    { name: "s.send", desc: "Send message", args: [{ name: "channelId", type: "string" }, { name: "content", type: "string" }], code: "s.send[123;Hello]" },
-                    { name: "s.reply", desc: "Reply method", args: [{ name: "content", type: "string" }], code: "s.reply[Hello]" },
-                    { name: "s.log", desc: "Log to console", args: [{ name: "msg", type: "string" }], code: "s.log[Debug]" },
-                    { name: "s.setVar", desc: "Set variable", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }, { name: "scope", type: "user|guild", req: false }], code: "s.setVar[xp;10;user]" },
-                    { name: "s.getVar", desc: "Get variable", args: [{ name: "key", type: "string" }, { name: "scope", type: "user|guild", req: false }], code: "s.getVar[xp;user]" }
+                    { name: "s.db.set", desc: "Sets a value in the high-performance native SQLite database.", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }], code: "s.db.set[myKey; 100]" },
+                    { name: "s.db.get", desc: "Retrieves a value from the database with O(1) complexity.", args: [{ name: "key", type: "string" }], code: "s.db.get[myKey]" },
+                    { name: "s.db.delete", desc: "Removes a key-value pair permanently.", args: [{ name: "key", type: "string" }], code: "s.db.delete[myKey]" },
+                    { name: "s.db.all", desc: "Exports the entire database state as JSON.", args: [], code: "s.db.all" }
                 ]
             },
             {
-                id: "section-user", title: "User Context",
+                id: "section-core", title: "Core System",
                 macros: [
-                    { name: "s.userId", desc: "Get User ID", args: [{ name: "target", type: "string", req: false }], code: "s.userId[@user]" },
-                    { name: "s.userTag", desc: "Get User Tag", args: [{ name: "target", type: "string", req: false }], code: "s.userTag" },
-                    { name: "s.userAvatar", desc: "Get Avatar URL", args: [{ name: "target", type: "string", req: false }], code: "s.embed[image:s.userAvatar]" },
-                    { name: "s.userCreated", desc: "Account creation timestamp", args: [{ name: "target", type: "string", req: false }], code: "s.userCreated" },
-                    { name: "s.userBot", desc: "Is User Bot?", args: [{ name: "target", type: "string", req: false }], code: "s.userBot" }
+                    { name: "s.send", desc: "Dispatches a message payload to a specific channel ID.", args: [{ name: "channelId", type: "snowflake" }, { name: "content", type: "string" }], code: "s.send[123456789; System Online]" },
+                    { name: "s.reply", desc: "Replies to the event trigger context.", args: [{ name: "content", type: "string" }], code: "s.reply[Acknowledged.]" },
+                    { name: "s.log", desc: "Writes to the system stdout/logger.", args: [{ name: "msg", type: "any" }], code: "s.log[Init Sequence]" },
+                    { name: "s.reload", desc: "Triggers a hot-reload of the command registry.", args: [], code: "s.reload" },
+                    { name: "s.eval", desc: "Executes arbitrary JavaScript in the runtime.", args: [{ name: "code", type: "string" }], code: "s.eval[process.exit(0)]" }
                 ]
             },
             {
-                id: "section-ui", title: "UI & Embed",
+                id: "section-logic", title: "Logic Gates",
                 macros: [
-                    { name: "s.embed", desc: "Create embed", args: [{ name: "props", type: "key:value" }], code: "s.embed[title:Hi; color:#FFF]" },
-                    { name: "s.button", desc: "Create button", args: [{ name: "props", type: "key:value" }], code: "s.button[label:Click Me; style:Primary; id:btn1]" },
-                    { name: "s.createModal", desc: "Easy Modal", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }, { name: "label", type: "string" }], code: "s.createModal[mod1;Form;Enter Name]" },
-                    { name: "s.createSelect", desc: "Easy Select Menu", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }, { name: "options", type: "list" }], code: "s.createSelect[sel1;Choose;Apple;Banana;Orange]" },
-                    { name: "s.defer", desc: "Defer interaction", args: [], code: "s.defer[]" },
-                    { name: "s.update", desc: "Update component msg", args: [{ name: "content", type: "string" }], code: "s.update[New content]" },
-                    { name: "s.author", desc: "Embed Author", args: [{ name: "props", type: "key:value" }], code: "s.author[name:Koxik; icon:link]" }
-                ]
-            },
-            {
-                id: "section-economy", title: "Economy",
-                macros: [
-                    { name: "s.cash", desc: "Get balance", args: [{ name: "user", type: "string", req: false }], code: "s.cash" },
-                    { name: "s.pay", desc: "Transfer money", args: [{ name: "props", type: "key:value" }], code: "s.pay[amount:100; user:@user]" },
-                    { name: "s.work", desc: "Work for money", args: [{ name: "props", type: "key:value" }], code: "s.work[min:50; max:100]" },
-                    { name: "s.daily", desc: "Daily reward", args: [{ name: "amt", type: "number", req: false }], code: "s.daily[500]" },
-                    { name: "s.deposit", desc: "Deposit money", args: [{ name: "props", type: "key:value" }], code: "s.deposit[amount:all]" },
-                    { name: "s.withdraw", desc: "Withdraw money", args: [{ name: "props", type: "key:value" }], code: "s.withdraw[amount:100]" },
-                    { name: "s.rob", desc: "Rob user", args: [{ name: "props", type: "key:value" }], code: "s.rob[user:@victim]" },
-                    { name: "s.gamble", desc: "Gamble money", args: [{ name: "props", type: "key:value" }], code: "s.gamble[bet:500]" },
-                    { name: "s.coinflip", desc: "Coinflip", args: [{ name: "props", type: "key:value" }], code: "s.coinflip[bet:100; side:heads]" }
-                ]
-            },
-            {
-                id: "section-system", title: "System",
-                macros: [
-                    { name: "s.ping", desc: "Latency", args: [], code: "s.ping" },
-                    { name: "s.uptime", desc: "Uptime", args: [], code: "s.uptime" },
-                    { name: "s.ram", desc: "RAM Usage", args: [], code: "s.ram" },
-                    { name: "s.cpu", desc: "CPU Model", args: [], code: "s.cpu" },
-                    { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
-                    { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
-                    { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" },
-                    { name: "s.setStatus", desc: "Set Bot Status", args: [{ name: "props", type: "key:value" }], code: "s.setStatus[type:watching; status:dnd; name:Users]" },
-                    { name: "s.reload", desc: "Hot Reload Commands", args: [], code: "s.reload" }
-                ]
-            },
-            {
-                id: "section-moderation", title: "Moderation",
-                macros: [
-                    { name: "s.ban", desc: "Ban user", args: [{ name: "props", type: "key:value" }], code: "s.ban[user:@user; reason:Spam]" },
-                    { name: "s.kick", desc: "Kick user", args: [{ name: "props", type: "key:value" }], code: "s.kick[user:@user; reason:Bye]" },
-                    { name: "s.mute", desc: "Timeout user", args: [{ name: "props", type: "key:value" }], code: "s.mute[user:@user; time:1h]" },
-                    { name: "s.purge", desc: "Delete msg", args: [{ name: "props", type: "key:value" }], code: "s.purge[limit:10]" },
-                    { name: "s.lock", desc: "Lock channel", args: [{ name: "props", type: "key:value" }], code: "s.lock[channel:#general]" },
-                    { name: "s.unlock", desc: "Unlock channel", args: [{ name: "props", type: "key:value" }], code: "s.unlock[channel:#general]" },
-                    { name: "s.slowmode", desc: "Set slowmode", args: [{ name: "props", type: "key:value" }], code: "s.slowmode[time:10s]" },
-                    { name: "s.warn", desc: "Warn user", args: [{ name: "props", type: "key:value" }], code: "s.warn[user:@user; reason:Troll]" },
-                    { name: "s.unwarn", desc: "Remove warning", args: [{ name: "props", type: "key:value" }], code: "s.unwarn[user:@user; index:1]" }
-                ]
-            },
-            {
-                id: "section-logic", title: "Logic & Math",
-                macros: [
-                    { name: "s.if", desc: "If condition", args: [{ name: "cond", type: "bool" }, { name: "then", type: "any" }, { name: "else", type: "any", req: false }], code: "s.if[s.eq[1;1];Yes;No]" },
-                    { name: "s.and", desc: "Logical AND", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.and[true;false]" },
-                    { name: "s.or", desc: "Logical OR", args: [{ name: "a", type: "bool" }, { name: "b", type: "bool" }], code: "s.or[true;false]" },
-                    { name: "s.round", desc: "Round number", args: [{ name: "num", type: "number" }], code: "s.round[1.5]" },
-                    { name: "s.randomInt", desc: "Random Integer", args: [{ name: "min", type: "number" }, { name: "max", type: "number" }], code: "s.randomInt[1;100]" }
-                ]
-            },
-            {
-                id: "section-voice", title: "Voice (New)",
-                macros: [
-                    { name: "s.join", desc: "Joins voice channel", args: [], code: "s.join" },
-                    { name: "s.leave", desc: "Leaves voice channel", args: [], code: "s.leave" },
-                    { name: "s.play", desc: "Play audio URL", args: [{ name: "url", type: "string" }], code: "s.play[http://stream.com/music.mp3]" },
-                    { name: "s.stop", desc: "Stop audio", args: [], code: "s.stop" }
-                ]
-            },
-            {
-                id: "section-level", title: "Leveling",
-                macros: [
-                    { name: "s.rank", desc: "Show Rank Card", args: [{ name: "user", type: "string", req: false }], code: "s.rank" },
-                    { name: "s.addXp", desc: "Add XP", args: [{ name: "user", type: "string" }, { name: "amt", type: "number" }], code: "s.addXp[@user; 100]" }
-                ]
-            },
-            {
-                id: "section-fun", title: "Fun & Social",
-                macros: [
-                    { name: "s.ship", desc: "Love calculator", args: [{ name: "u1", type: "string" }, { name: "u2", type: "string" }], code: "s.ship[Me; You]" },
-                    { name: "s.hug", desc: "Hug user", args: [{ name: "user", type: "string" }], code: "s.hug[@user]" },
-                    { name: "s.poll", desc: "Create Poll", args: [{ name: "q", type: "string" }, { name: "opts", type: "list" }], code: "s.poll[Pizza?; Yes; No]" }
-                ]
-            },
-            {
-                id: "section-inv", title: "Inventory (RPG)",
-                macros: [
-                    { name: "s.inventory", desc: "Show items", args: [], code: "s.inventory" },
-                    { name: "s.shop", desc: "Show shop", args: [], code: "s.shop" },
-                    { name: "s.buy", desc: "Buy item", args: [{ name: "item", type: "string" }], code: "s.buy[sword]" },
-                    { name: "s.sell", desc: "Sell item", args: [{ name: "item", type: "string" }], code: "s.sell[sword]" },
-                    { name: "s.addItem", desc: "Add to shop", args: [{ name: "id", type: "string" }, { name: "price", type: "number" }], code: "s.addItem[sword; 100]" }
-                ]
-            },
-            {
-                id: "section-utils", title: "Utilities",
-                macros: [
-                    { name: "s.calc", desc: "Calculator", args: [{ name: "expr", type: "string" }], code: "s.calc[10 * 5]" },
-                    { name: "s.weather", desc: "Check Weather", args: [{ name: "city", type: "string" }], code: "s.weather[London]" }
-                ]
-            },
-            {
-                id: "section-string", title: "String Op",
-                macros: [
-                    { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
-                    { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
-                    { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
-                ]
-            },
-            {
-                id: "section-db", title: "SevenDB (Native)",
-                macros: [
-                    { name: "s.db.set", desc: "Set native value", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }], code: "s.db.set[myKey; 100]" },
-                    { name: "s.db.get", desc: "Get native value", args: [{ name: "key", type: "string" }], code: "s.db.get[myKey]" },
-                    { name: "s.db.delete", desc: "Delete native value", args: [{ name: "key", type: "string" }], code: "s.db.delete[myKey]" },
-                    { name: "s.db.all", desc: "Dump all data", args: [], code: "s.db.all" }
+                    { name: "s.if", desc: "Standard conditional flow control.", args: [{ name: "condition", type: "bool" }, { name: "then", type: "block" }, { name: "else", type: "block", req: false }], code: "s.if[s.eq[1;1]; TRUE; FALSE]" },
+                    { name: "s.setVar", desc: "Allocates a temporary runtime variable.", args: [{ name: "name", type: "string" }, { name: "val", type: "any" }], code: "s.setVar[temp; 1]" },
+                    { name: "s.getVar", desc: "Reads a runtime variable.", args: [{ name: "name", type: "string" }], code: "s.getVar[temp]" },
+                    { name: "s.randomInt", desc: "Generates a pseudo-random integer.", args: [{ name: "min", type: "int" }, { name: "max", type: "int" }], code: "s.randomInt[0; 100]" }
                 ]
             }
         ];
 
-        // RENDERER
+        // --- RENDERER ---
         const container = document.getElementById('macros-container');
 
-        macroCategories.forEach(cat => {
+        macroCategories.forEach((cat, index) => {
             const section = document.createElement('section');
             section.id = cat.id;
-            section.className = "mb-16 scroll-mt-20 fade-in";
+            section.className = "mb-24";
 
             section.innerHTML = `
-                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 pb-4 flex items-center justify-between">
-                    ${cat.title}
-                    <span class="text-[10px] bg-bg-800 px-2 py-0.5 rounded text-gray-600">${cat.macros.length}</span>
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex items-end gap-4 mb-8 border-b border-white/5 pb-4">
+                    <span class="text-4xl font-mono text-white/10 font-bold">0${index + 1}</span>
+                    <h2 class="text-xl font-bold text-white uppercase tracking-widest">${cat.title}</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 border border-white/5">
                     ${cat.macros.map(m => `
-                        <div class="card p-5 rounded-lg cursor-pointer group relative overflow-hidden" onclick='openSpecs(${JSON.stringify(m)}, "${cat.title}")'>
-                            <div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="flex justify-between items-start mb-3 relative z-10">
-                                <h3 class="font-mono font-bold text-gray-200 group-hover:text-blue-400 transition-colors">${m.name}</h3>
-                                <svg class="w-4 h-4 text-gray-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        <div class="bg-[#0a0a0a] p-8 cursor-pointer group hover:bg-[#0f0f0f] transition-colors relative" onclick='openModal(${JSON.stringify(m)}, "${cat.title}")'>
+                            <div class="absolute top-4 right-4 text-gray-800 group-hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
                                 </svg>
                             </div>
-                            <p class="text-xs text-gray-500 line-clamp-2 relative z-10">${m.desc}</p>
-                            <div class="mt-4 pt-4 border-t border-border-800 flex items-center justify-between relative z-10">
-                                <span class="text-[10px] text-gray-600 font-mono">ARGS: ${m.args.length}</span>
-                                <span class="px-1.5 py-0.5 rounded bg-bg-800 text-[10px] text-gray-500 border border-border-800 font-mono">v2.5.24</span>
+                            <h3 class="font-mono font-bold text-sm text-gray-300 group-hover:text-white mb-2">${m.name}</h3>
+                            <p class="text-xs text-gray-600 group-hover:text-gray-500 leading-relaxed mb-6 h-8 overflow-hidden">${m.desc}</p>
+                            <div class="flex items-center gap-2 mt-auto">
+                                <span class="text-[9px] uppercase tracking-wider text-gray-700 font-bold border border-gray-800 px-1 py-0.5 rounded-sm group-hover:border-white/20 group-hover:text-gray-400 transition-colors">
+                                    MACRO
+                                </span>
                             </div>
                         </div>
                     `).join('')}
@@ -398,84 +291,77 @@
             container.appendChild(section);
         });
 
-        // SPECS LOGIC
-        const panel = document.getElementById('specs-panel');
-        const overlay = document.getElementById('specs-overlay');
-        const dTitle = document.getElementById('spec-title');
-        const dCat = document.getElementById('spec-category');
-        const dDesc = document.getElementById('spec-desc');
-        const dCode = document.getElementById('spec-code');
-        const dArgsBody = document.getElementById('spec-args-body');
+        // --- MODAL ---
+        const modal = document.getElementById('modal-panel');
+        const overlay = document.getElementById('modal-overlay');
 
-        window.openSpecs = (macro, category) => {
-            dTitle.textContent = macro.name;
-            dCat.textContent = category;
-            dDesc.textContent = macro.desc;
-            dCode.textContent = macro.code;
+        window.openModal = (macro, category) => {
+            document.getElementById('m-name').textContent = macro.name;
+            document.getElementById('m-cat').textContent = category;
+            document.getElementById('m-desc').textContent = macro.desc;
+            document.getElementById('m-code').textContent = macro.code;
 
-            dArgsBody.innerHTML = macro.args.map((arg, i) => `
-                <tr class="border-b border-border-800 last:border-0 hover:bg-bg-800/50 transition-colors">
-                    <td class="p-3 text-gray-500 font-mono">${i + 1}</td>
-                    <td class="p-3 text-blue-400 font-bold font-mono">${arg.name}</td>
-                    <td class="p-3 text-gray-400 font-mono text-[10px]">${arg.type}</td>
-                    <td class="p-3">
-                        ${arg.req === false
-                    ? '<span class="px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 text-[10px] border border-gray-700 font-mono">OPT</span>'
-                    : '<span class="px-1.5 py-0.5 rounded bg-red-900/20 text-red-500 text-[10px] border border-red-900/30 font-mono">REQ</span>'}
-                    </td>
-                </tr>
-            `).join('');
-
-            if (macro.args.length === 0) {
-                dArgsBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-600 italic text-xs">No arguments required.</td></tr>`;
+            const argsTable = document.getElementById('m-args');
+            if (!macro.args || macro.args.length === 0) {
+                argsTable.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-gray-600 italic font-light">No arguments required.</td></tr>`;
+            } else {
+                argsTable.innerHTML = macro.args.map(arg => `
+                    <tr class="border-b border-white/5 last:border-0 hover:bg-white/5">
+                        <td class="p-3 text-white font-bold">${arg.name}</td>
+                        <td class="p-3 text-gray-500">${arg.type}</td>
+                        <td class="p-3 text-right">
+                            ${arg.req === false
+                        ? '<span class="text-[9px] text-gray-500 border border-gray-700 px-1 py-0.5 rounded-sm">OPTIONAL</span>'
+                        : '<span class="text-[9px] text-white border border-white/20 px-1 py-0.5 rounded-sm">REQUIRED</span>'}
+                        </td>
+                    </tr>
+                `).join('');
             }
 
-            Prism.highlightElement(dCode);
+            Prism.highlightElement(document.getElementById('m-code'));
 
-            panel.classList.remove('translate-x-full');
             overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                overlay.classList.remove('opacity-0');
+                modal.classList.remove('opacity-0');
+                modal.classList.remove('scale-95');
+                modal.classList.add('scale-100');
+            });
         };
 
-        window.closeSpecs = () => {
-            panel.classList.add('translate-x-full');
+        window.closeModal = () => {
             overlay.classList.add('opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
+            modal.classList.add('opacity-0');
+            modal.classList.add('scale-95');
+            modal.classList.remove('scale-100');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                modal.classList.add('hidden');
+            }, 200);
         };
 
-        // SEARCH LOGIC
+        // --- SEARCH ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                document.getElementById('search').focus();
+            }
+            if (e.key === 'Escape') closeModal();
+        });
+
         document.getElementById('search').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.card').forEach(card => {
+            document.querySelectorAll('section div.grid > div').forEach(card => {
                 const text = card.textContent.toLowerCase();
-                const parentSection = card.closest('section');
-
                 if (text.includes(term)) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
                 }
             });
-
-            // Hide empty sections
-            document.querySelectorAll('section').forEach(section => {
-                const visibleCards = section.querySelectorAll('.card[style="display: block"]').length;
-                const totalCards = section.querySelectorAll('.card').length;
-                const anyVisible = visibleCards > 0 || (term === '' && totalCards > 0);
-                section.style.display = anyVisible ? 'block' : 'none';
-            });
         });
 
-        // KEYBOARD SHORTCUTS
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                document.getElementById('search').focus();
-            }
-            if (e.key === 'Escape') {
-                closeSpecs();
-            }
-        });
     </script>
 </body>
 
