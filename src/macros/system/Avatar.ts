@@ -32,6 +32,10 @@ export class AvatarMacro extends Macro {
         // Feature: Input URL Bypass
         if (userId && userId.startsWith("http")) return userId;
 
+        // Sanitize Common Mistakes
+        if (userId === "@user" || userId === "user") userId = "";
+        if (userId && userId.startsWith("<@") && userId.endsWith(">")) userId = userId.replace(/[<@!>]/g, "");
+
         // Smart Default: Priority to Interaction User
         if (!userId) {
             userId = ctx.author?.id || ctx.interaction?.member?.user?.id || ctx.message?.author?.id;

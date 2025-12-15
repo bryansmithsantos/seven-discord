@@ -1,14 +1,17 @@
-import { inflateSync } from "bun:zlib"; // Uses built-in Bun Zlib
+import { inflateSync } from "node:zlib"; // Uses built-in Node Compat Zlib
 import { Logger } from "../util/Logger";
 
 export class CompressionHandler {
     public static decompress(data: ArrayBuffer | Buffer): any {
         try {
-            // Check if it's zlib compressed (usually starts with 0x78)
-            // Or if Discord sends direct zlib stream.
-            // For simple gateway zlib-stream support, we assume buffer input.
+            // Ensure input is a Buffer for zlib
+            let buffer: Buffer;
+            if (Buffer.isBuffer(data)) {
+                buffer = data;
+            } else {
+                buffer = Buffer.from(data as ArrayBuffer);
+            }
 
-            const buffer = Buffer.from(data);
             const decompressed = inflateSync(buffer);
             return JSON.parse(decompressed.toString("utf-8"));
         } catch (e: any) {
