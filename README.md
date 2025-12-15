@@ -2,121 +2,194 @@
 > **The Simply Powerful Discord Framework for Bun.**
 
 [![npm version](https://badge.fury.io/js/seven-discord.svg)](https://badge.fury.io/js/seven-discord)
+[![Downloads](https://img.shields.io/npm/dw/seven-discord)](https://www.npmjs.com/package/seven-discord)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Stop writing boilerplate.** Seven-Discord deals with the complex stuff so you can focus on building your bot's logic. Native Speed, Low-Code Macros, and Zero Headaches.
+**Seven-Discord** is an ultra-fast, opinionated framework for building Discord bots using the **Bun** runtime. It abstracts complex WebSocket interactions, state management, and command parsing into a simple, macro-based syntax, while exposing full native control for power users.
+
+With the release of **v2.6.0**, this is the **largest update in the library's history**, introducing over 30 new features, a rewritten core for native performance, and a completely new ecosystem of tools.
 
 ---
 
-## ⚡ Quick Start (In 30 Seconds)
+## ⚡ Features at a Glance
 
-### 1. Install
-Open your terminal and run:
+*   **Native Performance**: Built strictly for Bun. Uses `Bun.serve`, `bun:sqlite`, and `node:zlib` for maximum speed.
+*   **Macro System**: Logic-based command syntax (`s.if`, `s.db.set`) allows for rapid prototyping.
+*   **SevenDB**: A built-in, zero-dependency Key-Value store powered by SQLite.
+*   **Sharding Manager**: Scale your bot to thousands of servers with a single class.
+*   **Web Dashboard**: Integrated HTTP server to monitor your bot's health in real-time.
+*   **Native Voice**: Connect, speak, and play audio without external Java nodes (Lavalink optional).
+*   **Developer Experience**: Typescript-first, Hot Reloading, and a dedicated CLI.
+
+---
+
+## 📥 Installation
+
 ```bash
 bun add seven-discord
 ```
 
-### 2. The Code (`index.ts`)
-Copy and paste this into your main file. Look how clean the new **Intents** system is!
+---
+
+## 🚀 Quick Start
+
+Create a file named `index.ts`:
 
 ```typescript
 import { SevenClient } from "seven-discord";
 
 const client = new SevenClient({
-    token: "YOUR_BOT_TOKEN", 
-    // New "Seven" Style Intents! 🛡️
-    intents: ["SevenGuild", "SevenMessages", "SevenMessageContent", "SevenVoiceState"] 
+    token: "YOUR_BOT_TOKEN",
+    // Intelligent Intents: No need to calculate bitfields.
+    intents: ["SevenAll"]
 });
 
-// 1. Startup Message
-client.setReady("s.log[✅ Bot is Online as s.userTag!]");
-
-// 2. Simple Ping Command
+// 1. A Simple Ping Command
 client.cmd({
     name: "ping",
-    code: "Pong! 🏓 Latency: s.pingms"
+    description: "Checks latency",
+    code: "Pong! 🏓 Gateway: $s.pingms | RAM: $s.ram"
 });
 
-// 3. Easy Voice Command
+// 2. Using the Database
 client.cmd({
-    name: "join",
-    code: "$s.join"
-});
-
-// 4. Easy UI (Interactive Buttons)
-client.cmd({
-    name: "menu",
+    name: "setstatus",
     code: `
-    $s.send[Click the button below!]
-    $s.button[myBtn;Click Me;Primary]
+    $s.db.set[userStatus;$s.arg[1]]
+    ✅ Status saved: $s.db.get[userStatus]
     `
 });
 
-// Handle the button click
+// 3. Native Button Interaction
+client.cmd({
+    name: "button",
+    code: `
+    $s.send[Click below!]
+    $s.button[my_id;Click Me;Primary]
+    `
+});
+
+// Handle the interaction
 client.on({
-    name: "interactionCreate",
-    code: "$s.if[$s.params.customId == 'myBtn'; $s.reply[You clicked it!];]"
+    event: "interactionCreate",
+    code: "$s.if[$s.customId == 'my_id'; $s.reply[Button Clicked!];]"
 });
 
 client.start();
 ```
 
-### 3. Run It
-```bash
-bun run index.ts
+---
+
+## 📚 The Seven Ecosystem
+
+### 1. The Macro Language
+Seven-Discord uses a unique "Macro" syntax allowing you to embed logic directly into your strings.
+
+*   **Logic**: `$s.if[condition;then;else]`, `$s.eq[a;b]`
+*   **Variables**: `$s.var[name]`, `$s.setUserVar[name;value]`
+*   **Utils**: `$s.random[1;100]`, `$s.math[10 + 5]`
+*   **Discord**: `$s.username`, `$s.channelId`, `$s.ban[userId]`
+
+### 2. SevenDB (Native Database)
+Forget installing MongoDB or Redis for simple bots. v2.6.0 includes **SevenDB**, a high-performance wrapper around `bun:sqlite`.
+
+```typescript
+import { SevenDB } from "seven-discord";
+
+const db = new SevenDB();
+db.set("premium_users", ["123", "456"]);
+const users = db.get("premium_users");
 ```
 
----
-
-## 🌟 Why Seven-Discord?
-
-### 🧩 Macros = Magic
-Instead of writing 50 lines of JavaScript for a simple embed, just write:
+Inside commands:
 ```
-s.embed[title:Hello World;description:This is easy!;color:#00ff00]
+$s.db.set[key;value]
+$s.db.get[key]
+$s.db.delete[key]
 ```
-It's like HTML for Discord Bots.
 
-### 🛡️ Smart "Seven" Intents
-We made permissions easy to read. No more guessing numbers.
-*   `SevenGuild` - Basic guild stuff.
-*   `SevenMessages` - See messages.
-*   `SevenMessageContent` - Read actual text.
-*   `SevenVoiceState` - Voice channel access.
-*   `SevenAll` - YOLO (Everything).
+### 3. Sharding Manager
+Scaling is now built-in. If your bot grows too large for one process, use the ShardingManager to spawn multiple instances.
 
-### 🚀 Speed
-Built on **Bun**, so it starts instantly and runs faster than Node.js alternatives.
+```typescript
+import { ShardingManager } from "seven-discord";
+
+const manager = new ShardingManager("./index.ts", {
+    totalShards: "auto" // Auto-detects CPU cores
+});
+
+manager.spawn();
+```
+
+### 4. Web Dashboard
+Monitor your bot's memory usage, ping, and guild count via a built-in web interface.
+
+```typescript
+import { Dashboard } from "seven-discord";
+
+// Starts a server at http://localhost:3000
+new Dashboard(client, 3000).start();
+```
+
+### 5. Hot Reloading
+Never restart your bot for a text change again.
+
+*   **In-Code**: `client.reloadCommands()`
+*   **Macro**: `$s.reload`
+*   **Effect**: Clears the internal `require` cache and re-reads your command files.
 
 ---
 
-## 📚 Documentation 2.5
-We completely redesigned our docs. They are now built-in!
-*   Open `docs/index.html` in your browser.
-*   Beautiful "Dark Mode" UI.
-*   Traffic Light Code Blocks 🔴🟡🟢.
-*   Search Bar & Portuguese Support 🇧🇷.
+## 🛠️ CLI Tools
+
+The `seven` command-line tool is your companion for managing projects.
+
+| Command | Description |
+| :--- | :--- |
+| `seven create <name>` | Scaffolds a new project with TypeScript support. |
+| `seven doctor` | Checks environment health (FFmpeg, Node/Bun versions, RAM). |
+| `seven test` | Runs unit tests for your macros. |
+| `seven install <pkg>` | Installs packages from the Seven Registry. |
 
 ---
 
-## 📦 What's New in v2.5.25?
-*   **SevenVoice**: Native voice support (`s.join`, `s.leave`, `s.play`).
-*   **Economy V2**: Full Inventory system (`s.buy`, `s.sell`, `s.inventory`, `s.shop`).
-*   **Leveling System**: Built-in XP and Ranks (`s.rank`, `s.addXp`).
-*   **Fun & Utils**: `s.ship`, `s.weather`, `s.poll` and more.
-*   **CLI Doctor**: Run `seven doctor` to diagnose issues.
-*   **Docs Polish**: Cleaner UI and Dynamic Pro Tips.
+## ⚙️ Advanced Configuration
 
----
+### Custom Events
+You can now emit and listen to custom events for complex workflows.
 
-## 🔮 Roadmap to v2.6.0 (The Future)
-We are building the next generation of Seven-Discord.
-*   [ ] **Advanced Voice**: YouTube/Spotify direct streaming.
-*   [ ] **Advanced Slash**: Subcommands and Autocomplete.
-*   [ ] **SevenDB**: Native, file-based database improvements.
-*   [ ] **Plugins**: External macro loading.
+```typescript
+client.emitCustom("myCustomEvent", { data: "foo" });
+
+client.on({
+    event: "myCustomEvent",
+    code: "$s.log[Received custom event!]"
+});
+```
+
+### Granular Permissions
+Security is a priority. Define exactly who can use a command.
+
+```typescript
+client.cmd({
+    name: "nuke",
+    permissions: ["ADMINISTRATOR"],
+    code: "$s.channel.purge[100]"
+});
+```
+
+### Performance (Zero-Copy & Zlib)
+v2.6.0 introduces an internal optimization layer.
+*   **Zlib**: We use `node:zlib` to decompress Gateway packets natively, reducing bandwidth by up to 60%.
+*   **Zero-Copy**: Internal buffers utilize shared memory where possible to reduce Garbage Collection overhead.
+*   **Anti-Crash**: Built-in handlers catch `uncaughtException` to keep your bot process alive.
 
 ---
 
 ## 📄 License
-MIT © Seven
+**MIT License**
+Copyright © 2024-2025 Seven Team.
+
+---
+
+*This library is optimized for Bun. Usage with Node.js is possible but not recommended for maximum performance.*

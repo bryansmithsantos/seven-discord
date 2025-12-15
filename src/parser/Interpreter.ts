@@ -130,6 +130,7 @@ export class Interpreter {
         this.register(new (require("../macros/system/NodeVersion").NodeVersionMacro)());
         this.register(new (require("../macros/system/Date").DateMacro)());
         this.register(new (require("../macros/system/Timestamp").TimestampMacro)());
+        this.register(new (require("../macros/system/Reload").ReloadMacro)());
 
         // UI
         this.register(new (require("../macros/ui/Embed").EmbedMacro)());

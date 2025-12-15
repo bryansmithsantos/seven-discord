@@ -1,55 +1,39 @@
 /**
- * Middleware System
- * The core differentiator of Seven-Discord.
- * Segregates 'Conditions' from 'Logic'.
+ * Middleware Function Type
+ * Allows intercepting command execution.
  */
+export type MiddlewareFunction = (ctx: any, next: () => Promise<void>) => Promise<void>;
 
-import { SevenClient } from "../core/SevenClient";
+/**
+ * Middleware Manager
+ * Handles the registration and execution of middleware.
+ */
+export class MiddlewareManager {
+    private middlewares: MiddlewareFunction[] = [];
 
-// A middleware returns TRUE if passed, or FALSE/String (Reason) if failed.
-export type MiddlewareResult = boolean | string;
-
-export type MiddlewareFunction = (
-    client: SevenClient,
-    payload: any // Typed as any for now, will be Context later
-) => Promise<MiddlewareResult> | MiddlewareResult;
-
-export class Middleware {
     /**
-     * Create a generic middleware.
+     * Use a middleware function.
+     * @param fn The middleware function to use.
      */
-    static create(fn: MiddlewareFunction): MiddlewareFunction {
-        return fn;
+    use(fn: MiddlewareFunction) {
+        this.middlewares.push(fn);
     }
 
     /**
-     * Pre-made: Check for specific User ID.
+     * Execute all middlewares.
+     * @param ctx The context to pass to middlewares.
+     * @param final The final function to execute after all middlewares.
      */
-    static onlyUser(userId: string, failMessage: string = "User not allowed"): MiddlewareFunction {
-        return (_, ctx) => {
-            // Assuming ctx has user.id - This is a "Blind" middleware for now until Context is defined
-            return ctx?.author?.id === userId ? true : failMessage;
-        };
-    }
-
-    /**
-     * Pre-made: Cooldown (Simple Memory Store)
-     */
-    static cooldown(ms: number): MiddlewareFunction {
-        const cooldowns = new Map<string, number>();
-        return (_, ctx) => {
-            const id = ctx?.author?.id;
-            if (!id) return true;
-
-            const now = Date.now();
-            const last = cooldowns.get(id) || 0;
-
-            if (now - last < ms) {
-                return `Wait ${((last + ms - now) / 1000).toFixed(1)}s`;
+    async execute(ctx: any, final: () => Promise<void>) {
+        const executeMiddleware = async (index: number) => {
+            if (index < this.middlewares.length) {
+                const fn = this.middlewares[index];
+                await fn(ctx, () => executeMiddleware(index + 1));
+            } else {
+                await final();
             }
-
-            cooldowns.set(id, now);
-            return true;
         };
+
+        await executeMiddleware(0);
     }
 }

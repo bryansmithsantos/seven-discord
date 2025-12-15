@@ -15,6 +15,11 @@ export class GatewayManager extends EventEmitter {
     private sessionId: string | null = null;
     public intents: number = 0;
 
+    // Metrics
+    public guilds: Map<string, any> = new Map();
+    public ping: number = -1;
+    private lastHeartbeatSent: number = 0;
+
     constructor(token: string) {
         super();
         this.token = token;
@@ -99,7 +104,8 @@ export class GatewayManager extends EventEmitter {
 
         // Op 11: Heartbeat ACK
         if (op === Constants.OPCODES.HEARTBEAT_ACK) {
-            // Logger.debug("Heartbeat Acknowledged.");
+            this.ping = Date.now() - this.lastHeartbeatSent;
+            // Logger.debug(`Heartbeat Acknowledged. Ping: ${this.ping}ms`);
         }
 
         // Op 7: Reconnect (Server Request)
@@ -173,9 +179,11 @@ export class GatewayManager extends EventEmitter {
         // Random jitter
         const jitter = Math.floor(Math.random() * interval);
         setTimeout(() => {
+            this.lastHeartbeatSent = Date.now();
             this.send({ op: Constants.OPCODES.HEARTBEAT, d: this.lastSequence });
 
             this.heartbeatInterval = setInterval(() => {
+                this.lastHeartbeatSent = Date.now();
                 this.send({ op: Constants.OPCODES.HEARTBEAT, d: this.lastSequence });
             }, interval);
         }, jitter);

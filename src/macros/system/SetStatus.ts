@@ -37,10 +37,23 @@ export class SetStatusMacro extends Macro {
         status = (status || "online").toLowerCase();
         name = name || "Seven-Discord";
 
+        // Placeholders
+        /* eslint-disable no-undef */
+        const serverCount = ctx.client.guilds?.size || 0;
+        const userCount = ctx.client.users?.size || 0;
+        const ping = ctx.client.ws?.ping || 0;
+
+        name = name
+            .replace(/{servers}/g, serverCount.toString())
+            .replace(/{guilds}/g, serverCount.toString())
+            .replace(/{users}/g, userCount.toString())
+            .replace(/{ping}/g, ping.toString());
+
         let type = 0;
         if (typeStr === "streaming") type = 1;
         if (typeStr === "listening") type = 2;
         if (typeStr === "watching") type = 3;
+        if (typeStr === "competing") type = 5;
 
         ctx.client.gateway.setPresence(status, name, type);
         return "";

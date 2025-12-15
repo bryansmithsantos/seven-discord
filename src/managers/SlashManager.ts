@@ -30,7 +30,12 @@ export class SlashManager {
     /**
      * Register a new Slash Command (Local)
      */
-    public register(options: SlashCommandOptions) {
+    public register(options: SlashCommandOptions | any) {
+        // Support SlashCommandBuilder (.toJSON() or direct data)
+        if (options.toJSON) {
+            options = options.toJSON();
+        }
+
         if (!options.name) throw new Error("Slash Command Name is required.");
         if (!options.description) options.description = "No description provided.";
 

@@ -2,6 +2,7 @@
 import { parseArgs } from "util";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 const { values } = parseArgs({
     args: Bun.argv,
@@ -126,9 +127,11 @@ async function installSnippets(projectDir: string) {
     };
 
     fs.writeFileSync(path.join(vscodeDir, "seven.code-snippets"), JSON.stringify(snippets, null, 2));
-    console.log("   \x1b[32m+ Installed VS Code Snippets (IntelliSense)\x1b[0m");
 }
 
+/*
+ * MAIN LOGIC
+ */
 if (values.doc) {
     checkUpdate(); // Async check while showing docs
     const search = values.doc.toLowerCase();
@@ -172,6 +175,24 @@ if (values.doc) {
             "dev": "bun --watch index.ts"
         }
     };
+
+    let indexContent = "";
+    if (process.argv.includes("--template") && process.argv.includes("music")) {
+        (packageJson.dependencies as any)["seven-music"] = "latest";
+        indexContent = `import { SevenClient, s } from "seven-discord";
+import MusicPlugin from "seven-music";
+
+const bot = new SevenClient({ token: await s.envtoken("DISCORD_TOKEN") });
+bot.loadPlugins("./plugins"); // Load dynamic plugins
+// ... music setup
+bot.start();`;
+    } else {
+        indexContent = `import { SevenClient, s } from "seven-discord";
+const bot = new SevenClient({ token: await s.envtoken("DISCORD_TOKEN") });
+bot.cmd({ name: "ping", code: "s.reply[Pong! 🏓]" });
+bot.start();`;
+    }
+
     fs.writeFileSync(path.join(values.name, "package.json"), JSON.stringify(packageJson, null, 2));
 
     // Create .env
@@ -182,48 +203,150 @@ if (values.doc) {
     const gitignore = `node_modules/\n.env\n.bun/`;
     fs.writeFileSync(path.join(values.name, ".gitignore"), gitignore);
 
-    // Create index.ts
-    const indexContent = `import { SevenClient, s } from "seven-discord";
-
-const bot = new SevenClient({
-    token: await s.envtoken("DISCORD_TOKEN"), 
-    prefix: "!"
-});
-
-bot.cmd({
-    name: "ping",
-    code: "s.reply[Pong! 🏓]"
-});
-
-${values.slash ? `// Slash Command Example
-// bot.cmdSlash({
-//     name: "hello",
-//     description: "Says hello via Slash",
-//     code: "s.reply[Hello Interaction!]"
-// });` : ""}
-
-bot.start();
-`;
     fs.writeFileSync(path.join(values.name, "index.ts"), indexContent);
 
     // Auto-Install Extensions Prompt (Simulated Logic)
     console.log("✅ Project created successfully!");
-
-    // In a real TTY we'd ask, but for CLI tool via arg is safer or just auto-do it.
-    // User requested: "falar se vc quer instalra a exntesaão... se sim ele instals"
-    // Since we can't capture input easily in restricted envs, let's just do it by default or log it.
-    // I'll auto-install snippets as "IntelliSense" since it's lightweight.
     await installSnippets(values.name);
 
     console.log(`\ncd ${values.name}\nbun install\nbun run dev`);
+
+} else if (process.argv[2] === "create") {
+    // Legacy support or alias
+    const name = process.argv[3];
+    const templateFlag = process.argv.indexOf("--template");
+    const template = templateFlag > -1 ? process.argv[templateFlag + 1] : "default";
+
+    if (!name) {
+        console.error("❌ Usage: seven create <name> [--template <template>]");
+        process.exit(1);
+    }
+
+    // Dynamic import Spinner
+    let Spinner;
+    try {
+        const mod = require("../src/util/Spinner");
+        Spinner = mod.Spinner;
+    } catch (e) {
+        // Fallback mock
+        Spinner = class {
+            constructor(t: string) { console.log(t); }
+            start() { }
+            stop(s: boolean, t?: string) { if (t) console.log(s ? "✅ " + t : "❌ " + t); }
+        }
+    }
+
+    const spin = new Spinner(`Creating project \x1b[36m${name}\x1b[0m...`);
+    spin.start();
+
+    // Simulate delay for "feel"
+    await new Promise(r => setTimeout(r, 800));
+
+    if (fs.existsSync(name)) {
+        spin.stop(false, "Directory already exists!");
+        process.exit(1);
+    }
+    fs.mkdirSync(name);
+
+    const packageJson = {
+        name: name,
+        version: "1.0.0",
+        main: "index.ts",
+        dependencies: {
+            "seven-discord": "latest"
+        },
+        scripts: {
+            "start": "bun run index.ts",
+            "dev": "bun --watch index.ts"
+        }
+    };
+
+    let indexContent = "";
+    if (template === "music") {
+        (packageJson.dependencies as any)["seven-music"] = "latest";
+        indexContent = `import { SevenClient, s } from "seven-discord";
+import MusicPlugin from "seven-music";
+
+const bot = new SevenClient({ token: await s.envtoken("DISCORD_TOKEN") });
+bot.loadPlugins("./plugins"); // Load dynamic plugins
+// ... music setup
+bot.start();`;
+    } else {
+        indexContent = `import { SevenClient, s } from "seven-discord";
+const bot = new SevenClient({ token: await s.envtoken("DISCORD_TOKEN") });
+bot.cmd({ name: "ping", code: "s.reply[Pong! 🏓]" });
+bot.start();`;
+    }
+
+    fs.writeFileSync(path.join(name, "package.json"), JSON.stringify(packageJson, null, 2));
+    fs.writeFileSync(path.join(name, "index.ts"), indexContent);
+    fs.writeFileSync(path.join(name, ".env"), "DISCORD_TOKEN=YOUR_TOKEN");
+
+    const gitignore = `node_modules/\n.env\n.bun/`;
+    fs.writeFileSync(path.join(name, ".gitignore"), gitignore);
+
+    await installSnippets(name);
+
+    spin.stop(true, "Project created.");
+    console.log(`\ncd ${name}\nbun install\nbun run dev`);
+
+} else if (process.argv[2] === "install") {
+    const pkg = process.argv[3];
+    if (!pkg) {
+        console.error("❌ Please specify a package name.");
+        process.exit(1);
+    }
+
+    let Spinner;
+    try {
+        const mod = require("../src/util/Spinner");
+        Spinner = mod.Spinner;
+    } catch (e) {
+        Spinner = class {
+            constructor(t: string) { console.log(t); }
+            start() { }
+            stop(s: boolean, t?: string) { if (t) console.log(s ? "✅ " + t : "❌ " + t); }
+        }
+    }
+
+    const spin = new Spinner(`Installing \x1b[36m${pkg}\x1b[0m...`);
+    spin.start();
+
+    const { RegistryManager } = require("../src/managers/RegistryManager");
+    const success = await RegistryManager.install(pkg);
+
+    if (success) {
+        spin.stop(true, `Installed ${pkg}`);
+    } else {
+        spin.stop(false, "Installation failed");
+    }
+
+} else if (process.argv[2] === "search") {
+    const query = process.argv[3] || "";
+    if (!query) {
+        console.error("❌ Please specify a search query.");
+        process.exit(1);
+    }
+    const { RegistryManager } = require("../src/managers/RegistryManager");
+    const results = await RegistryManager.search(query);
+
+    console.log(`\n🔎 Search results for '\x1b[36m${query}\x1b[0m':\n`);
+    if (results.length === 0) {
+        console.log("   No results found.");
+    } else {
+        results.forEach((pkg: any) => {
+            console.log(`   \x1b[35m${pkg.name}\x1b[0m v${pkg.version}`);
+            console.log(`     ${pkg.description}`);
+            console.log(`     \x1b[90m${pkg.url}\x1b[0m\n`);
+        });
+    }
+
 } else if (process.argv.includes("doctor")) {
     console.log(`\n\x1b[36mSeven-Discord Doctor 🩺\x1b[0m\n`);
 
-    // Check Bun
     const bunVer = process.version;
     console.log(`[✅] Runtime: Bun ${bunVer}`);
 
-    // Check Package.json
     if (fs.existsSync("package.json")) {
         console.log(`[✅] Project: package.json found`);
         try {
@@ -240,7 +363,6 @@ bot.start();
         console.log(`[⚠️] Project: No package.json found (Are you in the root?)`);
     }
 
-    // Check Token
     if (fs.existsSync(".env")) {
         const env = fs.readFileSync(".env", "utf-8");
         if (env.includes("DISCORD_TOKEN=")) {
@@ -252,20 +374,57 @@ bot.start();
         console.log(`[⚠️] Env: No .env file found`);
     }
 
+    // Check Memory
+    const totalMem = Math.round(os.totalmem() / 1024 / 1024 / 1024);
+    const freeMem = Math.round(os.freemem() / 1024 / 1024 / 1024);
+    console.log(`[ℹ️] System: ${totalMem}GB Total / ${freeMem}GB Free RAM`);
+
+    // Check FFmpeg
+    try {
+        const ffmpegVer = require("child_process").execSync("ffmpeg -version", { stdio: "pipe" }).toString().split("\n")[0];
+        console.log(`[✅] FFmpeg: Installed (${ffmpegVer.split("version")[1].trim().split(" ")[0]})`);
+    } catch (e) {
+        console.log(`[⚠️] FFmpeg: Not found (Voice functionality might be limited)`);
+    }
+
+    // Check FFmpeg
+    try {
+        const ffmpegVer = require("child_process").execSync("ffmpeg -version", { stdio: "pipe" }).toString().split("\n")[0];
+        console.log(`[✅] FFmpeg: Installed (${ffmpegVer.split("version")[1].trim().split(" ")[0]})`);
+    } catch (e) {
+        console.log(`[⚠️] FFmpeg: Not found (Voice functionality might be limited)`);
+    }
+
     console.log(`\nDiagnostics complete.`);
+
+} else if (process.argv[2] === "test") {
+    console.log(`\n\x1b[36m🧪 Seven-Discord Test Runner\x1b[0m\n`);
+
+    // We need a client instance to test macros
+    // This is a bit hacky for a CLI tool, usually we'd run a test file
+    // For now, we'll run a few built-in sanity checks
+
+    // Mock Client logic would go here.
+    // Since we can't easily instantiate a full client without token in CLI,
+    // we will notify the user this is for project-level tests in the future.
+
+    console.log("To run project tests, use: \x1b[33mbun test\x1b[0m");
+    console.log("(Native Seven Test Runner integration coming in v2.7)");
+
 } else {
     // Default Help
     console.log(`
 \x1b[36mSeven-Discord CLI\x1b[0m v${VERSION}
 
 Usage:
-  seven --init --name <name>     Initialize new project
-  seven doctor                   Check for common issues
-  seven --doc <macro>            Search documentation
+  seven create <name>            Create new project
+  seven install <pkg>            Install a plugin
+  seven search <query>           Search plugins
+  seven doctor                   Check health
+  seven --doc <macro>            Documentation
 
-Example:
-  seven --doc s.reply
-  seven --doc math
+Options:
+  --template <name>              Use specific template (create)
 `);
     checkUpdate();
 }

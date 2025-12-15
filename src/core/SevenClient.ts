@@ -16,6 +16,8 @@ import { LevelManager } from "../managers/LevelManager";
 import { InteractionManager } from "../managers/InteractionManager";
 import { SlashManager, SlashCommandOptions } from "../managers/SlashManager";
 import { VoiceManager } from "../managers/VoiceManager";
+import { MiddlewareManager } from "../structures/Middleware";
+import { PluginManager } from "../managers/PluginManager";
 
 import { readdirSync } from "fs";
 import { join } from "path";
@@ -45,6 +47,9 @@ export class SevenClient {
     public interpreter: Interpreter;
     public voice: VoiceManager;
 
+    public middleware: MiddlewareManager;
+    public plugins: PluginManager;
+
     public user: any = null; // Store bot user info
     public sessionId: string | null = null;
     public readyCommand: string | null = null;
@@ -66,7 +71,15 @@ export class SevenClient {
         this.interactions = new InteractionManager(this.variables);
         this.slash = new SlashManager(this);
         this.interpreter = new Interpreter(this);
+        this.levels = new LevelManager(this.variables);
+        this.interactions = new InteractionManager(this.variables);
+        this.slash = new SlashManager(this);
+        this.interpreter = new Interpreter(this);
         this.voice = new VoiceManager(this);
+
+        // v2.6.0 Systems
+        this.middleware = new MiddlewareManager();
+        this.plugins = new PluginManager(this);
 
         // Gateway Init
         this.gateway = new GatewayManager(this.token);
@@ -98,7 +111,11 @@ export class SevenClient {
         return Intents.SevenAll;
     }
 
+    public commandDir: string | null = null;
+    public pluginDir: string | null = null;
+
     public loadCommands(dir: string): void {
+        this.commandDir = dir;
         const fullPath = join(process.cwd(), dir);
         if (!require("fs").existsSync(fullPath)) {
             Logger.warn(`Command directory not found: ${dir}`);
@@ -107,6 +124,7 @@ export class SevenClient {
 
         const files = this.getFiles(fullPath);
         for (const file of files) {
+            delete require.cache[require.resolve(file)]; // Ensure fresh load
             const cmd = require(file);
             const config = cmd.default || cmd;
 
@@ -115,6 +133,24 @@ export class SevenClient {
                 Logger.load("command", config.name);
             }
         }
+    }
+
+    public reloadCommands(): void {
+        if (!this.commandDir) return;
+        Logger.info("Reloading commands...");
+        this.commands.clear();
+        this.loadCommands(this.commandDir);
+        Logger.success("Commands reloaded!");
+    }
+
+    public async loadPlugins(dir: string): Promise<void> {
+        this.pluginDir = dir;
+        const fullPath = join(process.cwd(), dir);
+        if (!require("fs").existsSync(fullPath)) {
+            // Plugins dir is optional, so just return
+            return;
+        }
+        await this.plugins.loadFromDir(fullPath);
     }
 
     private getFiles(dir: string): string[] {

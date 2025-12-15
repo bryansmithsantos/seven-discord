@@ -38,6 +38,12 @@ export interface CommandConfig {
      * Cooldown in seconds.
      */
     cooldown?: number;
+
+    /**
+     * Required Permissions.
+     * Example: ["ADMINISTRATOR", "MANAGE_GUILD"]
+     */
+    permissions?: string[];
 }
 
 export class Command {
@@ -46,6 +52,7 @@ export class Command {
     public aliases: string[] = [];
     public description: string = "";
     public cooldown: number = 0;
+    public permissions: string[] = [];
 
     constructor(config: CommandConfig) {
         this.name = config.name;
@@ -53,6 +60,7 @@ export class Command {
         this.aliases = config.aliases || [];
         this.description = config.description || "";
         this.cooldown = config.cooldown || 0;
+        this.permissions = config.permissions || [];
     }
 }
 

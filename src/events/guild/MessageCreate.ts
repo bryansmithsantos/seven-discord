@@ -55,49 +55,55 @@ export class MessageCreateEvent extends Event {
                 client.cooldowns.set(key, now + (cmd.cooldown * 1000));
             }
 
-            // 1. Run Middleware (only)
-            if (cmd.only && cmd.only.length > 0) {
-                for (const mw of cmd.only) {
-                    const result = await mw(client, data);
-
-                    if (result !== true) {
-                        Logger.warn("Middleware blocked command execution.");
-                        if (typeof result === "string") {
-                            await client.rest.post(`/channels/${data.channel_id}/messages`, {
-                                content: result,
-                                message_reference: { message_id: data.id }
-                            });
-                        }
-                        return; // Stop execution
-                    }
-                }
-            }
-
-            // 2. Execute Code (Interpreter)
+            // Context for Middleware & Execution
             const context = {
                 message: data,
                 client: client,
-                rest: client.rest
+                rest: client.rest,
+                author: data.author,
+                guild_id: data.guild_id,
+                channel_id: data.channel_id
             };
 
-            const output = await client.interpreter.parse(cmd.code, context);
-            Logger.debug(`Interpreter Output for ${cmd.name}: [${output?.replace(/\n/g, "\\n")}]`);
+            // Wrapped Execution
+            await client.middleware.execute(context, async () => {
 
-            // Implicit Reply Logic:
-            // If the code returns content (because s.reply wasn't used to consume it), we send it.
-            if (output && output.trim().length > 0) {
-                // Use static parsePayload from ReplyMacro (already imported at top in previous step)
-                const payload = ReplyMacro.parsePayload(output);
+                // 1. Run Middleware (only) - Command Specific
+                if (cmd.only && cmd.only.length > 0) {
+                    for (const mw of cmd.only) {
+                        const result = await mw(client, data);
 
-                if (payload && (payload.content || (payload.embeds && payload.embeds.length > 0) || (payload.components && payload.components.length > 0))) {
-                    payload.message_reference = { message_id: data.id };
-                    try {
-                        await client.rest.post(`/channels/${data.channel_id}/messages`, payload);
-                    } catch (e: any) {
-                        Logger.error(`Implicit Reply Failed: ${e.message}`);
+                        if (result !== true) {
+                            Logger.warn("Middleware blocked command execution.");
+                            if (typeof result === "string") {
+                                await client.rest.post(`/channels/${data.channel_id}/messages`, {
+                                    content: result,
+                                    message_reference: { message_id: data.id }
+                                });
+                            }
+                            return; // Stop execution
+                        }
                     }
                 }
-            }
+
+                // 2. Execute Code (Interpreter)
+                const output = await client.interpreter.parse(cmd.code, context);
+                Logger.debug(`Interpreter Output for ${cmd.name}: [${output?.replace(/\n/g, "\\n")}]`);
+
+                // Implicit Reply Logic:
+                if (output && output.trim().length > 0) {
+                    const payload = ReplyMacro.parsePayload(output);
+
+                    if (payload && (payload.content || (payload.embeds && payload.embeds.length > 0) || (payload.components && payload.components.length > 0))) {
+                        payload.message_reference = { message_id: data.id };
+                        try {
+                            await client.rest.post(`/channels/${data.channel_id}/messages`, payload);
+                        } catch (e: any) {
+                            Logger.error(`Implicit Reply Failed: ${e.message}`);
+                        }
+                    }
+                }
+            });
         }
     }
 }
