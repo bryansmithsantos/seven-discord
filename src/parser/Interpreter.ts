@@ -164,6 +164,12 @@ export class Interpreter {
         this.register(new (require("../macros/ui/EasyUI").CreateModalMacro)());
         this.register(new (require("../macros/ui/EasyUI").CreateSelectMacro)());
 
+        // SevenDB (Native)
+        this.register(new (require("../macros/sevendb/Set").SetMacro)());
+        this.register(new (require("../macros/sevendb/Get").GetMacro)());
+        this.register(new (require("../macros/sevendb/Delete").DeleteMacro)());
+        this.register(new (require("../macros/sevendb/All").AllMacro)());
+
         // User Context
         this.register(new (require("../macros/system/UserContext").UserIdMacro)());
         this.register(new (require("../macros/system/UserContext").UserTagMacro)());

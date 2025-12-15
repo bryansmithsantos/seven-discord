@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seven-Discord v2.5.25 - The Logic Framework</title>
+    <title>Seven-Discord v2.6.0 - The Logic Framework</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -81,7 +81,7 @@
             <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                 Seven
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.5.25</span>
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-400 font-mono">v2.6.0</span>
             </h1>
             <div class="flex gap-6 text-sm font-medium text-gray-400">
                 <a href="https://github.com/bryansmithsantos/seven-discord" target="_blank"
@@ -275,7 +275,8 @@
                     { name: "s.os", desc: "OS Platform", args: [], code: "s.os" },
                     { name: "s.nodeVersion", desc: "NodeJS Version", args: [], code: "s.nodeVersion" },
                     { name: "s.serverInfo", desc: "Server Info", args: [], code: "s.serverInfo" },
-                    { name: "s.setStatus", desc: "Set Bot Status", args: [{ name: "props", type: "key:value" }], code: "s.setStatus[type:watching; status:dnd; name:Users]" }
+                    { name: "s.setStatus", desc: "Set Bot Status", args: [{ name: "props", type: "key:value" }], code: "s.setStatus[type:watching; status:dnd; name:Users]" },
+                    { name: "s.reload", desc: "Hot Reload Commands", args: [], code: "s.reload" }
                 ]
             },
             {
@@ -349,6 +350,15 @@
                     { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },
                     { name: "s.upper", desc: "Uppercase", args: [{ name: "txt", type: "string" }], code: "s.upper[hello]" },
                     { name: "s.lower", desc: "Lowercase", args: [{ name: "txt", type: "string" }], code: "s.lower[HELLO]" }
+                ]
+            }
+            {
+                id: "section-db", title: "SevenDB (Native)",
+                macros: [
+                    { name: "s.db.set", desc: "Set native value", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }], code: "s.db.set[myKey; 100]" },
+                    { name: "s.db.get", desc: "Get native value", args: [{ name: "key", type: "string" }], code: "s.db.get[myKey]" },
+                    { name: "s.db.delete", desc: "Delete native value", args: [{ name: "key", type: "string" }], code: "s.db.delete[myKey]" },
+                    { name: "s.db.all", desc: "Dump all data", args: [], code: "s.db.all" }
                 ]
             }
         ];

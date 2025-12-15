@@ -1,11 +1,11 @@
 
-import { Database } from "../core/Database";
+import { SevenDB } from "../structures/SevenDB";
 import { Logger } from "../util/Logger";
 
 export class VariableManager {
-    private db: Database;
+    private db: SevenDB;
 
-    constructor(db: Database) {
+    constructor(db: SevenDB) {
         this.db = db;
     }
 

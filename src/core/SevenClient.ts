@@ -10,7 +10,7 @@ import { Logger } from "../util/Logger";
 import { RESTManager } from "../rest/RESTManager";
 import { Interpreter } from "../parser/Interpreter";
 import { VariableManager } from "../managers/VariableManager";
-import { Database } from "../core/Database";
+import { SevenDB } from "../structures/SevenDB";
 import { EconomyManager } from "../managers/EconomyManager";
 import { LevelManager } from "../managers/LevelManager";
 import { InteractionManager } from "../managers/InteractionManager";
@@ -38,7 +38,7 @@ export class SevenClient {
     // Core Managers
     public commands: Map<string, Command> = new Map();
     public cooldowns: Map<string, number> = new Map();
-    public db: Database;
+    public db: SevenDB;
     public variables: VariableManager;
     public economy: EconomyManager;
     public levels: LevelManager;
@@ -64,7 +64,7 @@ export class SevenClient {
         this.rest = new RESTManager(this.token);
 
         // Initialize Core Systems
-        this.db = new Database();
+        this.db = new SevenDB();
         this.variables = new VariableManager(this.db);
         this.economy = new EconomyManager(this.variables);
         this.levels = new LevelManager(this.variables);
