@@ -182,22 +182,6 @@ export class Interpreter {
         this.register(new (require("../macros/system/UserContext").UserCreatedMacro)());
 
         this.register(new (require("../macros/system/UserContext").UserBotMacro)());
-
-        // Fun
-        this.register(new (require("../macros/fun/Hug").HugMacro)());
-        this.register(new (require("../macros/fun/Poll").PollMacro)());
-        this.register(new (require("../macros/fun/Ship").ShipMacro)());
-
-        // Voice
-        this.register(new (require("../macros/voice/Join").JoinMacro)());
-        this.register(new (require("../macros/voice/Leave").LeaveMacro)());
-        this.register(new (require("../macros/voice/Play").PlayMacro)());
-        this.register(new (require("../macros/voice/Stop").StopMacro)());
-
-        // Levels
-        this.register(new (require("../macros/levels/AddXp").AddXpMacro)());
-        this.register(new (require("../macros/levels/Rank").RankMacro)());
-
         Logger.info("Interpreter System initialized.");
     }
 
