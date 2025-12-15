@@ -86,4 +86,73 @@ export class EconomyManager {
         this.add(guildId, userId, amount);
         return true;
     }
+
+    // --- INVENTORY SYSTEM ---
+
+    public getShopKey(guildId: string): string {
+        return `eco_shop_${guildId}`;
+    }
+
+    public getInvKey(guildId: string, userId: string): string {
+        return `eco_inv_${guildId}_${userId}`;
+    }
+
+    public getShop(guildId: string): any[] {
+        return this.vars.get(this.getShopKey(guildId), "global") || [];
+    }
+
+    public addToShop(guildId: string, item: { name: string, price: number, id: string, icon?: string }) {
+        const shop = this.getShop(guildId);
+        shop.push(item);
+        this.vars.set(this.getShopKey(guildId), shop, "global");
+    }
+
+    public getInventory(guildId: string, userId: string): any[] {
+        return this.vars.get(this.getInvKey(guildId, userId), "global") || [];
+    }
+
+    public addItemToInventory(guildId: string, userId: string, itemId: string, amount: number = 1) {
+        let inv = this.getInventory(guildId, userId);
+        const existing = inv.find((i: any) => i.id === itemId);
+
+        if (existing) {
+            existing.amount += amount;
+            if (existing.amount <= 0) {
+                inv = inv.filter((i: any) => i.id !== itemId);
+            }
+        } else if (amount > 0) {
+            inv.push({ id: itemId, amount: amount });
+        }
+        this.vars.set(this.getInvKey(guildId, userId), inv, "global");
+    }
+
+    public buyItem(guildId: string, userId: string, itemNameOrId: string): string {
+        const shop = this.getShop(guildId);
+        const item = shop.find((i: any) => i.id.toLowerCase() === itemNameOrId.toLowerCase() || i.name.toLowerCase() === itemNameOrId.toLowerCase());
+
+        if (!item) return "Item not found";
+
+        const bal = this.getBalance(guildId, userId);
+        if (bal < item.price) return "Insufficient funds";
+
+        this.remove(guildId, userId, item.price);
+        this.addItemToInventory(guildId, userId, item.id, 1);
+        return "true";
+    }
+
+    public sellItem(guildId: string, userId: string, itemNameOrId: string): string {
+        const inv = this.getInventory(guildId, userId);
+        const userItem = inv.find((i: any) => i.id.toLowerCase() === itemNameOrId.toLowerCase());
+
+        if (!userItem) return "Item not found in inventory";
+
+        // Find price in shop to determine sell value (half price?)
+        const shop = this.getShop(guildId);
+        const shopItem = shop.find((i: any) => i.id === userItem.id);
+        const price = shopItem ? Math.floor(shopItem.price / 2) : 0;
+
+        this.addItemToInventory(guildId, userId, userItem.id, -1);
+        this.add(guildId, userId, price);
+        return "true";
+    }
 }

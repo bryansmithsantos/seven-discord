@@ -3,6 +3,8 @@ export interface MacroOptions {
     name: string;
     aliases?: string[];
     description?: string;
+    usage?: string;
+    example?: string;
     category?: string; // 'core', 'moderation', 'logic'
     disableNestedParsing?: boolean; // If true, arguments are not parsed before execution
 }
@@ -11,6 +13,8 @@ export abstract class Macro {
     public name: string;
     public aliases: string[];
     public description: string;
+    public usage: string;
+    public example: string;
     public category: string;
     public disableNestedParsing: boolean;
 
@@ -18,6 +22,8 @@ export abstract class Macro {
         this.name = options.name;
         this.aliases = options.aliases || [];
         this.description = options.description || "No description provided.";
+        this.usage = options.usage || "";
+        this.example = options.example || "";
         this.category = options.category || "misc";
         this.disableNestedParsing = options.disableNestedParsing || false;
     }

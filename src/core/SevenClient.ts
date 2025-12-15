@@ -12,8 +12,10 @@ import { Interpreter } from "../parser/Interpreter";
 import { VariableManager } from "../managers/VariableManager";
 import { Database } from "../core/Database";
 import { EconomyManager } from "../managers/EconomyManager";
+import { LevelManager } from "../managers/LevelManager";
 import { InteractionManager } from "../managers/InteractionManager";
 import { SlashManager, SlashCommandOptions } from "../managers/SlashManager";
+import { VoiceManager } from "../managers/VoiceManager";
 
 import { readdirSync } from "fs";
 import { join } from "path";
@@ -37,9 +39,11 @@ export class SevenClient {
     public db: Database;
     public variables: VariableManager;
     public economy: EconomyManager;
+    public levels: LevelManager;
     public interactions: InteractionManager;
     public slash: SlashManager;
     public interpreter: Interpreter;
+    public voice: VoiceManager;
 
     public user: any = null; // Store bot user info
     public sessionId: string | null = null;
@@ -58,9 +62,11 @@ export class SevenClient {
         this.db = new Database();
         this.variables = new VariableManager(this.db);
         this.economy = new EconomyManager(this.variables);
+        this.levels = new LevelManager(this.variables);
         this.interactions = new InteractionManager(this.variables);
         this.slash = new SlashManager(this);
         this.interpreter = new Interpreter(this);
+        this.voice = new VoiceManager(this);
 
         // Gateway Init
         this.gateway = new GatewayManager(this.token);
@@ -243,7 +249,8 @@ export class SevenClient {
             new (require("../events/guild/ChannelCreate").ChannelCreateEvent)(),
             new (require("../events/guild/ChannelDelete").ChannelDeleteEvent)(),
             new (require("../events/guild/ChannelUpdate").ChannelUpdateEvent)(),
-            new (require("../events/guild/VoiceStateUpdate").VoiceStateUpdateEvent)()
+            new (require("../events/guild/VoiceStateUpdate").VoiceStateUpdateEvent)(),
+            new (require("../events/guild/VoiceServerUpdate").VoiceServerUpdateEvent)()
         ];
 
         this.gateway.on("dispatch", (packet) => {

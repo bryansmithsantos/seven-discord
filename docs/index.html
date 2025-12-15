@@ -299,6 +299,47 @@
                 ]
             },
             {
+                id: "section-voice", title: "Voice (New)",
+                macros: [
+                    { name: "s.join", desc: "Joins voice channel", args: [], code: "s.join" },
+                    { name: "s.leave", desc: "Leaves voice channel", args: [], code: "s.leave" },
+                    { name: "s.play", desc: "Play audio URL", args: [{ name: "url", type: "string" }], code: "s.play[http://stream.com/music.mp3]" },
+                    { name: "s.stop", desc: "Stop audio", args: [], code: "s.stop" }
+                ]
+            },
+            {
+                id: "section-level", title: "Leveling",
+                macros: [
+                    { name: "s.rank", desc: "Show Rank Card", args: [{ name: "user", type: "string", req: false }], code: "s.rank" },
+                    { name: "s.addXp", desc: "Add XP", args: [{ name: "user", type: "string" }, { name: "amt", type: "number" }], code: "s.addXp[@user; 100]" }
+                ]
+            },
+            {
+                id: "section-fun", title: "Fun & Social",
+                macros: [
+                    { name: "s.ship", desc: "Love calculator", args: [{ name: "u1", type: "string" }, { name: "u2", type: "string" }], code: "s.ship[Me; You]" },
+                    { name: "s.hug", desc: "Hug user", args: [{ name: "user", type: "string" }], code: "s.hug[@user]" },
+                    { name: "s.poll", desc: "Create Poll", args: [{ name: "q", type: "string" }, { name: "opts", type: "list" }], code: "s.poll[Pizza?; Yes; No]" }
+                ]
+            },
+            {
+                id: "section-inv", title: "Inventory (RPG)",
+                macros: [
+                    { name: "s.inventory", desc: "Show items", args: [], code: "s.inventory" },
+                    { name: "s.shop", desc: "Show shop", args: [], code: "s.shop" },
+                    { name: "s.buy", desc: "Buy item", args: [{ name: "item", type: "string" }], code: "s.buy[sword]" },
+                    { name: "s.sell", desc: "Sell item", args: [{ name: "item", type: "string" }], code: "s.sell[sword]" },
+                    { name: "s.addItem", desc: "Add to shop", args: [{ name: "id", type: "string" }, { name: "price", type: "number" }], code: "s.addItem[sword; 100]" }
+                ]
+            },
+            {
+                id: "section-utils", title: "Utilities",
+                macros: [
+                    { name: "s.calc", desc: "Calculator", args: [{ name: "expr", type: "string" }], code: "s.calc[10 * 5]" },
+                    { name: "s.weather", desc: "Check Weather", args: [{ name: "city", type: "string" }], code: "s.weather[London]" }
+                ]
+            },
+            {
                 id: "section-string", title: "String Op",
                 macros: [
                     { name: "s.replace", desc: "Replace text", args: [{ name: "txt", type: "string" }, { name: "match", type: "string" }, { name: "repl", type: "string" }], code: "s.replace[Hello;e;a]" },

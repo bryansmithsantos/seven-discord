@@ -216,6 +216,43 @@ bot.start();
     await installSnippets(values.name);
 
     console.log(`\ncd ${values.name}\nbun install\nbun run dev`);
+} else if (process.argv.includes("doctor")) {
+    console.log(`\n\x1b[36mSeven-Discord Doctor 🩺\x1b[0m\n`);
+
+    // Check Bun
+    const bunVer = process.version;
+    console.log(`[✅] Runtime: Bun ${bunVer}`);
+
+    // Check Package.json
+    if (fs.existsSync("package.json")) {
+        console.log(`[✅] Project: package.json found`);
+        try {
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+            if (pkg.dependencies && pkg.dependencies["seven-discord"]) {
+                console.log(`[✅] Dependency: seven-discord v${pkg.dependencies["seven-discord"]}`);
+            } else {
+                console.log(`[❌] Dependency: seven-discord NOT installed (Run: bun add seven-discord)`);
+            }
+        } catch (e) {
+            console.log(`[❌] Project: package.json is invalid`);
+        }
+    } else {
+        console.log(`[⚠️] Project: No package.json found (Are you in the root?)`);
+    }
+
+    // Check Token
+    if (fs.existsSync(".env")) {
+        const env = fs.readFileSync(".env", "utf-8");
+        if (env.includes("DISCORD_TOKEN=")) {
+            console.log(`[✅] Env: .env found with token`);
+        } else {
+            console.log(`[❌] Env: .env found but MISSING DISCORD_TOKEN`);
+        }
+    } else {
+        console.log(`[⚠️] Env: No .env file found`);
+    }
+
+    console.log(`\nDiagnostics complete.`);
 } else {
     // Default Help
     console.log(`
@@ -223,6 +260,7 @@ bot.start();
 
 Usage:
   seven --init --name <name>     Initialize new project
+  seven doctor                   Check for common issues
   seven --doc <macro>            Search documentation
 
 Example:

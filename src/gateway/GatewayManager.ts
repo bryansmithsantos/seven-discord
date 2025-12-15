@@ -196,7 +196,7 @@ export class GatewayManager extends EventEmitter {
         });
     }
 
-    private send(payload: any): void {
+    public send(payload: any): void {
         if (this.ws?.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify(payload));
         }
