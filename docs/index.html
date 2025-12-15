@@ -225,65 +225,211 @@
 
     <script>
         // --- DATA ---
+        // --- DATA ---
         const macroCategories = [
             {
-                id: "section-db", title: "Native Database",
+                id: "section-logic", title: "Logic & Control",
                 macros: [
-                    { name: "s.db.set", desc: "Sets a value in the high-performance native SQLite database.", args: [{ name: "key", type: "string" }, { name: "val", type: "any" }], code: "s.db.set[myKey; 100]" },
-                    { name: "s.db.get", desc: "Retrieves a value from the database with O(1) complexity.", args: [{ name: "key", type: "string" }], code: "s.db.get[myKey]" },
-                    { name: "s.db.delete", desc: "Removes a key-value pair permanently.", args: [{ name: "key", type: "string" }], code: "s.db.delete[myKey]" },
-                    { name: "s.db.all", desc: "Exports the entire database state as JSON.", args: [], code: "s.db.all" }
+                    { name: "s.if", desc: "Conditional execution.", args: [{ name: "cond", type: "bool" }, { name: "then", type: "block" }, { name: "else", type: "block" }], code: "s.if[s.eq[1;1]; true; false]" },
+                    { name: "s.eq", desc: "Checks if A equals B.", args: [{ name: "a", type: "any" }, { name: "b", type: "any" }], code: "s.eq[5;5]" },
+                    { name: "s.gt", desc: "Checks if A is greater than B.", args: [{ name: "a", type: "num" }, { name: "b", type: "num" }], code: "s.gt[10;5]" },
+                    { name: "s.lt", desc: "Checks if A is less than B.", args: [{ name: "a", type: "num" }, { name: "b", type: "num" }], code: "s.lt[5;10]" },
+                    { name: "s.gte", desc: "Checks if A >= B.", args: [{ name: "a", type: "num" }, { name: "b", type: "num" }], code: "s.gte[10;10]" },
+                    { name: "s.lte", desc: "Checks if A <= B.", args: [{ name: "a", type: "num" }, { name: "b", type: "num" }], code: "s.lte[5;5]" },
+                    { name: "s.and", desc: "Returns true if ALL args are true.", args: [{ name: "cond1", type: "bool" }, { name: "cond2", type: "bool" }], code: "s.and[true;true]" },
+                    { name: "s.or", desc: "Returns true if ANY arg is true.", args: [{ name: "cond1", type: "bool" }, { name: "cond2", type: "bool" }], code: "s.or[true;false]" },
+                    { name: "s.not", desc: "Inverts a boolean value.", args: [{ name: "val", type: "bool" }], code: "s.not[true]" },
+                    { name: "s.ternary", desc: "Shorthand if/else.", args: [{ name: "cond", type: "bool" }, { name: "val1", type: "any" }, { name: "val2", type: "any" }], code: "s.ternary[true;A;B]" },
+                    { name: "s.includes", desc: "Checks if string contains substring.", args: [{ name: "str", type: "string" }, { name: "search", type: "string" }], code: "s.includes[Hello;Hell]" },
+                    { name: "s.isNumber", desc: "Checks if value is a valid number.", args: [{ name: "val", type: "any" }], code: "s.isNumber[123]" },
+                    { name: "s.setVar", desc: "Sets a runtime variable.", args: [{ name: "name", type: "string" }, { name: "val", type: "any" }], code: "s.setVar[x; 10]" },
+                    { name: "s.getVar", desc: "Gets a runtime variable.", args: [{ name: "name", type: "string" }], code: "s.getVar[x]" }
                 ]
             },
             {
-                id: "section-core", title: "Core System",
+                id: "section-math", title: "Mathematics",
                 macros: [
-                    { name: "s.send", desc: "Dispatches a message payload to a specific channel ID.", args: [{ name: "channelId", type: "snowflake" }, { name: "content", type: "string" }], code: "s.send[123456789; System Online]" },
-                    { name: "s.reply", desc: "Replies to the event trigger context.", args: [{ name: "content", type: "string" }], code: "s.reply[Acknowledged.]" },
-                    { name: "s.log", desc: "Writes to the system stdout/logger.", args: [{ name: "msg", type: "any" }], code: "s.log[Init Sequence]" },
-                    { name: "s.reload", desc: "Triggers a hot-reload of the command registry.", args: [], code: "s.reload" },
-                    { name: "s.eval", desc: "Executes arbitrary JavaScript in the runtime.", args: [{ name: "code", type: "string" }], code: "s.eval[process.exit(0)]" }
+                    { name: "s.math", desc: "Evaluates a math expression.", args: [{ name: "expr", type: "string" }], code: "s.math[2 + 2 * 4]" },
+                    { name: "s.randomInt", desc: "Random integer between min/max.", args: [{ name: "min", type: "int" }, { name: "max", type: "int" }], code: "s.randomInt[1;10]" },
+                    { name: "s.random", desc: "Random float between 0 and 1.", args: [], code: "s.random" },
+                    { name: "s.round", desc: "Rounds to nearest integer.", args: [{ name: "n", type: "num" }], code: "s.round[4.6]" },
+                    { name: "s.floor", desc: "Rounds down.", args: [{ name: "n", type: "num" }], code: "s.floor[4.9]" },
+                    { name: "s.ceil", desc: "Rounds up.", args: [{ name: "n", type: "num" }], code: "s.ceil[4.1]" },
+                    { name: "s.abs", desc: "Absolute value.", args: [{ name: "n", type: "num" }], code: "s.abs[-5]" },
+                    { name: "s.pow", desc: "Power function (base^exp).", args: [{ name: "base", type: "num" }, { name: "exp", type: "num" }], code: "s.pow[2;3]" },
+                    { name: "s.sqrt", desc: "Square root.", args: [{ name: "n", type: "num" }], code: "s.sqrt[16]" },
+                    { name: "s.min", desc: "Smallest number in list.", args: [{ name: "n1", type: "num" }, { name: "n2", type: "num" }], code: "s.min[10;5;20]" },
+                    { name: "s.max", desc: "Largest number in list.", args: [{ name: "n1", type: "num" }, { name: "n2", type: "num" }], code: "s.max[10;5;20]" },
+                    { name: "s.pi", desc: "Value of PI.", args: [], code: "s.pi" }
                 ]
             },
             {
-                id: "section-logic", title: "Logic Gates",
+                id: "section-string", title: "String Manipulation",
                 macros: [
-                    { name: "s.if", desc: "Standard conditional flow control.", args: [{ name: "condition", type: "bool" }, { name: "then", type: "block" }, { name: "else", type: "block", req: false }], code: "s.if[s.eq[1;1]; TRUE; FALSE]" },
-                    { name: "s.setVar", desc: "Allocates a temporary runtime variable.", args: [{ name: "name", type: "string" }, { name: "val", type: "any" }], code: "s.setVar[temp; 1]" },
-                    { name: "s.getVar", desc: "Reads a runtime variable.", args: [{ name: "name", type: "string" }], code: "s.getVar[temp]" },
-                    { name: "s.randomInt", desc: "Generates a pseudo-random integer.", args: [{ name: "min", type: "int" }, { name: "max", type: "int" }], code: "s.randomInt[0; 100]" }
+                    { name: "s.len", desc: "Length of string.", args: [{ name: "str", type: "string" }], code: "s.len[text]" },
+                    { name: "s.upper", desc: "Converts to uppercase.", args: [{ name: "str", type: "string" }], code: "s.upper[text]" },
+                    { name: "s.lower", desc: "Converts to lowercase.", args: [{ name: "str", type: "string" }], code: "s.lower[TEXT]" },
+                    { name: "s.replace", desc: "Replaces first occurrence.", args: [{ name: "str", type: "string" }, { name: "match", type: "string" }, { name: "replace", type: "string" }], code: "s.replace[hello world;world;universe]" },
+                    { name: "s.replaceAll", desc: "Replaces all occurrences.", args: [{ name: "str", type: "string" }, { name: "match", type: "string" }, { name: "replace", type: "string" }], code: "s.replaceAll[a a a;a;b]" },
+                    { name: "s.slice", desc: "Extracts part of a string.", args: [{ name: "str", type: "string" }, { name: "start", type: "int" }, { name: "end", type: "int" }], code: "s.slice[hello;0;4]" },
+                    { name: "s.split", desc: "Splits string into array (by delimiter).", args: [{ name: "str", type: "string" }, { name: "delim", type: "string" }], code: "s.split[a,b,c;,]" },
+                    { name: "s.trim", desc: "Removes whitespace from ends.", args: [{ name: "str", type: "string" }], code: "s.trim[  abc  ]" },
+                    { name: "s.capitalize", desc: "Capitalizes first letter.", args: [{ name: "str", type: "string" }], code: "s.capitalize[hello]" },
+                    { name: "s.repeat", desc: "Repeats string N times.", args: [{ name: "str", type: "string" }, { name: "n", type: "int" }], code: "s.repeat[abc;3]" },
+                    { name: "s.startsWith", desc: "Checks start of string.", args: [{ name: "str", type: "string" }, { name: "search", type: "string" }], code: "s.startsWith[abc;a]" },
+                    { name: "s.endsWith", desc: "Checks end of string.", args: [{ name: "str", type: "string" }, { name: "search", type: "string" }], code: "s.endsWith[abc;c]" },
+                    { name: "s.reverse", desc: "Reverses the string.", args: [{ name: "str", type: "string" }], code: "s.reverse[abc]" }
                 ]
             },
             {
-                id: "section-voice", title: "Voice (Tera)",
+                id: "section-sys", title: "System & Bot",
                 macros: [
-                    { name: "s.join", desc: "Connects the bot to the voice channel.", args: [], code: "s.join" },
-                    { name: "s.leave", desc: "Disconnects from the current voice channel.", args: [], code: "s.leave" },
-                    { name: "s.play", desc: "Streams audio from a URL.", args: [{ name: "url", type: "string" }], code: "s.play[https://...]" },
-                    { name: "s.stop", desc: "Stops audio playback.", args: [], code: "s.stop" }
+                    { name: "s.ping", desc: "Current bot latency.", args: [], code: "s.ping" },
+                    { name: "s.uptime", desc: "Bot uptime duration.", args: [], code: "s.uptime" },
+                    { name: "s.botInfo", desc: "Displays bot statistics.", args: [], code: "s.botInfo" },
+                    { name: "s.serverInfo", desc: "Displays server info.", args: [], code: "s.serverInfo" },
+                    { name: "s.userInfo", desc: "Displays user info.", args: [{ name: "user", type: "snowflake" }], code: "s.userInfo[@user]" },
+                    { name: "s.avatar", desc: "Gets user avatar URL.", args: [{ name: "user", type: "snowflake" }], code: "s.avatar[@user]" },
+                    { name: "s.shutdown", desc: "Terminates the process.", args: [], code: "s.shutdown" },
+                    { name: "s.eval", desc: "Executes Admin JS.", args: [{ name: "code", type: "string" }], code: "s.eval[return 1]" },
+                    { name: "s.setStatus", desc: "Sets bot presence.", args: [{ name: "type", type: "string" }, { name: "status", type: "string" }, { name: "url", type: "string" }], code: "s.setStatus[watching;you]" },
+                    { name: "s.shardId", desc: "Current Shard ID.", args: [], code: "s.shardId" },
+                    { name: "s.guildCount", desc: "Total joined guilds.", args: [], code: "s.guildCount" },
+                    { name: "s.userCount", desc: "Total seen users.", args: [], code: "s.userCount" },
+                    { name: "s.channelCount", desc: "Total channels.", args: [], code: "s.channelCount" },
+                    { name: "s.emojiCount", desc: "Total emojis.", args: [], code: "s.emojiCount" },
+                    { name: "s.roleCount", desc: "Total roles.", args: [], code: "s.roleCount" },
+                    { name: "s.clientId", desc: "Bot User ID.", args: [], code: "s.clientId" },
+                    { name: "s.ownerId", desc: "Bot Owner ID.", args: [], code: "s.ownerId" },
+                    { name: "s.ram", desc: "Memory usage.", args: [], code: "s.ram" },
+                    { name: "s.cpu", desc: "CPU usage.", args: [], code: "s.cpu" },
+                    { name: "s.os", desc: "Operating System.", args: [], code: "s.os" },
+                    { name: "s.nodeVersion", desc: "Node/Bun version.", args: [], code: "s.nodeVersion" },
+                    { name: "s.date", desc: "Current date.", args: [], code: "s.date" },
+                    { name: "s.timestamp", desc: "Current UNIX timestamp.", args: [], code: "s.timestamp" },
+                    { name: "s.reload", desc: "Reloads commands.", args: [], code: "s.reload" },
+                    { name: "s.time", desc: "Formatted time.", args: [], code: "s.time" },
+                    { name: "s.cooldown", desc: "Applies command cooldown.", args: [{ name: "seconds", type: "int" }], code: "s.cooldown[5]" },
+                    { name: "s.userBot", desc: "Checks if user is bot.", args: [{ name: "user", type: "snowflake" }], code: "s.userBot[@user]" }
                 ]
             },
             {
-                id: "section-fun", title: "Entertainment",
+                id: "section-mod", title: "Moderation",
                 macros: [
-                    { name: "s.hug", desc: "Hugs a user.", args: [{ name: "user", type: "snowflake" }], code: "s.hug[@user]" },
-                    { name: "s.ship", desc: "Calculates compatibility.", args: [{ name: "u1", type: "string" }, { name: "u2", type: "string" }], code: "s.ship[User1; User2]" },
-                    { name: "s.poll", desc: "Creates a simple poll.", args: [{ name: "question", type: "string" }, { name: "opt1", type: "string" }, { name: "opt2", type: "string" }], code: "s.poll[Cats or Dogs?; Cats; Dogs]" }
-                ]
-            },
-            {
-                id: "section-levels", title: "Leveling System",
-                macros: [
-                    { name: "s.addXp", desc: "Adds XP to a user.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.addXp[@user; 100]" },
-                    { name: "s.rank", desc: "Displays user rank card.", args: [{ name: "user", type: "snowflake", req: false }], code: "s.rank" }
+                    { name: "s.ban", desc: "Bans a user.", args: [{ name: "user", type: "snowflake" }, { name: "reason", type: "string" }], code: "s.ban[@user; Spam]" },
+                    { name: "s.kick", desc: "Kicks a user.", args: [{ name: "user", type: "snowflake" }, { name: "reason", type: "string" }], code: "s.kick[@user; Bye]" },
+                    { name: "s.mute", desc: "Timeouts a user.", args: [{ name: "user", type: "snowflake" }, { name: "duration", type: "string" }], code: "s.mute[@user; 1h]" },
+                    { name: "s.unmute", desc: "Removes timeout.", args: [{ name: "user", type: "snowflake" }], code: "s.unmute[@user]" },
+                    { name: "s.warn", desc: "Warns a user.", args: [{ name: "user", type: "snowflake" }, { name: "reason", type: "string" }], code: "s.warn[@user; Rule 1]" },
+                    { name: "s.unwarn", desc: "Removes a warning.", args: [{ name: "user", type: "snowflake" }, { name: "id", type: "string" }], code: "s.unwarn[@user; #1]" },
+                    { name: "s.warnings", desc: "View user warnings.", args: [{ name: "user", type: "snowflake" }], code: "s.warnings[@user]" },
+                    { name: "s.purge", desc: "Bulk deletes messages.", args: [{ name: "amount", type: "int" }], code: "s.purge[50]" },
+                    { name: "s.lock", desc: "Locks current channel.", args: [], code: "s.lock" },
+                    { name: "s.unlock", desc: "Unlocks current channel.", args: [], code: "s.unlock" },
+                    { name: "s.slowmode", desc: "Sets channel slowmode.", args: [{ name: "seconds", type: "int" }], code: "s.slowmode[10]" }
                 ]
             },
             {
                 id: "section-eco", title: "Economy",
                 macros: [
-                    { name: "s.addCash", desc: "Injects currency into a wallet.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.addCash[@user; 500]" },
-                    { name: "s.removeCash", desc: "Deducts currency from a wallet.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.removeCash[@user; 100]" },
-                    { name: "s.cash", desc: "Checks wallet balance.", args: [{ name: "user", type: "snowflake", req: false }], code: "s.cash" }
+                    { name: "s.addCash", desc: "Adds money.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.addCash[@user; 100]" },
+                    { name: "s.removeCash", desc: "Removes money.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.removeCash[@user; 100]" },
+                    { name: "s.setCash", desc: "Sets balance.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.setCash[@user; 500]" },
+                    { name: "s.bank", desc: "View bank balance.", args: [{ name: "user", type: "snowflake" }], code: "s.bank[@user]" },
+                    { name: "s.cash", desc: "View wallet balance.", args: [{ name: "user", type: "snowflake" }], code: "s.cash[@user]" },
+                    { name: "s.deposit", desc: "Deposit to bank.", args: [{ name: "amt", type: "int" }], code: "s.deposit[100]" },
+                    { name: "s.withdraw", desc: "Withdraw from bank.", args: [{ name: "amt", type: "int" }], code: "s.withdraw[100]" },
+                    { name: "s.give", desc: "Give money to user.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.give[@user; 50]" },
+                    { name: "s.take", desc: "Take money from user.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.take[@user; 10]" },
+                    { name: "s.pay", desc: "Pay another user.", args: [{ name: "user", type: "snowflake" }, { name: "amt", type: "int" }], code: "s.pay[@user; 50]" },
+                    { name: "s.work", desc: "Earn money working.", args: [], code: "s.work" },
+                    { name: "s.daily", desc: "Claim daily reward.", args: [], code: "s.daily" },
+                    { name: "s.rob", desc: "Rob another user.", args: [{ name: "user", type: "snowflake" }], code: "s.rob[@user]" },
+                    { name: "s.gamble", desc: "Gamble money.", args: [{ name: "amt", type: "int" }], code: "s.gamble[100]" },
+                    { name: "s.coinflip", desc: "Flip a coin.", args: [{ name: "side", type: "string" }, { name: "amt", type: "int" }], code: "s.coinflip[heads; 50]" },
+                    { name: "s.leaderboard", desc: "Show eco leaderboard.", args: [], code: "s.leaderboard" },
+                    { name: "s.resetEco", desc: "Resets entire economy.", args: [], code: "s.resetEco" },
+                    { name: "s.setCurrency", desc: "Change currency symbol.", args: [{ name: "symbol", type: "string" }], code: "s.setCurrency[$]" }
+                ]
+            },
+            {
+                id: "section-fun", title: "Entertainment",
+                macros: [
+                    { name: "s.hug", desc: "Hug someone.", args: [{ name: "user", type: "snowflake" }], code: "s.hug[@user]" },
+                    { name: "s.ship", desc: "Love compatibility.", args: [{ name: "u1", type: "string" }, { name: "u2", type: "string" }], code: "s.ship[Me; You]" },
+                    { name: "s.poll", desc: "Create a poll.", args: [{ name: "q", type: "string" }, { name: "o1", type: "string" }, { name: "o2", type: "string" }], code: "s.poll[Yes/No?; Yes; No]" }
+                ]
+            },
+            {
+                id: "section-voice", title: "Voice (Tera)",
+                macros: [
+                    { name: "s.join", desc: "Join voice channel.", args: [], code: "s.join" },
+                    { name: "s.leave", desc: "Leave voice channel.", args: [], code: "s.leave" },
+                    { name: "s.play", desc: "Play audio URL.", args: [{ name: "url", type: "string" }], code: "s.play[https://...]" },
+                    { name: "s.stop", desc: "Stop playback.", args: [], code: "s.stop" }
+                ]
+            },
+            {
+                id: "section-levels", title: "Leveling",
+                macros: [
+                    { name: "s.addXp", desc: "Give XP.", args: [{ name: "user", type: "snowflake" }, { name: "xp", type: "int" }], code: "s.addXp[@user; 100]" },
+                    { name: "s.rank", desc: "Show rank card.", args: [{ name: "user", type: "snowflake" }], code: "s.rank" }
+                ]
+            },
+            {
+                id: "section-ui", title: "Interface (UI)",
+                macros: [
+                    { name: "s.embed", desc: "Starts an embed builder.", args: [{ name: "json", type: "string", req: false }], code: "s.embed" },
+                    { name: "s.embedTitle", desc: "Sets embed title.", args: [{ name: "text", type: "string" }], code: "s.embedTitle[Hello]" },
+                    { name: "s.embedDesc", desc: "Sets embed description.", args: [{ name: "text", type: "string" }], code: "s.embedDesc[World]" },
+                    { name: "s.embedColor", desc: "Sets embed color.", args: [{ name: "hex", type: "string" }], code: "s.embedColor[#FF0000]" },
+                    { name: "s.embedImage", desc: "Sets embed image.", args: [{ name: "url", type: "string" }], code: "s.embedImage[http://...]" },
+                    { name: "s.embedThumb", desc: "Sets thumbnail.", args: [{ name: "url", type: "string" }], code: "s.embedThumb[http://...]" },
+                    { name: "s.embedFooter", desc: "Sets footer.", args: [{ name: "text", type: "string" }], code: "s.embedFooter[Footer]" },
+                    { name: "s.embedField", desc: "Adds a field.", args: [{ name: "title", type: "string" }, { name: "value", type: "string" }, { name: "inline", type: "bool" }], code: "s.embedField[Title; Val; true]" },
+                    { name: "s.embedAuthor", desc: "Sets author.", args: [{ name: "name", type: "string" }], code: "s.embedAuthor[Me]" },
+                    { name: "s.embedUrl", desc: "Sets URL.", args: [{ name: "url", type: "string" }], code: "s.embedUrl[http://...]" },
+                    { name: "s.button", desc: "Creates a button.", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "string" }], code: "s.button[btn1; Click Me; primary]" },
+                    { name: "s.row", desc: "Adds a component row.", args: [], code: "s.row" },
+                    { name: "s.selectMenu", desc: "Creates dropdown.", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }], code: "s.selectMenu[menu; Choose...]" },
+                    { name: "s.selectOption", desc: "Adds option to menu.", args: [{ name: "label", type: "string" }, { name: "value", type: "string" }], code: "s.selectOption[Opt A; a]" },
+                    { name: "s.modal", desc: "Shows a modal form.", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }], code: "s.modal[form; My Form]" },
+                    { name: "s.input", desc: "Adds input to modal.", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }], code: "s.input[name; Your Name]" }
+                ]
+            },
+            {
+                id: "section-sevendb", title: "SevenDB (Native)",
+                macros: [
+                    { name: "s.db.set", desc: "Set DB value.", args: [{ name: "k", type: "str" }, { name: "v", type: "any" }], code: "s.db.set[k; v]" },
+                    { name: "s.db.get", desc: "Get DB value.", args: [{ name: "k", type: "str" }], code: "s.db.get[k]" },
+                    { name: "s.db.delete", desc: "Delete DB value.", args: [{ name: "k", type: "str" }], code: "s.db.delete[k]" },
+                    { name: "s.db.all", desc: "Get all DB data.", args: [], code: "s.db.all" }
+                ]
+            },
+            {
+                id: "section-core", title: "Core",
+                macros: [
+                    { name: "s.send", desc: "Send message.", args: [{ name: "cid", type: "id" }, { name: "txt", type: "str" }], code: "s.send[id; text]" },
+                    { name: "s.reply", desc: "Reply message.", args: [{ name: "txt", type: "str" }], code: "s.reply[text]" },
+                    { name: "s.c", desc: "Comment (ignored).", args: [{ name: "txt", type: "str" }], code: "s.c[comment]" },
+                    { name: "s.log", desc: "Console log.", args: [{ name: "txt", type: "str" }], code: "s.log[debug]" }
+                ]
+            },
+            {
+                id: "section-events", title: "Events (Listeners)",
+                macros: [
+                    { name: "s.on(ready)", desc: "Triggered when bot starts.", args: [], code: "s.on(ready)" },
+                    { name: "s.on(messageCreate)", desc: "New message sent.", args: [{ name: "msg", type: "opt" }], code: "s.on(messageCreate)" },
+                    { name: "s.on(messageDelete)", desc: "Message deleted.", args: [], code: "s.on(messageDelete)" },
+                    { name: "s.on(messageUpdate)", desc: "Message edited.", args: [], code: "s.on(messageUpdate)" },
+                    { name: "s.on(interactionCreate)", desc: "Interaction received.", args: [], code: "s.on(interactionCreate)" },
+                    { name: "s.on(guildCreate)", desc: "Bot joins guild.", args: [], code: "s.on(guildCreate)" },
+                    { name: "s.on(guildDelete)", desc: "Bot leaves guild.", args: [], code: "s.on(guildDelete)" },
+                    { name: "s.on(guildMemberAdd)", desc: "User joins server.", args: [], code: "s.on(guildMemberAdd)" },
+                    { name: "s.on(guildMemberRemove)", desc: "User leaves server.", args: [], code: "s.on(guildMemberRemove)" },
+                    { name: "s.on(voiceStateUpdate)", desc: "Voice channel change.", args: [], code: "s.on(voiceStateUpdate)" },
+                    { name: "s.on(channelCreate)", desc: "Channel created.", args: [], code: "s.on(channelCreate)" },
+                    { name: "s.on(channelDelete)", desc: "Channel deleted.", args: [], code: "s.on(channelDelete)" }
                 ]
             }
         ];
