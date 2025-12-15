@@ -1,42 +1,42 @@
 import { Macro } from "../Macro";
 
 export class EmbedTitleMacro extends Macro {
-    constructor() { super({ name: "title", description: "Sets embed title", category: "ui" }); }
+    constructor() { super({ name: "title", aliases: ["embedTitle"], description: "Sets embed title", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_TITLE::${args.join(" ")}::END`; }
 }
 
 export class EmbedDescMacro extends Macro {
-    constructor() { super({ name: "description", aliases: ["desc"], description: "Sets embed description", category: "ui" }); }
+    constructor() { super({ name: "description", aliases: ["desc", "embedDesc", "embedDescription"], description: "Sets embed description", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_DESC::${args.join(" ")}::END`; }
 }
 
 export class EmbedColorMacro extends Macro {
-    constructor() { super({ name: "color", description: "Sets embed color (Hex)", category: "ui" }); }
+    constructor() { super({ name: "color", aliases: ["embedColor"], description: "Sets embed color (Hex)", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_COLOR::${args[0]}::END`; }
 }
 
 export class EmbedImageMacro extends Macro {
-    constructor() { super({ name: "image", aliases: ["img"], description: "Sets embed image", category: "ui" }); }
+    constructor() { super({ name: "image", aliases: ["img", "embedImage"], description: "Sets embed image", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_IMAGE::${args[0]}::END`; }
 }
 
 export class EmbedThumbMacro extends Macro {
-    constructor() { super({ name: "thumbnail", aliases: ["thumb"], description: "Sets embed thumbnail", category: "ui" }); }
+    constructor() { super({ name: "thumbnail", aliases: ["thumb", "embedThumb"], description: "Sets embed thumbnail", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_THUMB::${args[0]}::END`; }
 }
 
 export class EmbedFooterMacro extends Macro {
-    constructor() { super({ name: "footer", description: "Sets embed footer", category: "ui" }); }
+    constructor() { super({ name: "footer", aliases: ["embedFooter"], description: "Sets embed footer", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_FOOTER::${args.join(" ")}::END`; }
 }
 
 export class EmbedUrlMacro extends Macro {
-    constructor() { super({ name: "url", description: "Sets embed url", category: "ui" }); }
+    constructor() { super({ name: "url", aliases: ["embedUrl"], description: "Sets embed url", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_URL::${args[0]}::END`; }
 }
 
 export class EmbedAuthorMacro extends Macro {
-    constructor() { super({ name: "author", description: "Sets embed author. Usage: s.author[name; icon?; url?]", category: "ui" }); }
+    constructor() { super({ name: "author", aliases: ["embedAuthor"], description: "Sets embed author. Usage: s.author[name; icon?; url?]", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) {
         let name, icon, url;
         const hasKV = args.some(a => a.includes(":"));
@@ -66,13 +66,13 @@ export class EmbedAuthorMacro extends Macro {
 }
 
 export class EmbedFieldMacro extends Macro {
-    constructor() { super({ name: "field", description: "Adds a field. Usage: s.field[name; value; inline?]", category: "ui" }); }
+    constructor() { super({ name: "field", aliases: ["embedField"], description: "Adds a field. Usage: s.field[name; value; inline?]", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) {
         return `EMBED_FIELD::${args[0]}::${args[1]}::${args[2] || "false"}::END`;
     }
 }
 
 export class EmbedTimestampMacro extends Macro {
-    constructor() { super({ name: "timestamp", description: "Sets timestamp (default now)", category: "ui" }); }
+    constructor() { super({ name: "timestamp", aliases: ["embedTimestamp"], description: "Sets timestamp (default now)", category: "ui" }); }
     async execute(ctx: any, ...args: string[]) { return `EMBED_TIMESTAMP::${args[0] || "now"}::END`; }
 }
