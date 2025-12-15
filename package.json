@@ -1,6 +1,6 @@
 {
     "name": "seven-discord",
-    "version": "2.5.25",
+    "version": "2.6.0",
     "description": "A simplified, zero-dependency Discord library for Bun with interactive UI and economy system.",
     "repository": {
         "type": "git",

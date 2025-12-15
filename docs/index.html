@@ -253,6 +253,38 @@
                     { name: "s.getVar", desc: "Reads a runtime variable.", args: [{ name: "name", type: "string" }], code: "s.getVar[temp]" },
                     { name: "s.randomInt", desc: "Generates a pseudo-random integer.", args: [{ name: "min", type: "int" }, { name: "max", type: "int" }], code: "s.randomInt[0; 100]" }
                 ]
+            },
+            {
+                id: "section-voice", title: "Voice (Tera)",
+                macros: [
+                    { name: "s.join", desc: "Connects the bot to the voice channel.", args: [], code: "s.join" },
+                    { name: "s.leave", desc: "Disconnects from the current voice channel.", args: [], code: "s.leave" },
+                    { name: "s.play", desc: "Streams audio from a URL.", args: [{ name: "url", type: "string" }], code: "s.play[https://...]" },
+                    { name: "s.stop", desc: "Stops audio playback.", args: [], code: "s.stop" }
+                ]
+            },
+            {
+                id: "section-fun", title: "Entertainment",
+                macros: [
+                    { name: "s.hug", desc: "Hugs a user.", args: [{ name: "user", type: "snowflake" }], code: "s.hug[@user]" },
+                    { name: "s.ship", desc: "Calculates compatibility.", args: [{ name: "u1", type: "string" }, { name: "u2", type: "string" }], code: "s.ship[User1; User2]" },
+                    { name: "s.poll", desc: "Creates a simple poll.", args: [{ name: "question", type: "string" }, { name: "opt1", type: "string" }, { name: "opt2", type: "string" }], code: "s.poll[Cats or Dogs?; Cats; Dogs]" }
+                ]
+            },
+            {
+                id: "section-levels", title: "Leveling System",
+                macros: [
+                    { name: "s.addXp", desc: "Adds XP to a user.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.addXp[@user; 100]" },
+                    { name: "s.rank", desc: "Displays user rank card.", args: [{ name: "user", type: "snowflake", req: false }], code: "s.rank" }
+                ]
+            },
+            {
+                id: "section-eco", title: "Economy",
+                macros: [
+                    { name: "s.addCash", desc: "Injects currency into a wallet.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.addCash[@user; 500]" },
+                    { name: "s.removeCash", desc: "Deducts currency from a wallet.", args: [{ name: "user", type: "snowflake" }, { name: "amount", type: "int" }], code: "s.removeCash[@user; 100]" },
+                    { name: "s.cash", desc: "Checks wallet balance.", args: [{ name: "user", type: "snowflake", req: false }], code: "s.cash" }
+                ]
             }
         ];
 

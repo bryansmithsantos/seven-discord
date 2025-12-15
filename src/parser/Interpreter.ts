@@ -95,9 +95,15 @@ export class Interpreter {
         this.register(new (require("../macros/economy/Coinflip").CoinflipMacro)());
         this.register(new (require("../macros/economy/Leaderboard").LeaderboardMacro)());
 
+        // Economy
+        this.register(new (require("../macros/economy/AddCash").AddCashMacro)());
+        this.register(new (require("../macros/economy/RemoveCash").RemoveCashMacro)());
+
         // Moderation
         this.register(new (require("../macros/moderation/Mute").MuteMacro)());
         this.register(new (require("../macros/moderation/Unmute").UnmuteMacro)());
+        this.register(new (require("../macros/moderation/Kick").KickMacro)());
+        this.register(new (require("../macros/moderation/Ban").BanMacro)());
         this.register(new (require("../macros/moderation/Purge").PurgeMacro)());
         this.register(new (require("../macros/moderation/Lock").LockMacro)());
         this.register(new (require("../macros/moderation/Unlock").UnlockMacro)());
@@ -176,6 +182,21 @@ export class Interpreter {
         this.register(new (require("../macros/system/UserContext").UserCreatedMacro)());
 
         this.register(new (require("../macros/system/UserContext").UserBotMacro)());
+
+        // Fun
+        this.register(new (require("../macros/fun/Hug").HugMacro)());
+        this.register(new (require("../macros/fun/Poll").PollMacro)());
+        this.register(new (require("../macros/fun/Ship").ShipMacro)());
+
+        // Voice
+        this.register(new (require("../macros/voice/Join").JoinMacro)());
+        this.register(new (require("../macros/voice/Leave").LeaveMacro)());
+        this.register(new (require("../macros/voice/Play").PlayMacro)());
+        this.register(new (require("../macros/voice/Stop").StopMacro)());
+
+        // Levels
+        this.register(new (require("../macros/levels/AddXp").AddXpMacro)());
+        this.register(new (require("../macros/levels/Rank").RankMacro)());
 
         Logger.info("Interpreter System initialized.");
     }
