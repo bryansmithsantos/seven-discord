@@ -3,9 +3,11 @@ import { ExecutionContext } from "../../parser/Interpreter";
 
 export class DeleteMacro extends Macro {
     constructor() {
-        super("s.db.delete", "Delete a value from Native DB", [
-            { name: "key", type: "string" }
-        ]);
+        super({
+            name: "s.db.delete",
+            description: "Delete a value from Native DB",
+            category: "sevendb"
+        });
     }
 
     public async execute(ctx: ExecutionContext, key: string): Promise<void> {

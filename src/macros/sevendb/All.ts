@@ -3,7 +3,11 @@ import { ExecutionContext } from "../../parser/Interpreter";
 
 export class AllMacro extends Macro {
     constructor() {
-        super("s.db.all", "Get all values from Native DB", []);
+        super({
+            name: "s.db.all",
+            description: "Get all values from Native DB",
+            category: "sevendb"
+        });
     }
 
     public async execute(ctx: ExecutionContext): Promise<string> {

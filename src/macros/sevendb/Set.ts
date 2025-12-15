@@ -3,10 +3,11 @@ import { ExecutionContext } from "../../parser/Interpreter";
 
 export class SetMacro extends Macro {
     constructor() {
-        super("s.db.set", "Set a value in Native DB", [
-            { name: "key", type: "string" },
-            { name: "value", type: "any" }
-        ]);
+        super({
+            name: "s.db.set",
+            description: "Set a value in Native DB",
+            category: "sevendb"
+        });
     }
 
     public async execute(ctx: ExecutionContext, key: string, value: any): Promise<void> {
