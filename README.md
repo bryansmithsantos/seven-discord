@@ -25,7 +25,7 @@ import { SevenClient } from "seven-discord";
 const client = new SevenClient({
     token: "YOUR_BOT_TOKEN", 
     // New "Seven" Style Intents! 🛡️
-    intents: ["SevenGuild", "SevenMessages", "SevenMessageContent"] 
+    intents: ["SevenGuild", "SevenMessages", "SevenMessageContent", "SevenVoiceState"] 
 });
 
 // 1. Startup Message
@@ -37,7 +37,13 @@ client.cmd({
     code: "Pong! 🏓 Latency: s.pingms"
 });
 
-// 3. Easy UI (Interactive Buttons)
+// 3. Easy Voice Command
+client.cmd({
+    name: "join",
+    code: "$s.join"
+});
+
+// 4. Easy UI (Interactive Buttons)
 client.cmd({
     name: "menu",
     code: `
@@ -76,6 +82,7 @@ We made permissions easy to read. No more guessing numbers.
 *   `SevenGuild` - Basic guild stuff.
 *   `SevenMessages` - See messages.
 *   `SevenMessageContent` - Read actual text.
+*   `SevenVoiceState` - Voice channel access.
 *   `SevenAll` - YOLO (Everything).
 
 ### 🚀 Speed
@@ -83,7 +90,7 @@ Built on **Bun**, so it starts instantly and runs faster than Node.js alternativ
 
 ---
 
-## 📚 Documentation 2.0
+## 📚 Documentation 2.5
 We completely redesigned our docs. They are now built-in!
 *   Open `docs/index.html` in your browser.
 *   Beautiful "Dark Mode" UI.
@@ -93,19 +100,21 @@ We completely redesigned our docs. They are now built-in!
 ---
 
 ## 📦 What's New in v2.5.25?
-*   **Key-Value Arguments**: Now support `s.embed[title:Hello; color:Red]` syntax!
-*   **New Macros**: `s.setStatus`, `s.work`, `s.rob` and more economy features.
-*   **Performance**: Optimized variable parsing for lower memory usage.
-*   **Docs 2.0**: Completely new dark-mode documentation site.
+*   **SevenVoice**: Native voice support (`s.join`, `s.leave`, `s.play`).
+*   **Economy V2**: Full Inventory system (`s.buy`, `s.sell`, `s.inventory`, `s.shop`).
+*   **Leveling System**: Built-in XP and Ranks (`s.rank`, `s.addXp`).
+*   **Fun & Utils**: `s.ship`, `s.weather`, `s.poll` and more.
+*   **CLI Doctor**: Run `seven doctor` to diagnose issues.
+*   **Docs Polish**: Cleaner UI and Dynamic Pro Tips.
 
 ---
 
 ## 🔮 Roadmap to v2.6.0 (The Future)
 We are building the next generation of Seven-Discord.
-*   [ ] **Voice Support**: `s.join`, `s.play` (Simple Music Bots).
-*   [ ] **Advanced Slash**: Subcommands and Autocomplete support.
-*   [ ] **SevenDB**: Native, file-based database (faster than JSON).
-*   [ ] **Plugin System**: Load external macros easily.
+*   [ ] **Advanced Voice**: YouTube/Spotify direct streaming.
+*   [ ] **Advanced Slash**: Subcommands and Autocomplete.
+*   [ ] **SevenDB**: Native, file-based database improvements.
+*   [ ] **Plugins**: External macro loading.
 
 ---
 
