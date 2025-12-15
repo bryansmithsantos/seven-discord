@@ -387,24 +387,6 @@
                     { name: "s.embedThumb", desc: "Sets thumbnail.", args: [{ name: "url", type: "string" }], code: "s.embedThumb[http://...]" },
                     { name: "s.embedFooter", desc: "Sets footer.", args: [{ name: "text", type: "string" }], code: "s.embedFooter[Footer]" },
                     { name: "s.embedField", desc: "Adds a field.", args: [{ name: "title", type: "string" }, { name: "value", type: "string" }, { name: "inline", type: "bool" }], code: "s.embedField[Title; Val; true]" },
-                    { name: "s.embedAuthor", desc: "Sets author.", args: [{ name: "name", type: "string" }], code: "s.embedAuthor[Me]" },
-                    { name: "s.embedUrl", desc: "Sets URL.", args: [{ name: "url", type: "string" }], code: "s.embedUrl[http://...]" },
-                    { name: "s.button", desc: "Creates a button.", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }, { name: "style", type: "string" }], code: "s.button[btn1; Click Me; primary]" },
-                    { name: "s.row", desc: "Adds a component row.", args: [], code: "s.row" },
-                    { name: "s.selectMenu", desc: "Creates dropdown.", args: [{ name: "id", type: "string" }, { name: "placeholder", type: "string" }], code: "s.selectMenu[menu; Choose...]" },
-                    { name: "s.selectOption", desc: "Adds option to menu.", args: [{ name: "label", type: "string" }, { name: "value", type: "string" }], code: "s.selectOption[Opt A; a]" },
-                    { name: "s.modal", desc: "Shows a modal form.", args: [{ name: "id", type: "string" }, { name: "title", type: "string" }], code: "s.modal[form; My Form]" },
-                    { name: "s.input", desc: "Adds input to modal.", args: [{ name: "id", type: "string" }, { name: "label", type: "string" }], code: "s.input[name; Your Name]" }
-                ]
-            },
-            {
-                id: "section-sevendb", title: "SevenDB (Native)",
-                macros: [
-                    { name: "s.db.set", desc: "Set DB value.", args: [{ name: "k", type: "str" }, { name: "v", type: "any" }], code: "s.db.set[k; v]" },
-                    { name: "s.db.get", desc: "Get DB value.", args: [{ name: "k", type: "str" }], code: "s.db.get[k]" },
-                    { name: "s.db.delete", desc: "Delete DB value.", args: [{ name: "k", type: "str" }], code: "s.db.delete[k]" },
-                    { name: "s.db.all", desc: "Get all DB data.", args: [], code: "s.db.all" }
-                ]
             },
             {
                 id: "section-core", title: "Core",
