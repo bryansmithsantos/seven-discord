@@ -9,6 +9,51 @@ export class ReplyMacro extends Macro {
             description: "Responds to the message author with optionals embeds/components.",
             category: "core"
         });
+    }
+
+    static parsePayload(content: string) {
+        const payload: any = { content: "" };
+        let processedContent = content;
+        const embeds = [];
+        const components: any[] = [];
+
+        // 0. Base64 Safe Transport (New Standard)
+        const b64Regex = /<<B64_EMBED>>(.*?)::END/gs;
+        let b64m;
+        while ((b64m = b64Regex.exec(processedContent)) !== null) {
+            try {
+                const raw = Buffer.from(b64m[1], "base64").toString("utf-8");
+                const data = JSON.parse(raw);
+                if (data.embed && Object.keys(data.embed).length > 0) embeds.push(data.embed);
+
+                // Handle Base64 Components
+                if (data.components && Array.isArray(data.components) && data.components.length > 0) {
+                    const comps = data.components;
+                    // Wrap if needed (assuming loose buttons if type != 1)
+                    if (comps[0].type !== 1) {
+                        components.push({ type: 1, components: comps });
+                    } else {
+                        components.push(...comps);
+                    }
+                }
+            } catch (e) { }
+        }
+        processedContent = processedContent.replace(/<<B64_EMBED>>.*?::END/gs, "");
+
+        // 1. Extract Embeds (Legacy & Fallback)
+        const embedRegex = /<<EMBED>>(.*?)(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs;
+        let em;
+        while ((em = embedRegex.exec(processedContent)) !== null) {
+            try {
+                embeds.push(JSON.parse(em[1].trim()));
+            } catch (e) { }
+        }
+        processedContent = processedContent.replace(/<<EMBED>>.*?(?=(?:<<EMBED>>|<<COMPONENTS>>|COMPONENT_|$))/gs, "");
+
+        if (embeds.length > 0) payload.embeds = embeds;
+
+        // 2. Extract Hoisted Components (from Embeds - Legacy)
+        const hoistedRegex = /<<COMPONENTS>>(.*?)(?=(?:<<EMBED>>|COMPONENT_|$))/gs;
         let hm;
         while ((hm = hoistedRegex.exec(processedContent)) !== null) {
             try {
